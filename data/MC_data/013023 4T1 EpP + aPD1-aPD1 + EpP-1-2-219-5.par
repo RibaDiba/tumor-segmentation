@@ -1,0 +1,8 @@
+TumorVolume          = 27.79mm3
+TumorArea            = 35.86mm2
+TumorMajorAxisLength = 7.1mm
+TumorMinorAxisLength = 6.46mm
+TumorEquivDiameter   = 21.74mm
+TumorPerimeter       = 6.76mm
+TumorRoundness       = 0.95
+ErrorFlag            = 0

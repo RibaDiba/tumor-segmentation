@@ -1,0 +1,1 @@
+TODO: add a python file in order to sort through the data and get all pairs of images that have bin files 
