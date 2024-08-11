@@ -47,35 +47,26 @@ def split_images(image_array):
     return red_region_images, raw_images
 
 def split_train_val_test(images, masks, per_train, per_val, per_test):
-
-    train_num = int(len(images) * (per_train/100))
-    val_num = int(len(images) * (per_val/100))
-    test_num = int(len(images) * (per_test/100))
-
-    train_images = []
-    train_masks = []
-    val_images = []
-    val_masks = []
-    test_images = []
-    test_masks = []
-
-    for i in range(len(images)): 
-
-    # these numbers are made specifically for this dataset 
-        
-        if i < train_num: 
-            train_images.append(images[i])
-            train_masks.append(masks[i])
-        elif i < val_num:
-            val_images.append(images[i])
-            val_masks.append(masks[i])
-        elif i < test_num:
-            test_images.append(images[i])
-            test_masks.append(masks[i])
-        else: 
-            test_images.append(images[i])
-            test_masks.append(masks[i])
-
+    # returns error if they don't add up 
+    assert (per_train + per_val + per_test) == 100, "The percentages must sum up to 100."
+    
+    train_num = int(len(images) * (per_train / 100))
+    val_num = int(len(images) * (per_val / 100))
+    test_num = len(images) - train_num - val_num  
+    
+    indices = np.arange(len(images))
+    
+    train_indices = indices[:train_num]
+    val_indices = indices[train_num:train_num + val_num]
+    test_indices = indices[train_num + val_num:]
+    
+    train_images = [images[i] for i in train_indices]
+    train_masks = [masks[i] for i in train_indices]
+    val_images = [images[i] for i in val_indices]
+    val_masks = [masks[i] for i in val_indices]
+    test_images = [images[i] for i in test_indices]
+    test_masks = [masks[i] for i in test_indices]
+    
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
 def crop_raw_images(image_array): 
@@ -168,7 +159,8 @@ def create_binary_masks(image_array):
         hsv = cv2.cvtColor(image_color, cv2.COLOR_BGR2HSV)
 
         # Define lower and upper bounds for red color in HSV
-        lower_red = np.array([0, 150, 115])
+        # og 150 115
+        lower_red = np.array([0, 100, 100])
         upper_red = np.array([255, 255, 255])
 
         # Create mask using inRange function
@@ -334,26 +326,29 @@ def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
     images = read_images_to_array(folder_path)
     masks, raw = split_images(images)
+    og = masks
 
     masks, images = split_images(images)
 
     images = crop_raw_images(images)
     images = add_padding(images, 0, 67)
+    images = crop_images(images)
     masks = crop_masks(masks)
     masks = add_padding(masks, 31, 0)
     masks = zoom_at(masks, 1.156, coord=None)
     masks = create_binary_masks(masks)
+    masks = crop_images(masks)
 
-    print('Number of Images: ' + len(images))
+    print(f'Number of Images: {len(images)}')
     print()
 
     train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(images, masks, per_train, per_val, per_test)
 
-    print('Number of Train Images: ' + len(train_images))
-    print('Number of Val Images: ' + len(val_images))
-    print('Number of Test Images: ' + len(test_images))
+    print(f'Number of Train Images: {len(train_images)}')
+    print(f'Number of Val Images: {len(val_images)}')
+    print(f'Number of Test Images: {len(test_images)}')
 
-    return train_images, train_masks, val_images, val_masks, test_images, test_masks
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks, og
 
 
 def preprocess_grayscale(folder_path, per_train, per_val, per_test):
@@ -366,19 +361,21 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
 
     depth_maps = crop_raw_images(depth_maps)
     depth_maps = add_padding(depth_maps, 0, 67)
+    depth_maps = crop_images(depth_maps)
     masks = crop_masks(masks)
     masks = add_padding(masks, 31, 0)
     masks = zoom_at(masks, 1.156, coord=None)
     masks = create_binary_masks(masks)
+    masks = crop_images(masks)
 
-    print('Number of Images: ' + len(depth_maps))
+    print(f'Number of Images: {len(images)}')
     print()
 
     train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks, per_train, per_val, per_test)
 
-    print('Number of Train Images: ' + len(train_images))
-    print('Number of Val Images: ' + len(val_images))
-    print('Number of Test Images: ' + len(test_images))
+    print(f'Number of Train Images: {len(train_images)}')
+    print(f'Number of Val Images: {len(val_images)}')
+    print(f'Number of Test Images: {len(test_images)}')
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
@@ -392,18 +389,20 @@ def preprocess_rgbd(folder_path, per_train, per_val, per_test):
 
     depth_maps = crop_raw_images(depth_maps)
     depth_maps = add_padding(depth_maps, 0, 67)
+    depth_maps = crop_images(depth_maps)
     masks = crop_masks(masks)
     masks = add_padding(masks, 31, 0)
     masks = zoom_at(masks, 1.156, coord=None)
     masks = create_binary_masks(masks)
+    masks = crop_images(masks)
 
-    print('Number of Images: ' + len(depth_maps))
+    print(f'Number of Images: {len(images)}')
     print()
 
     train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks, per_train, per_val, per_test)
 
-    print('Number of Train Images: ' + len(train_images))
-    print('Number of Val Images: ' + len(val_images))
-    print('Number of Test Images: ' + len(test_images))
+    print(f'Number of Train Images: {len(train_images)}')
+    print(f'Number of Val Images: {len(val_images)}')
+    print(f'Number of Test Images: {len(test_images)}')
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
