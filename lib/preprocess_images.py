@@ -161,7 +161,7 @@ def create_binary_masks(image_array):
         # Define lower and upper bounds for red color in HSV
         # og 150 115
         lower_red = np.array([0, 100, 100])
-        upper_red = np.array([255, 255, 255])
+        upper_red = np.array([360, 255, 255])
 
         # Create mask using inRange function
         mask = cv2.inRange(hsv, lower_red, upper_red)
@@ -348,7 +348,7 @@ def preprocess_rgb(folder_path, per_train, per_val, per_test):
     print(f'Number of Val Images: {len(val_images)}')
     print(f'Number of Test Images: {len(test_images)}')
 
-    return train_images, train_masks, val_images, val_masks, test_images, test_masks, og
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
 
 def preprocess_grayscale(folder_path, per_train, per_val, per_test):
