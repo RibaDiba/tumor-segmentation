@@ -6,8 +6,6 @@ from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
 
-# preprocessing image functions
-
 def read_images_to_array(folder_path):
 
   image_array = []
@@ -48,7 +46,11 @@ def split_images(image_array):
             
     return red_region_images, raw_images
 
-def split_train_val_test(images, masks):
+def split_train_val_test(images, masks, per_train, per_val, per_test):
+
+    train_num = int(len(images) * (per_train/100))
+    val_num = int(len(images) * (per_val/100))
+    test_num = int(len(images) * (per_test/100))
 
     train_images = []
     train_masks = []
@@ -61,12 +63,15 @@ def split_train_val_test(images, masks):
 
     # these numbers are made specifically for this dataset 
         
-        if i < 20: 
+        if i < train_num: 
             train_images.append(images[i])
             train_masks.append(masks[i])
-        elif i < 25:
+        elif i < val_num:
             val_images.append(images[i])
             val_masks.append(masks[i])
+        elif i < test_num:
+            test_images.append(images[i])
+            test_masks.append(masks[i])
         else: 
             test_images.append(images[i])
             test_masks.append(masks[i])
@@ -199,8 +204,6 @@ def crop_images(image_array):
                               
     return cropped_images
 
-# reading bin files
-
 def read_bin(file_path): 
     with open(file_path, 'rb') as fid:
         data = np.fromfile(fid, dtype='>f8')
@@ -327,137 +330,80 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
 
     return image_array_infused
 
-# split images before infusing the raw ones 
-def prepreprocess():
-    
-     folder_path = './data/images'
-     images = read_images_to_array(folder_path)
-     masks, raw = split_images(images)
+def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
-     return masks, raw
+    images = read_images_to_array(folder_path)
+    masks, raw = split_images(images)
 
-def preprocess_rgbd():
-    
-     bin_path = './data/bin_files'
-     data_array = read_all_bins(bin_path)
+    masks, images = split_images(images)
 
-     masks, raw = prepreprocess()
-     og = raw
+    images = crop_raw_images(images)
+    images = add_padding(images, 0, 67)
+    masks = crop_masks(masks)
+    masks = add_padding(masks, 31, 0)
+    masks = zoom_at(masks, 1.156, coord=None)
+    masks = create_binary_masks(masks)
 
-     depth_maps = read_contours_array(data_array)
-     image_array = infuse_depth_into_blue_channel(raw, depth_maps)
+    print('Number of Images: ' + len(images))
+    print()
 
-     train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(image_array, masks)
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(images, masks, per_train, per_val, per_test)
 
-     train_images = crop_raw_images(train_images)
-     train_images = add_padding(train_images, 0, 67)
-     train_masks = crop_masks(train_masks)
-     train_masks = add_padding(train_masks, 31, 0)
-     train_masks = zoom_at(train_masks, 1.156, coord=None)
-     train_masks = create_binary_masks(train_masks)
-
-     train_images = crop_images(train_images)
-     train_masks = crop_images(train_masks)
-
-     val_images = crop_raw_images(val_images)
-     val_images = add_padding(val_images, 0, 67)
-     val_masks = crop_masks(val_masks)
-     val_masks = add_padding(val_masks, 31, 0)
-     val_masks = zoom_at(val_masks, 1.156, coord=None)
-     val_masks = create_binary_masks(val_masks)
-     
-     #val_images = crop_images(val_images)
-     #val_masks = crop_images(val_masks)
-
-     test_images = crop_raw_images(test_images)
-     test_images = add_padding(test_images, 0, 67)
-     test_masks = crop_masks(test_masks)
-     test_masks = add_padding(test_masks, 31, 0)
-     test_masks = zoom_at(test_masks, 1.156, coord=None)
-     test_masks = create_binary_masks(test_masks)
-
-     # test_images = crop_images(test_images)
-     # test_masks = crop_images(test_masks)
-     
-
-     return  train_images, train_masks, val_images, val_masks, test_images, test_masks
-
-def preprocess_grayscale():
-
-    bin_path = './data/bin_files'
-    data_array = read_all_bins(bin_path)
-
-    masks, raw = prepreprocess()
-    og = raw
-    og_masks = masks
-
-    depth_maps = read_contours_array_depth(data_array)
-
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks)
-
-    train_images = crop_raw_images(train_images)
-    train_images = add_padding(train_images, 0, 67)
-    train_masks = crop_masks(train_masks)
-    train_masks = add_padding(train_masks, 31, 0)
-    train_masks = zoom_at(train_masks, 1.156, coord=None)
-    #train_masks = create_binary_masks(train_masks)
-
-    train_images = crop_images(train_images)
-    train_masks = crop_images(train_masks)
-
-    val_images = crop_raw_images(val_images)
-    val_images = add_padding(val_images, 0, 67)
-    val_masks = crop_masks(val_masks)
-    val_masks = add_padding(val_masks, 31, 0)
-    #val_masks = zoom_at(val_masks, 1.156, coord=None)
-    val_masks = create_binary_masks(val_masks)
-
-    val_images = crop_images(val_images)
-    val_masks = crop_images(val_masks)
-
-    test_images = crop_raw_images(test_images)
-    test_images = add_padding(test_images, 0, 67)
-    test_masks = crop_masks(test_masks)
-    test_masks = add_padding(test_masks, 31, 0)
-    #test_masks = zoom_at(test_masks, 1.156, coord=None)
-    test_masks = create_binary_masks(test_masks)
-
-    test_images = crop_images(test_images)
-    test_masks = crop_images(test_masks)
+    print('Number of Train Images: ' + len(train_images))
+    print('Number of Val Images: ' + len(val_images))
+    print('Number of Test Images: ' + len(test_images))
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
-def preprocess_rgb():
 
-    folder_path = './data/images'
-    folder_path_depth = './data/depth_images'
+def preprocess_grayscale(folder_path, per_train, per_val, per_test):
+
+    data_array = read_all_bins(folder_path)
+    depth_maps = read_contours_array_depth(data_array)
+
     images = read_images_to_array(folder_path)
-    depth = read_images_to_array(folder_path_depth)
-
     masks, images = split_images(images)
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(images, masks)
 
-    train_images = crop_raw_images(train_images)
-    train_images = add_padding(train_images, 0, 67)
-    train_masks = crop_masks(train_masks)
-    train_masks = add_padding(train_masks, 31, 0)
-    train_masks = zoom_at(train_masks, 1.156, coord=None)
-    train_masks = create_binary_masks(train_masks)
+    depth_maps = crop_raw_images(depth_maps)
+    depth_maps = add_padding(depth_maps, 0, 67)
+    masks = crop_masks(masks)
+    masks = add_padding(masks, 31, 0)
+    masks = zoom_at(masks, 1.156, coord=None)
+    masks = create_binary_masks(masks)
 
-    val_images = crop_raw_images(val_images)
-    val_images = add_padding(val_images, 0, 67)
-    val_masks = crop_masks(val_masks)
-    val_masks = add_padding(val_masks, 31, 0)
-    val_masks = zoom_at(val_masks, 1.156, coord=None)
-    val_masks = create_binary_masks(val_masks)
+    print('Number of Images: ' + len(depth_maps))
+    print()
 
-    test_images = crop_raw_images(test_images)
-    test_images = add_padding(test_images, 0, 67)
-    test_masks = crop_masks(test_masks)
-    test_masks = add_padding(test_masks, 31, 0)
-    test_masks = zoom_at(test_masks, 1.156, coord=None)
-    test_masks = create_binary_masks(test_masks)
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks, per_train, per_val, per_test)
 
-    return train_images, train_masks, val_images, val_masks, test_images, test_masks 
+    print('Number of Train Images: ' + len(train_images))
+    print('Number of Val Images: ' + len(val_images))
+    print('Number of Test Images: ' + len(test_images))
 
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
+def preprocess_rgbd(folder_path, per_train, per_val, per_test):
+
+    data_array = read_all_bins(folder_path)
+    depth_maps = read_contours_array(data_array)
+
+    images = read_images_to_array(folder_path)
+    masks, images = split_images(images)
+
+    depth_maps = crop_raw_images(depth_maps)
+    depth_maps = add_padding(depth_maps, 0, 67)
+    masks = crop_masks(masks)
+    masks = add_padding(masks, 31, 0)
+    masks = zoom_at(masks, 1.156, coord=None)
+    masks = create_binary_masks(masks)
+
+    print('Number of Images: ' + len(depth_maps))
+    print()
+
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks, per_train, per_val, per_test)
+
+    print('Number of Train Images: ' + len(train_images))
+    print('Number of Val Images: ' + len(val_images))
+    print('Number of Test Images: ' + len(test_images))
+
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks
