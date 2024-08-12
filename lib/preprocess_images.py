@@ -160,7 +160,7 @@ def create_binary_masks(image_array):
 
         # Define lower and upper bounds for red color in HSV
         # og 150 115
-        lower_red = np.array([0, 100, 100])
+        lower_red = np.array([0, 150, 115])
         upper_red = np.array([360, 255, 255])
 
         # Create mask using inRange function
