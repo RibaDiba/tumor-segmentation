@@ -350,6 +350,27 @@ def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
+def preprocess_rgb_single(folder_path):
+
+    images = read_images_to_array(folder_path)
+    masks, raw = split_images(images)
+    og = masks
+
+    masks, images = split_images(images)
+
+    images = crop_raw_images(images)
+    images = add_padding(images, 0, 67)
+    images = crop_images(images)
+    masks = crop_masks(masks)
+    masks = add_padding(masks, 31, 0)
+    masks = zoom_at(masks, 1.156, coord=None)
+    masks = create_binary_masks(masks)
+    masks = crop_images(masks)
+
+    print(f'Number of Images: {len(images)}')
+
+    return images, masks
+
 
 def preprocess_grayscale(folder_path, per_train, per_val, per_test):
 
