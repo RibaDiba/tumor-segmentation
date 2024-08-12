@@ -115,7 +115,7 @@ def get_coco_grayscale(coco_json_path_grayscale):
 
     print('Done creating COCO JSON annotations for all files')
 
-def get_coco_rgb(coco_json_path_rgbd):
+def get_coco_rgbd(coco_json_path_rgbd):
 
     train_mask_path = os.path.join(coco_json_path_rgbd, "train/masks")
     train_json_path = os.path.join(coco_json_path_rgbd, "train/images/train.json")
