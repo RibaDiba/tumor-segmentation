@@ -91,6 +91,11 @@ def get_coco_rgb(coco_json_path_rgb):
     test_mask_path = os.path.join(coco_json_path_rgb, 'test/masks')
     test_json_path = os.path.join(coco_json_path_rgb, 'test/images/test.json')
 
+    process_masks(train_mask_path, train_json_path)
+    process_masks(val_mask_path, val_json_path)
+    process_masks(test_mask_path, test_json_path)
+
+
     print('Done creating COCO JSON annotations for all files')
 
 def get_coco_grayscale(coco_json_path_grayscale):
@@ -104,6 +109,10 @@ def get_coco_grayscale(coco_json_path_grayscale):
     test_mask_path = os.path.join(coco_json_path_grayscale, 'test/masks')
     test_json_path = os.path.join(coco_json_path_grayscale, 'test/images/test.json')
 
+    process_masks(train_mask_path, train_json_path)
+    process_masks(val_mask_path, val_json_path)
+    process_masks(test_mask_path, test_json_path)
+
     print('Done creating COCO JSON annotations for all files')
 
 def get_coco_rgb(coco_json_path_rgbd):
@@ -116,6 +125,10 @@ def get_coco_rgb(coco_json_path_rgbd):
 
     test_mask_path = os.path.join(coco_json_path_rgbd, 'test/masks')
     test_json_path = os.path.join(coco_json_path_rgbd, 'test/images/test.json')
+
+    process_masks(train_mask_path, train_json_path)
+    process_masks(val_mask_path, val_json_path)
+    process_masks(test_mask_path, test_json_path)
 
     print('Done creating COCO JSON annotations for all files')
 
