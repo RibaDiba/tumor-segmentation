@@ -2,6 +2,8 @@ monai
 opencv-python
 matplotlib
 numpy
+torch
+torchvision
 scipy
 tqdm
 pillow
