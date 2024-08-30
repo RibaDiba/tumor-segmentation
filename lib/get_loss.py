@@ -14,7 +14,7 @@ def get_loss_rgb(model_path):
     train_images, train_masks, val_images, val_masks, test_images, test_masks = preprocess_rgb('../data/useable_data', 70, 15, 15)
 
     # define our loss function
-    seg_loss = monai.losses.MaskedDiceLoss(sigmoid=True, squared_pred=True, reduction='mean')
+    seg_loss = monai.losses.DiceFocalLoss(sigmoid=True, squared_pred=True, reduction='mean')
     total_loss = []
 
     # init our model
