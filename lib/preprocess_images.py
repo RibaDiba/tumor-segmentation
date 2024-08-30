@@ -146,28 +146,26 @@ def create_binary_masks(image_array):
     binary_masks = []
     
     for image in image_array:
-        # Ensure image is in BGR format (convert if necessary)
         if image.ndim == 2:
-            # Convert grayscale to BGR color (assuming gray image)
             image_color = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         elif image.shape[2] != 3:
             raise ValueError("Input image must have 3 channels (BGR format).")
         else:
             image_color = image
         
-        # Convert BGR to HSV
         hsv = cv2.cvtColor(image_color, cv2.COLOR_BGR2HSV)
 
-        # Define lower and upper bounds for red color in HSV
-        # og 150 115
-        lower_red = np.array([0, 150, 115])
-        upper_red = np.array([360, 255, 255])
+        lower_red1 = np.array([0, 150, 50])
+        upper_red1 = np.array([10, 255, 255])
+        lower_red2 = np.array([170, 150, 50])
+        upper_red2 = np.array([180, 255, 255])
 
-        # Create mask using inRange function
-        mask = cv2.inRange(hsv, lower_red, upper_red)
+        # Create masks for the red color
+        mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
+        mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
 
-        # Apply bitwise AND operation using color image
-        res = cv2.bitwise_and(image_color, image_color, mask=mask)
+        # Combine the two masks
+        mask = cv2.bitwise_or(mask1, mask2)
         
         binary_masks.append(mask)
         
