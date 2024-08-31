@@ -47,6 +47,9 @@ def get_loss_rgb(model_path):
         medsam_seg_prob = medsam_seg_prob.cpu().numpy().squeeze()
         medsam_seg = (medsam_seg_prob > 0.5).astype(np.uint8)
 
+        medsam_seg_prob = torch.from_numpy(medsam_seg_prob).float().to(device)
+        test_mask = torch.from_numpy(test_mask).float().to(device)
+
         loss = seg_loss(medsam_seg_prob, test_mask)
         total_loss.append(loss.item())
 
