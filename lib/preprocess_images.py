@@ -425,3 +425,11 @@ def preprocess_rgbd(folder_path, per_train, per_val, per_test):
     print(f'Number of Test Images: {len(test_images)}')
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
+
+def preprocess_no_tumor(image_array):
+
+    image_array = crop_raw_images(image_array)
+    image_array = add_padding(image_array, 0, 67)
+    image_array = crop_images(image_array) 
+
+    return image_array
