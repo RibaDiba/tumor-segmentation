@@ -11,13 +11,17 @@ def add_no_tumor(train_images, train_masks, val_images, val_masks):
     no_tumor_images = read_images_to_array('../data/no_tumor')
     no_tumor_images = preprocess_no_tumor(no_tumor_images)
 
-    for image in tqdm(no_tumor_images, desc="Adding images with no Tumor"):
-        train_images.append(image)
-        val_images.append(image)
+    blank_images = []
 
-        blank_image = np.ones((256, 256, 3), dtype=np.uint8) * 0
-        train_masks.append(blank_image)
-        val_masks.append(blank_image)
+    for image in tqdm(no_tumor_images, desc="Adding images with no Tumor"):
+        blank_image = np.ones((256, 256), dtype=np.uint8) * 0
+        blank_images.append(blank_image)
+
+    train_images.extend(no_tumor_images)
+    val_images.extend(no_tumor_images)
+
+    train_masks.extend(blank_images)
+    val_masks.extend(blank_images)
 
     print(f'New Images Added: {len(no_tumor_images)}')
     print()
