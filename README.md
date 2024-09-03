@@ -16,7 +16,7 @@ This project is organized into several key directories, each containing specific
      - ``process_coco_json.py``: this file creates the coco_json file 
      - ``read_save_bin_files.py``: this file can manually save contour plots created by our preprocessing functions for viewing purposes
      - ``get_bounding_box.py``: this file contains the function that automatically produces a bounding box based on a binary mask
-     - ``get_loss.py``: this file contains functions to get the mean loss based on a model. Note: currently there's only a function for SAM_rgb, this will get updated soon
+     - ``get_loss.py``: this file contains functions to get the mean loss based on a model, works for all types of models as well as medsam models, still has to be updated for detectron2. 
 
 - **`models/`**:
      - This directory is dedicated to storing the model files used in the project.
@@ -43,6 +43,7 @@ This project is organized into several key directories, each containing specific
           folder_path_model = '../models/your_model_name.pth'
           ```
           - ``visualizing.ipynb``: this is a notebook file that allows you to test a specifc model. Remember to ajust the model path to ensure that you have the correct model loaded
+          - ``calculate_loss.ipynb``: this notebook file is being built to get an easy way to display loss
 
 - **`Detectron2/`**:
      - This diectory contains files to train a model with Detectron2 
