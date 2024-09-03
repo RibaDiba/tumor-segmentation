@@ -85,8 +85,8 @@ def get_loss_grayscale(model_path, UseMedSAM=False):
 
     for i in tqdm(range(len(test_images)), desc="Calculating Test Loss"):
 
-        test_image = test_images(i)
-        test_mask = test_masks(i)
+        test_image = test_images[i]
+        test_mask = test_masks[i]
 
         prompt = get_bounding_box(test_mask)
 
@@ -137,8 +137,8 @@ def get_loss_rgbd(model_path, UseMedSAM=False):
 
     for i in tqdm(range(len(test_images)), desc="Calculating Test Loss"):
 
-        test_image = test_images(i)
-        test_mask = test_masks(i)
+        test_image = test_images[i]
+        test_mask = test_masks[i]
 
         prompt = get_bounding_box(test_mask)
 
