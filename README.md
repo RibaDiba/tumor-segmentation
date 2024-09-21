@@ -44,6 +44,7 @@ This project is organized into several key directories, each containing specific
           ```
           - ``visualizing.ipynb``: this is a notebook file that allows you to test a specifc model. Remember to ajust the model path to ensure that you have the correct model loaded
           - ``calculate_loss.ipynb``: this notebook file is being built to get an easy way to display loss
+          - ``test_bounding_box.ipynb``: this notebook file was created to code the bounding box function
 
 - **`Detectron2/`**:
      - This diectory contains files to train a model with Detectron2 
