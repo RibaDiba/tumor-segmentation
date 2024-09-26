@@ -103,25 +103,73 @@ def crop_masks(image_array):
 
     return cropped_images
 
-def add_padding(image_array, amt_x, amt_y): 
-    
-    padded_images = []
-    
-    for image in image_array: 
+def add_padding(image_array, mask_array):
 
-        padded_image = cv2.copyMakeBorder(
-            image,
-            amt_y,
-            amt_y,
-            amt_x,
-            amt_x,
-            cv2.BORDER_CONSTANT,
-            value=(255,255,255)
-        )
-        
-        padded_images.append(padded_image)
-        
-    return padded_images
+    padded_images = []
+    padded_masks = []
+
+    for i in range(len(image_array)):
+
+        image = image_array[i]
+        mask = mask_array[i]  # Assuming mask_array is a list of masks
+
+        # Check mask dimensions using len()
+        if len(mask[0]) == 492:  # Check the number of columns (width)
+            # MC_data
+            padded_image = cv2.copyMakeBorder(
+                image,
+                7,
+                7,
+                0,
+                0,
+                cv2.BORDER_CONSTANT,
+                value=(255,255,255)
+            )
+
+            padded_mask = cv2.copyMakeBorder(
+                mask,
+                0,
+                0,
+                74,
+                74,
+                cv2.BORDER_CONSTANT,
+                value=(255,255,255)
+            )
+
+            padded_images.append(padded_image)
+            padded_masks.append(padded_mask)
+
+        elif len(mask[0]) == 577:  # Check the number of columns (width)
+            # invotive data
+            padded_image = cv2.copyMakeBorder(
+                image,
+                67,
+                67,
+                0,
+                0,
+                cv2.BORDER_CONSTANT,
+                value=(255,255,255)
+            )
+
+            padded_mask = cv2.copyMakeBorder(
+                mask,
+                0,
+                0,
+                31,
+                31,
+                cv2.BORDER_CONSTANT,
+                value=(255,255,255)
+            )
+
+            padded_images.append(padded_image)
+            padded_masks.append(padded_mask)
+
+        else: 
+            print(f"Error: Mask dimensions {len(mask)} not recognized")
+
+    return padded_images, padded_masks
+
+
 
 def zoom_at(image_array, zoom, coord=None):
     
@@ -175,7 +223,7 @@ def crop_images(image_array):
     
     cropped_images = []
     
-    for i in range(len(image_array) -1): 
+    for i in range(len(image_array)): 
         
         image = image_array[i]
         
@@ -193,6 +241,38 @@ def crop_images(image_array):
         cropped_images.append(cropped_image)
                               
     return cropped_images
+
+def crop_images_offset(image_array, x_offset=0, y_offset=0): 
+
+    cropped_images = []
+    
+    for i in range(len(image_array)): 
+        
+        image = image_array[i]
+        
+        image_height, image_width = image.shape[:2]
+        
+        # Bounding box dimensions
+        box_width, box_height = 256, 256
+
+        # Calculate the top-left corner with offsets
+        x_top_left = (image_width - box_width) // 2 + x_offset
+        y_top_left = (image_height - box_height) // 2 + y_offset
+        
+        # Ensure the crop doesn't go out of bounds
+        x_top_left = max(0, min(x_top_left, image_width - box_width))
+        y_top_left = max(0, min(y_top_left, image_height - box_height))
+
+        # Calculate bottom-right coordinates
+        x_bottom_right = x_top_left + box_width
+        y_bottom_right = y_top_left + box_height
+        
+        # Crop the image
+        cropped_image = image[y_top_left:y_bottom_right, x_top_left:x_bottom_right]
+        cropped_images.append(cropped_image)
+                              
+    return cropped_images
+
 
 def read_bin(file_path): 
     with open(file_path, 'rb') as fid:
@@ -323,19 +403,19 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
 def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
     images = read_images_to_array(folder_path)
-    masks, raw = split_images(images)
-    og = masks
 
     masks, images = split_images(images)
-
+   
     images = crop_raw_images(images)
-    images = add_padding(images, 0, 67)
-    images = crop_images(images)
     masks = crop_masks(masks)
-    masks = add_padding(masks, 31, 0)
-    masks = zoom_at(masks, 1.156, coord=None)
+
+    images, masks = add_padding(images, masks)
+
+    masks = zoom_at(masks, 1.333, coord=None)
     masks = create_binary_masks(masks)
-    masks = crop_images(masks)
+
+    images = crop_images(images)
+    masks = crop_images_offset(masks, x_offset=-25)
 
     print(f'Number of Images: {len(images)}')
     print()
@@ -433,3 +513,31 @@ def preprocess_no_tumor(image_array):
     image_array = crop_images(image_array) 
 
     return image_array
+
+def preprocess_rgb_og(folder_path, per_train, per_val, per_test):
+
+    images = read_images_to_array(folder_path)
+
+    masks, images = split_images(images)
+   
+    images = crop_raw_images(images)
+    masks = crop_masks(masks)
+
+    images, masks = add_padding(images, masks)
+
+    masks = zoom_at(masks, 1.333, coord=None)
+    # masks = create_binary_masks(masks)
+
+    images = crop_images(images)
+    masks = crop_images_offset(masks, x_offset=-25)
+
+    print(f'Number of Images: {len(images)}')
+    print()
+
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(images, masks, per_train, per_val, per_test)
+
+    print(f'Number of Train Images: {len(train_images)}')
+    print(f'Number of Val Images: {len(val_images)}')
+    print(f'Number of Test Images: {len(test_images)}')
+
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks

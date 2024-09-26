@@ -23,11 +23,11 @@ import os
 def setup_rgb(folder_path, coco_json_dir, per_train, per_val, per_test):
     train_images, train_masks, val_images, val_masks, test_images, test_masks = preprocess_rgb(folder_path, per_train, per_val, per_test)
 
-    save_images(train_images, os.path.join(coco_json_dir, 'rgb', 'train', 'images'), base_filename='train_image')
+    save_images(train_images, os.path.join(coco_json_dir, 'rgb', 'train', 'images'), base_filename='train_mask')
     save_images(train_masks, os.path.join(coco_json_dir, 'rgb', 'train', 'masks', 'Tumor'), base_filename='train_mask')
-    save_images(val_images, os.path.join(coco_json_dir, 'rgb', 'val', 'images'), base_filename='val_image')
+    save_images(val_images, os.path.join(coco_json_dir, 'rgb', 'val', 'images'), base_filename='val_mask')
     save_images(val_masks, os.path.join(coco_json_dir, 'rgb', 'val', 'masks', 'Tumor'), base_filename='val_mask')
-    save_images(test_images, os.path.join(coco_json_dir, 'rgb', 'test', 'images'), base_filename='test_image')
+    save_images(test_images, os.path.join(coco_json_dir, 'rgb', 'test', 'images'), base_filename='test_mask')
     save_images(test_masks, os.path.join(coco_json_dir, 'rgb', 'test', 'masks', 'Tumor'), base_filename='test_mask')
 
 def setup_grayscale(folder_path, coco_json_dir, per_train, per_val, per_test):
