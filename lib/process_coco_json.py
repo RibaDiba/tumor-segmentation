@@ -85,7 +85,7 @@ def get_coco_rgb(coco_json_path_rgb):
     train_mask_path = os.path.join(coco_json_path_rgb, "train/masks")
     train_json_path = os.path.join(coco_json_path_rgb, "train/images/train.json")
 
-    val_mask_path = os.path.join(coco_json_path_rgb, "val/maks")
+    val_mask_path = os.path.join(coco_json_path_rgb, "val/masks")
     val_json_path = os.path.join(coco_json_path_rgb, "val/images/val.json")
 
     test_mask_path = os.path.join(coco_json_path_rgb, 'test/masks')
@@ -103,7 +103,7 @@ def get_coco_grayscale(coco_json_path_grayscale):
     train_mask_path = os.path.join(coco_json_path_grayscale, "train/masks")
     train_json_path = os.path.join(coco_json_path_grayscale, "train/images/train.json")
 
-    val_mask_path = os.path.join(coco_json_path_grayscale, "val/maks")
+    val_mask_path = os.path.join(coco_json_path_grayscale, "val/masks")
     val_json_path = os.path.join(coco_json_path_grayscale, "val/images/val.json")
 
     test_mask_path = os.path.join(coco_json_path_grayscale, 'test/masks')
@@ -120,7 +120,7 @@ def get_coco_rgbd(coco_json_path_rgbd):
     train_mask_path = os.path.join(coco_json_path_rgbd, "train/masks")
     train_json_path = os.path.join(coco_json_path_rgbd, "train/images/train.json")
 
-    val_mask_path = os.path.join(coco_json_path_rgbd, "val/maks")
+    val_mask_path = os.path.join(coco_json_path_rgbd, "val/masks")
     val_json_path = os.path.join(coco_json_path_rgbd, "val/images/val.json")
 
     test_mask_path = os.path.join(coco_json_path_rgbd, 'test/masks')
