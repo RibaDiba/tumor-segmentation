@@ -2,13 +2,14 @@ monai
 opencv-python
 matplotlib
 numpy
-torch
-torchvision
 scipy
 tqdm
 pillow
-opencv-python
 datasets
+torch
+torchvision
+ipykernel
 
 git+https://github.com/facebookresearch/segment-anything.git
 git+https://github.com/huggingface/transformers.git
+git+https://github.com/facebookresearch/detectron2.git
