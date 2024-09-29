@@ -457,19 +457,15 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
 
     images = read_images_to_array(folder_path)
     masks, images = split_images(images)
-   
-    images = crop_images(images)
-    
-
-    depth_maps = crop_raw_images(depth_maps)
-    depth_maps = crop_images(depth_maps)
-
-    depth_maps, masks = add_padding(depth_maps, masks)
 
     masks = crop_masks(masks)
-    masks = zoom_at(masks, 1.333, coord=None)
+    depth_maps, masks = add_padding(depth_maps, masks)
+
+    masks = zoom_at(masks, zoom=1.352)
     masks = create_binary_masks(masks)
-    masks = crop_images_offset(masks, x_offset=-25)
+    masks = crop_images(masks)
+   
+    depth_maps = crop_images(depth_maps)
 
     print(f'Number of Images: {len(images)}')
     print()
