@@ -415,7 +415,7 @@ def preprocess_rgb(folder_path, per_train, per_val, per_test):
     masks = create_binary_masks(masks)
 
     images = crop_images(images)
-    masks = crop_images_offset(masks, x_offset=-25)
+    masks = crop_images_offset(masks, x_offset=25)
 
     print(f'Number of Images: {len(images)}')
     print()
@@ -466,6 +466,7 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
     masks = crop_images(masks)
    
     depth_maps = crop_images(depth_maps)
+    masks = crop_images_offset(masks, x_offset=-25)
 
     print(f'Number of Images: {len(images)}')
     print()
