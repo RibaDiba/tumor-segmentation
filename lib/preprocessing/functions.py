@@ -387,7 +387,8 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
         b, g, r = cv2.split(image)
 
         # Normalize depth map to match the blue channel (0-255) and convert to uint8
-        depth_map_normalized = cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        # inverted this for various reasons
+        depth_map_normalized = 255 - cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
 
         # Ensure the blue channel and depth map have the same dimensions
         if b.shape != depth_map_normalized.shape:

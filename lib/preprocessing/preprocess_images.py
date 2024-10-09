@@ -8,13 +8,16 @@ from io import BytesIO
 
 # import preprocessing functions 
 import functions
+
+# reload to save changes during dev (idk if this is required, but it is on notebook files)
+importlib.reload(functions)
+
 from functions import read_images_to_array, split_images, split_train_val_test, \
 crop_raw_images, crop_masks, add_padding, zoom_at, create_binary_masks, crop_images, \
 crop_images_offset, read_bin, read_contours_array, read_contours_array_depth, infuse_depth_into_blue_channel, \
 read_all_bins
 
-# reload to save changes during dev (idk if this is required, but it is on notebook files)
-importlib.reload(functions)
+
 
 def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
@@ -119,9 +122,26 @@ def preprocess_rgbd(folder_path, per_train, per_val, per_test):
 def preprocess_rgbd(folder_path, per_train, per_val, per_test):
 
     data_array = read_all_bins(folder_path)
-    depth_maps = read_contours_array(data_array)
+    depth_maps = read_contours_array_depth(data_array)
 
-    return depth_maps
+    images = read_images_to_array(folder_path)
+    masks, images = split_images(images)
+
+    og_images = images
+
+    depth_maps = crop_raw_images(depth_maps)
+    images = crop_raw_images(images)
+
+    images = infuse_depth_into_blue_channel(images, depth_maps)
+
+    # depth_maps, masks = add_padding(depth_maps, masks)
+
+    images = crop_raw_images(images)
+
+    masks = crop_masks(masks)
+    masks = zoom_at(masks, 1.333, coord=None)
+
+    return images, og_images, masks, depth_maps
 
 def preprocess_no_tumor(image_array):
 
