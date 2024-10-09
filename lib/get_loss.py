@@ -1,4 +1,4 @@
-import preprocess_images, importlib, monai, get_bounding_box, numpy as np
+import lib.preprocessing.preprocess_images as preprocess_images, importlib, monai, get_bounding_box, numpy as np
 from statistics import mean
 from transformers import SamModel, SamConfig, SamProcessor
 import torch
@@ -6,7 +6,7 @@ from tqdm import tqdm
 importlib.reload(preprocess_images)
 importlib.reload(get_bounding_box)
 
-from preprocess_images import preprocess_rgb, preprocess_grayscale, preprocess_rgbd
+from lib.preprocessing.preprocess_images import preprocess_rgb, preprocess_grayscale, preprocess_rgbd
 from get_bounding_box import get_bounding_box
 
 def get_loss_rgb(model_path, UseMedSAM=False): 
