@@ -244,19 +244,20 @@ def crop_images(image_array):
                               
     return cropped_images
 
-def crop_images_offset(image_array, x_offset=0, y_offset=0): 
-
+def crop_images_offset(image_array, x_offset=0, y_offset=0):
     cropped_images = []
     
-    for i in range(len(image_array)): 
-        
-        image = image_array[i]
-        
+    for image in image_array:
         image_height, image_width = image.shape[:2]
         
         # Bounding box dimensions
         box_width, box_height = 256, 256
-
+        
+        # Ensure the image is large enough to crop
+        if image_width < box_width or image_height < box_height:
+            print(f"Skipping image with dimensions {image_width}x{image_height}, too small for cropping.")
+            continue
+        
         # Calculate the top-left corner with offsets
         x_top_left = (image_width - box_width) // 2 + x_offset
         y_top_left = (image_height - box_height) // 2 + y_offset
@@ -274,6 +275,30 @@ def crop_images_offset(image_array, x_offset=0, y_offset=0):
         cropped_images.append(cropped_image)
                               
     return cropped_images
+
+def translate_images(images, x_offset, y_offset=0):
+    translated_images = [] 
+
+    for img_np in images:
+        height, width, channels = img_np.shape
+
+        translated_img_np = np.ones((height, width, channels), dtype=np.uint8) * 255  
+
+        x_start = max(0, x_offset)
+        x_end = min(width, width + x_offset)
+        y_start = max(0, y_offset)
+        y_end = min(height, height + y_offset)
+
+        src_x_start = max(0, -x_offset)
+        src_x_end = width - max(0, x_offset)
+        src_y_start = max(0, -y_offset)
+        src_y_end = height - max(0, y_offset)
+
+        translated_img_np[y_start:y_end, x_start:x_end] = img_np[src_y_start:src_y_end, src_x_start:src_x_end]
+
+        translated_images.append(translated_img_np)
+
+    return translated_images
 
 
 def read_bin(file_path): 
@@ -404,3 +429,18 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
         image_array_infused.append(infused_image)
 
     return image_array_infused
+
+# this function exists for various reasons
+
+def convert_array_to_rgb(image_array):
+
+    converted_images = []
+
+    for i in tqdm(range(len(image_array)), desc="Converting to RGB"):
+        image = image_array[i]
+
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        converted_images.append(image)
+    
+    return converted_images
+

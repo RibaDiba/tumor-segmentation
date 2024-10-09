@@ -15,7 +15,7 @@ importlib.reload(functions)
 from functions import read_images_to_array, split_images, split_train_val_test, \
 crop_raw_images, crop_masks, add_padding, zoom_at, create_binary_masks, crop_images, \
 crop_images_offset, read_bin, read_contours_array, read_contours_array_depth, infuse_depth_into_blue_channel, \
-read_all_bins
+read_all_bins, translate_images_np
 
 
 
@@ -119,6 +119,8 @@ def preprocess_rgbd(folder_path, per_train, per_val, per_test):
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 """
 
+# TODO: split into train, val, test
+
 def preprocess_rgbd(folder_path, per_train, per_val, per_test):
 
     data_array = read_all_bins(folder_path)
@@ -134,12 +136,17 @@ def preprocess_rgbd(folder_path, per_train, per_val, per_test):
 
     images = infuse_depth_into_blue_channel(images, depth_maps)
 
-    # depth_maps, masks = add_padding(depth_maps, masks)
+    images, masks = add_padding(images, masks)
 
     images = crop_raw_images(images)
+    images = crop_images(images)
 
     masks = crop_masks(masks)
+    # TODO: check zoom
     masks = zoom_at(masks, 1.333, coord=None)
+    masks = translate_images_np(masks, x_offset=25)
+    masks = crop_images(masks)
+    masks = create_binary_masks(masks)
 
     return images, og_images, masks, depth_maps
 
