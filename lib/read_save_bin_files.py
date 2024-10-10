@@ -1,10 +1,10 @@
-import os, numpy as np, matplotlib.pyplot as plt, cv2, io, importlib, preprocess_images
+import os, numpy as np, matplotlib.pyplot as plt, cv2, io, importlib, lib.preprocessing.preprocess_images as preprocess_images
 from tqdm import tqdm
 from scipy.interpolate import griddata
 from PIL import Image
 importlib.reload(preprocess_images)
 
-from preprocess_images import preprocess_rgb_single
+from lib.preprocessing.preprocess_images import preprocess_rgb_single
 
 # this is to have the depth images (both grayscale and rgbd) ready because reading all the bin files every instance takes time 
 
