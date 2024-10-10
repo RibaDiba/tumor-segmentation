@@ -1,9 +1,9 @@
 import os, importlib, cv2, numpy as np
 import matplotlib.pyplot as plt 
-import preprocess_images 
+import lib.preprocessing.preprocess_images as preprocess_images 
 
 importlib.reload(preprocess_images)
-from preprocess_images import preprocess_rgb, preprocess_grayscale, preprocess_rgbd
+from lib.preprocessing.preprocess_images import preprocess_rgb, preprocess_grayscale, preprocess_rgbd
 
 def save_images(image_array, folder_path, base_filename='image'):
     

@@ -387,11 +387,13 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
         # Normalize depth map to match the blue channel (0-255) and convert to uint8
         depth_map_normalized = cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
 
+        # Ensure the blue channel and depth map have the same dimensions
+        if b.shape != depth_map_normalized.shape:
+            # If they do not match, resize the depth map again to ensure consistency
+            depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
+
         # Infuse the depth map into the blue channel
-        if b.shape == depth_map_normalized.shape:
-            infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
-        else:
-            raise ValueError("Dimension mismatch between the blue channel and the depth map.")
+        infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
 
         # Merge the channels back
         infused_image = cv2.merge((infused_blue, g, r))
@@ -399,6 +401,7 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
         image_array_infused.append(infused_image)
 
     return image_array_infused
+
 
 def preprocess_rgb(folder_path, per_train, per_val, per_test):
 
@@ -480,32 +483,44 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
 def preprocess_rgbd(folder_path, per_train, per_val, per_test):
-
     data_array = read_all_bins(folder_path)
     depth_maps = read_contours_array(data_array)
 
     images = read_images_to_array(folder_path)
     masks, images = split_images(images)
 
-    depth_maps = crop_raw_images(depth_maps)
-    depth_maps = add_padding(depth_maps, 0, 67)
-    depth_maps = crop_images(depth_maps)
+    
+    images = crop_images(images)
     masks = crop_masks(masks)
+
+    
+    depth_maps_resized = []
+    for depth_map, image in zip(depth_maps, images):
+        resized_depth_map = cv2.resize(depth_map, (image.shape[1], image.shape[0]))
+        depth_maps_resized.append(resized_depth_map)
+
+    
+    depth_maps_resized = add_padding(depth_maps_resized, 0, 67)
+    depth_maps_resized = crop_images(depth_maps_resized)
+
+   
     masks = add_padding(masks, 31, 0)
-    masks = zoom_at(masks, 1.156, coord=None)
+    masks = zoom_at(masks, 1.25, coord=None)  # Adjust zoom factor as needed
     masks = create_binary_masks(masks)
     masks = crop_images(masks)
+    masks = crop_images_offset(masks, x_offset=-25)
 
     print(f'Number of Images: {len(images)}')
     print()
 
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(depth_maps, masks, per_train, per_val, per_test)
 
-    print(f'Number of Train Images: {len(train_images)}')
-    print(f'Number of Val Images: {len(val_images)}')
-    print(f'Number of Test Images: {len(test_images)}')
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = split_train_val_test(
+        depth_maps_resized, masks, per_train, per_val, per_test
+    )
 
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
+
+
 
 def preprocess_no_tumor(image_array):
 

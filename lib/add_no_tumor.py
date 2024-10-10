@@ -2,10 +2,10 @@ import cv2, os, random, importlib, numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt 
 from PIL import Image
-import preprocess_images
+import lib.preprocessing.preprocess_images as preprocess_images
 
 importlib.reload(preprocess_images)
-from preprocess_images import read_images_to_array, preprocess_no_tumor
+from lib.preprocessing.preprocess_images import read_images_to_array, preprocess_no_tumor
 
 def add_no_tumor(train_images, train_masks, val_images, val_masks):
     no_tumor_images = read_images_to_array('../data/no_tumor')
