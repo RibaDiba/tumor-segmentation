@@ -66,7 +66,7 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
     masks = crop_masks(masks)
     masks = zoom_at(masks, 1.333, coord=None)
     masks = create_binary_masks(masks)
-    masks = crop_images_offset(masks, x_offset=-25)
+    masks = translate_images(masks, x_offset=-25)
 
     print(f'Number of Images: {len(images)}')
     print()
