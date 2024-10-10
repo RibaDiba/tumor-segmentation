@@ -59,15 +59,15 @@ def preprocess_grayscale(folder_path, per_train, per_val, per_test):
     
 
     depth_maps = crop_raw_images(depth_maps)
-    depth_maps = crop_images(depth_maps)
 
     depth_maps, masks = add_padding(depth_maps, masks)
-
+    depth_maps = crop_images(depth_maps)
+    
     masks = crop_masks(masks)
     masks = zoom_at(masks, 1.333, coord=None)
     masks = translate_images(masks, x_offset=25)
-    masks = crop_images(masks)
     masks = create_binary_masks(masks)
+    masks = crop_images(masks)
 
     print(f'Number of Images: {len(images)}')
     print()
