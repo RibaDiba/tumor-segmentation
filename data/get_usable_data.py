@@ -47,6 +47,6 @@ def get_total_images(src_dir):
     print(f"\nTotal Images in {src_dir}: {triplet_count}")
     return triplet_count
 
-get_usable_data('data/MC_data', 'data/useable_data')
-get_usable_data('data/invotive', 'data/useable_data')
-get_total_images('data/useable_data')
+get_usable_data('data/raw_data/MC_data', 'data/raw_data/useable_data')
+get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
+get_total_images('data/raw_data/useable_data')
