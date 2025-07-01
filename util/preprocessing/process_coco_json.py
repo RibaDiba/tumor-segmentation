@@ -10,7 +10,7 @@ category_ids = {
 }
 
 MASK_EXT = 'png'
-ORIGINAL_EXT = 'png'
+ORIGINAL_EXT = 'jpg'
 image_id = 0
 annotation_id = 0
 
@@ -90,7 +90,7 @@ def process_masks(self, mask_path: str, dest_json: str) -> None:
     }
 
     # Create images and annotations sections
-    coco_format["images"], coco_format["annotations"], annotation_cnt = images_annotations_info(mask_path)
+    coco_format["images"], coco_format["annotations"], annotation_cnt = self.images_annotations_info(mask_path)
 
     # Save the COCO JSON to a file
     with open(dest_json, "w") as outfile:
