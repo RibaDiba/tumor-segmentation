@@ -107,20 +107,29 @@ class Dataset:
         val_img_dir = os.path.join(project_root, "data/processed_data/val/images")
         test_img_dir = os.path.join(project_root, "data/processed_data/test/images")
         
-        train_mask_dir = os.path.join(project_root, "data/processed_data/train/masks")
-        val_mask_dir = os.path.join(project_root, "data/processed_data/val/masks")
-        test_mask_dir = os.path.join(project_root, "data/processed_data/test/masks")
+        train_mask_dir = os.path.join(project_root, "data/processed_data/train/masks/Tumor")
+        val_mask_dir = os.path.join(project_root, "data/processed_data/val/masks/Tumor")
+        test_mask_dir = os.path.join(project_root, "data/processed_data/test/masks/Tumor")
 
         if (os.path.exists(train_img_dir) and os.path.exists(val_img_dir) and os.path.exists(test_img_dir) and
             os.path.exists(train_mask_dir) and os.path.exists(val_mask_dir) and os.path.exists(test_mask_dir)):
         
-            self.train_images = [cv2.imread(os.path.join(train_img_dir, f)) for f in os.listdir(train_img_dir)]
-            self.val_images = [cv2.imread(os.path.join(val_img_dir, f)) for f in os.listdir(val_img_dir)]
-            self.test_images = [cv2.imread(os.path.join(test_img_dir, f)) for f in os.listdir(test_img_dir)]
+            # Sort file lists to ensure corresponding images and masks are aligned
+            train_img_files = sorted(os.listdir(train_img_dir))
+            val_img_files = sorted(os.listdir(val_img_dir))
+            test_img_files = sorted(os.listdir(test_img_dir))
             
-            self.train_masks = [cv2.imread(os.path.join(train_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in os.listdir(train_mask_dir)]
-            self.val_masks = [cv2.imread(os.path.join(val_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in os.listdir(val_mask_dir)]
-            self.test_masks = [cv2.imread(os.path.join(test_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in os.listdir(test_mask_dir)]
+            train_mask_files = sorted(os.listdir(train_mask_dir))
+            val_mask_files = sorted(os.listdir(val_mask_dir))
+            test_mask_files = sorted(os.listdir(test_mask_dir))
+            
+            self.train_images = [cv2.imread(os.path.join(train_img_dir, f)) for f in train_img_files]
+            self.val_images = [cv2.imread(os.path.join(val_img_dir, f)) for f in val_img_files]
+            self.test_images = [cv2.imread(os.path.join(test_img_dir, f)) for f in test_img_files]
+            
+            self.train_masks = [cv2.imread(os.path.join(train_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in train_mask_files]
+            self.val_masks = [cv2.imread(os.path.join(val_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in val_mask_files]
+            self.test_masks = [cv2.imread(os.path.join(test_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in test_mask_files]
             
             print("Data loaded from cache.")
         else:
@@ -186,18 +195,18 @@ class Dataset:
         val_json_dir = os.path.join(project_root, "data/processed_data/val/images/val.json")
         test_json_dir = os.path.join(project_root, "data/processed_data/test/images/test.json")
 
-        process_masks(train_mask_dir, train_json_dir)
-        process_masks(val_mask_dir, val_json_dir)
-        process_masks(test_mask_dir, test_json_dir)
+        self.process_masks(mask_path=train_mask_dir, dest_json=train_json_dir)
+        self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
+        self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
 
 # test - this will be removed     
 # Get the project root directory (2 levels up from current file)
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
-d = Dataset(os.path.join(project_root, "data/raw_data/useable_data"))
-d.preprocess_images(rgb=True)
-d.split_train_val_test(80, 10, 10)
+# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+# d = Dataset(os.path.join(project_root, "data/raw_data/useable_data"))
+# d.preprocess_images(rgb=True)
+# d.split_train_val_test(80, 10, 10)
 
-d.cashe_data()
-train_images, train_masks, val_images, val_masks, test_images, test_masks = d.load_data()
+# d.cashe_data()
+# train_images, train_masks, val_images, val_masks, test_images, test_masks = d.load_data()
 
