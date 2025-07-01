@@ -6,23 +6,57 @@ from scipy.interpolate import griddata
 from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
+from typing import Tuple, List 
+
+def read_images_to_array(self, folder_path: str) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
+    segmented_images = []
+    base_images = []
+    depth_info = []
+
+    filenames = sorted(os.listdir(folder_path))
+    for filename in tqdm(filenames, desc="Reading files"):
+        full_path = os.path.join(folder_path, filename)
+
+        if filename.endswith(".jpg") and not filename.endswith("_texture.jpg"):
+            img = cv2.imread(full_path)
+            if img is not None:
+                segmented_images.append(img)
+
+        elif filename.endswith("_texture.jpg"):
+            img = cv2.imread(full_path)
+            if img is not None:
+                base_images.append(img)
+
+        elif filename.endswith(".bin"):
+            try:
+                file_path = os.path.join(folder_path, filename)
+                x, y, z = read_bin(file_path)
+                depth_info.append((x, y, z, filename)) 
+            except Exception as e:
+                print(f"Failed to read binary file {filename}: {e}")
+
+    return segmented_images, base_images, depth_info
+
+def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
+    filenames = sorted(os.listdir)
+    neg_images = []
+    for filename in tqdm(filenames, desc="Reading negative images"):
+        full_path = os.path.join(folder_path, filename)
+        img = cv2.imread(full_path)
+        neg_images.append(img)
+
+    return neg_images
+
+def create_neg_masks(self, length: float) -> List[np.ndarray]:
+    negative_masks = []
+    for i in range(length):
+        negative_mask = np.ones((256, 256), dtype=np.uint8) * 0
+        negative_masks.append(negative_mask)
+
+    return negative_masks 
 
 
-def read_images_to_array(folder_path):
-
-  image_array = []
-  # Get a sorted list of filenames
-  filenames = sorted(os.listdir(folder_path))
-  for filename in filenames:
-    if filename.endswith(".jpg") or filename.endswith(".png"):
-      img_path = os.path.join(folder_path, filename)
-      img = cv2.imread(img_path)
-
-      if img is not None:
-        image_array.append(img)
-
-  return image_array
-
+@DeprecationWarning
 def read_bin_files_to_array(folder_path):
     bin_files = []
     filenames = sorted(os.listdir(folder_path))
@@ -35,6 +69,7 @@ def read_bin_files_to_array(folder_path):
 
     return bin_files
 
+@DeprecationWarning
 def split_images(image_array): 
 
     red_region_images = []
@@ -71,7 +106,7 @@ def split_train_val_test(images, masks, per_train, per_val, per_test):
     
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
-def crop_raw_images(image_array): 
+def crop_raw_images(self, image_array: List[np.ndarray]): 
     
     cropped_images = [] 
     
@@ -89,7 +124,7 @@ def crop_raw_images(image_array):
 
     return cropped_images
 
-def crop_masks(image_array):
+def crop_masks(self, image_array: List[np.ndarray]):
     cropped_images = []
 
     for i in range(len(image_array)): 
@@ -105,7 +140,7 @@ def crop_masks(image_array):
 
     return cropped_images
 
-def add_padding(image_array, mask_array):
+def add_padding(image_array: List[np.ndarray], mask_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
 
     padded_images = []
     padded_masks = []
@@ -171,9 +206,7 @@ def add_padding(image_array, mask_array):
 
     return padded_images, padded_masks
 
-
-
-def zoom_at(image_array, zoom, coord=None):
+def zoom_at(self, image_array: List[np.ndarray], zoom: float, coord: float=None) -> List[np.ndarray]:
     
     zoomed_array = []
     
@@ -192,7 +225,7 @@ def zoom_at(image_array, zoom, coord=None):
     
     return zoomed_array
 
-def create_binary_masks(image_array):
+def create_binary_masks(self, image_array: List[np.ndarray]) -> List[np.ndarray]:
     binary_masks = []
     
     for image in image_array:
@@ -221,7 +254,7 @@ def create_binary_masks(image_array):
         
     return binary_masks
 
-def crop_images(image_array): 
+def crop_images(self, image_array: List[np.ndarray]) -> List[np.ndarray]: 
     
     cropped_images = []
     
@@ -244,7 +277,7 @@ def crop_images(image_array):
                               
     return cropped_images
 
-def crop_images_offset(image_array, x_offset=0, y_offset=0):
+def crop_images_offset(self, image_array: List[np.ndarray], x_offset: float=0, y_offset: float=0) -> List[np.ndarray]:
     cropped_images = []
     
     for image in image_array:
@@ -276,7 +309,7 @@ def crop_images_offset(image_array, x_offset=0, y_offset=0):
                               
     return cropped_images
 
-def translate_images(images, x_offset, y_offset=0):
+def translate_images(self, images: List[np.ndarray], x_offset: float, y_offset: float=0):
     translated_images = [] 
 
     for img_np in images:
@@ -299,7 +332,6 @@ def translate_images(images, x_offset, y_offset=0):
         translated_images.append(translated_img_np)
 
     return translated_images
-
 
 def read_bin(file_path): 
     with open(file_path, 'rb') as fid:
@@ -324,6 +356,7 @@ def read_bin(file_path):
 
     return grid_x, grid_y, grid_z
 
+@DeprecationWarning
 def read_all_bins(folder_path):
 
      data_array = []
