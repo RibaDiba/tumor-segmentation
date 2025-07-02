@@ -140,7 +140,7 @@ def crop_masks(self, image_array: List[np.ndarray]):
 
     return cropped_images
 
-def add_padding(image_array: List[np.ndarray], mask_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+def add_padding(self, image_array: List[np.ndarray], mask_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
 
     padded_images = []
     padded_masks = []
@@ -401,7 +401,7 @@ def read_contours_array(data_array):
 
      return image_array      
 
-def read_contours_array_depth(data_array):
+def read_contours_array_depth(self, data_array):
      
      image_array = []
 
@@ -427,7 +427,7 @@ def read_contours_array_depth(data_array):
 
      return image_array
 
-def infuse_depth_into_blue_channel(image_array, depth_array):
+def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
     image_array_infused = []
 
     for i in tqdm(range(len(image_array)), desc="Infusing Images"):
