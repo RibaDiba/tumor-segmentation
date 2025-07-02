@@ -48,5 +48,5 @@ def get_total_images(src_dir):
     return triplet_count
 
 get_usable_data('data/raw_data/MC_data', 'data/raw_data/useable_data')
-get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
+# get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
 get_total_images('data/raw_data/useable_data')
