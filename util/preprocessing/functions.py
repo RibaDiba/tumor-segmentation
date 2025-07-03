@@ -464,7 +464,6 @@ def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_ar
     return image_array_infused
 
 # this function exists for various reasons
-
 def convert_array_to_rgb(image_array):
 
     converted_images = []
@@ -476,4 +475,47 @@ def convert_array_to_rgb(image_array):
         converted_images.append(image)
     
     return converted_images
+
+"""
+this is specifically to read images in order from the array (riya u can use this for testing)
+also to remove speciifc image numbers from the original directory (to standardize what images we decide on removing)
+
+root path refers to the path of the directory containing "train", "val", "test" folders 
+for loading purposes, while 3 levels of abstraction here arent really neccecary, they do help with debugging individual files
+"""
+
+def read_folder_to_array(self, folder_path: str) -> List[np.ndarray]:
+    image_array = []
+
+    exts = [".jpg", ".png"]
+    files = [
+        f for f in os.listdir(folder_path)
+        if os.path.isfile(os.path.join(folder_path, f))
+        and os.path.splitext(f)[1].lower() in exts
+    ]
+
+    # sort the files in the same way 
+    files.sort()
+
+    for f in files: 
+        full_path = os.path.join(folder_path, f)
+        img = cv2.imread(full_path)
+        if img is None: 
+            print("error with file read")
+            continue
+        image_array.append(img)
+    
+    return image_array
+
+def read_to_array_post(self, root_path: str) -> List[np.ndarray]:
+    train_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/images"))
+    train_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/masks/Tumor"))
+
+    val_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "val/images"))
+    val_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "val/masks/Tumor"))
+
+    test_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "test/images"))
+    test_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "test/masks/Tumor"))
+
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
