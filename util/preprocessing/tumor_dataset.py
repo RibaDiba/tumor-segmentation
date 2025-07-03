@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np, re
 from typing import List, Tuple
 from preprocess_images import *
 from functions import *
@@ -26,6 +26,8 @@ class Dataset:
     create_neg_masks = create_neg_masks
     infuse_depth_into_blue_channel = infuse_depth_into_blue_channel # TODO: still has to be worked on 
     read_contours_array_depth = read_contours_array_depth
+    read_to_array_post = read_to_array_post
+    read_folder_to_array = read_folder_to_array
 
     # coco_json methods 
     images_annotations_info = images_annotations_info
@@ -137,94 +139,15 @@ class Dataset:
     # returns train_images for each type (rgb, depth, rgd) and shared masks
     def load_data(self, rgb: bool=False, depth: bool=False, rgd: bool=False,) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
-        
-        # RGB image directories
-        train_img_dir_rgb = os.path.join(project_root, "data/processed_data/rgb/train/images")
-        val_img_dir_rgb = os.path.join(project_root, "data/processed_data/rgb/val/images")
-        test_img_dir_rgb = os.path.join(project_root, "data/processed_data/rgb/test/images")
-        
-        # Depth image directories
-        train_img_dir_depth = os.path.join(project_root, "data/processed_data/depth/train/images")
-        val_img_dir_depth = os.path.join(project_root, "data/processed_data/depth/val/images")
-        test_img_dir_depth = os.path.join(project_root, "data/processed_data/depth/test/images")
-        
-        # RGD image directories
-        train_img_dir_rgd = os.path.join(project_root, "data/processed_data/rgd/train/images")
-        val_img_dir_rgd = os.path.join(project_root, "data/processed_data/rgd/val/images")
-        test_img_dir_rgd = os.path.join(project_root, "data/processed_data/rgd/test/images")
-        
-        # Mask directories (use RGB masks by default, but could be switched to any type)
-        train_mask_dir = os.path.join(project_root, "data/processed_data/rgb/train/masks/Tumor")
-        val_mask_dir = os.path.join(project_root, "data/processed_data/rgb/val/masks/Tumor")
-        test_mask_dir = os.path.join(project_root, "data/processed_data/rgb/test/masks/Tumor")
-
-        # Check if cached data exists for RGB (use this as our baseline check)
-        if (os.path.exists(train_img_dir_rgb) and os.path.exists(val_img_dir_rgb) and os.path.exists(test_img_dir_rgb) and
-            os.path.exists(train_mask_dir) and os.path.exists(val_mask_dir) and os.path.exists(test_mask_dir)):
-        
-            # Sort file lists to ensure corresponding images and masks are aligned
-            # RGB Images
-            train_img_files_rgb = sorted(os.listdir(train_img_dir_rgb))
-            val_img_files_rgb = sorted(os.listdir(val_img_dir_rgb))
-            test_img_files_rgb = sorted(os.listdir(test_img_dir_rgb))
-            
-            # Depth Images (if they exist)
-            train_img_files_depth = sorted(os.listdir(train_img_dir_depth)) if os.path.exists(train_img_dir_depth) else []
-            val_img_files_depth = sorted(os.listdir(val_img_dir_depth)) if os.path.exists(val_img_dir_depth) else []
-            test_img_files_depth = sorted(os.listdir(test_img_dir_depth)) if os.path.exists(test_img_dir_depth) else []
-            
-            # RGD Images (if they exist)
-            train_img_files_rgd = sorted(os.listdir(train_img_dir_rgd)) if os.path.exists(train_img_dir_rgd) else []
-            val_img_files_rgd = sorted(os.listdir(val_img_dir_rgd)) if os.path.exists(val_img_dir_rgd) else []
-            test_img_files_rgd = sorted(os.listdir(test_img_dir_rgd)) if os.path.exists(test_img_dir_rgd) else []
-            
-            # Masks (shared across image types)
-            train_mask_files = sorted(os.listdir(train_mask_dir))
-            val_mask_files = sorted(os.listdir(val_mask_dir))
-            test_mask_files = sorted(os.listdir(test_mask_dir))
-            
-            # Load RGB images
-            self.train_images_rgb = [cv2.imread(os.path.join(train_img_dir_rgb, f)) for f in train_img_files_rgb]
-            self.val_images_rgb = [cv2.imread(os.path.join(val_img_dir_rgb, f)) for f in val_img_files_rgb]
-            self.test_images_rgb = [cv2.imread(os.path.join(test_img_dir_rgb, f)) for f in test_img_files_rgb]
-            
-            # Load Depth images (if they exist)
-            self.train_images_depth = [cv2.imread(os.path.join(train_img_dir_depth, f)) for f in train_img_files_depth] if train_img_files_depth else []
-            self.val_images_depth = [cv2.imread(os.path.join(val_img_dir_depth, f)) for f in val_img_files_depth] if val_img_files_depth else []
-            self.test_images_depth = [cv2.imread(os.path.join(test_img_dir_depth, f)) for f in test_img_files_depth] if test_img_files_depth else []
-            
-            # Load RGD images (if they exist)
-            self.train_images_rgd = [cv2.imread(os.path.join(train_img_dir_rgd, f)) for f in train_img_files_rgd] if train_img_files_rgd else []
-            self.val_images_rgd = [cv2.imread(os.path.join(val_img_dir_rgd, f)) for f in val_img_files_rgd] if val_img_files_rgd else []
-            self.test_images_rgd = [cv2.imread(os.path.join(test_img_dir_rgd, f)) for f in test_img_files_rgd] if test_img_files_rgd else []
-            
-            # Load masks (shared across image types)
-            self.train_masks = [cv2.imread(os.path.join(train_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in train_mask_files]
-            self.val_masks = [cv2.imread(os.path.join(val_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in val_mask_files]
-            self.test_masks = [cv2.imread(os.path.join(test_mask_dir, f), cv2.IMREAD_GRAYSCALE) for f in test_mask_files]
-            
-            print("Data loaded from cache.")
-            print(f'RGB training images: {len(self.train_images_rgb)}, validation: {len(self.val_images_rgb)}, testing: {len(self.test_images_rgb)}')
-            if self.train_images_depth:
-                print(f'Depth training images: {len(self.train_images_depth)}, validation: {len(self.val_images_depth)}, testing: {len(self.test_images_depth)}')
-            if self.train_images_rgd:
-                print(f'RGD training images: {len(self.train_images_rgd)}, validation: {len(self.val_images_rgd)}, testing: {len(self.test_images_rgd)}')
-            print(f'Training masks: {len(self.train_masks)}, validation: {len(self.val_masks)}, testing: {len(self.test_masks)}')
-        else:
-            # js for convience 
-            print("cache not found, processing images")
-            self.preprocess_images(rgb=True)
-            self.split_train_val_test(80, 10, 10)
-            print("Data processed from source.")
-
         if rgb: 
-            return self.train_images_rgb, self.train_masks, self.val_images_rgb, self.val_masks, self.test_images_rgb, self.test_masks
-        elif depth: 
-            return self.train_images_depth, self.train_masks, self.val_images_depth, self.val_masks, self.test_images_depth, self.test_masks
-        elif rgd: 
-            return self.train_images_rgd, self.train_masks, self.val_images_rgd, self.val_masks, self.test_images_rgd, self.test_masks
-        else: 
-            print("Select a datatype to return")
+            rgb_root = os.path.join(project_root, "data/processed_data/rgb")
+            return self.read_to_array_post(rgb_root)
+        if depth: 
+            depth_root = os.path.join(project_root, "data/processed_data/depth")
+            return self.read_to_array_post(depth_root)
+        if rgd: 
+            rgd_root = os.path.join(project_root, "data/processed_data/rgd")
+            return self.read_to_array_post(rgd_root)
     
     # this will save our data into directories for each image type, with shared masks
     def cashe_data(self) -> None:
@@ -343,7 +266,8 @@ class Dataset:
             cv2.imwrite(os.path.join(test_mask_dir_rgd, f"test_{i}.png"), mask)
         
         print("Data cached successfully.")
-        
+
+    # this uses the binary mask to generate the json file  
     def convert_binary_to_coco(self) -> None:
         project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 
@@ -386,6 +310,28 @@ class Dataset:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
+    """
+    this function takes in an array of ints that correspond to the file name and creates a new directory of filtered images 
+    this new filtered image directory will only contain images that do not have the number in the int array
+    """
+    # this function only works partially right now
+    def create_subset(self, arr: List[int], folder_path) -> None:
+        exts = [".jpg", ".png"]
+        files = [
+            f for f in os.listdir(folder_path)
+            if os.path.isfile(os.path.join(folder_path, f))
+            and os.path.splitext(f)[1].lower() in exts
+        ]
+
+        for f in files:
+            file_num = int(re.search(r"\d+", f).group())
+            if file_num in arr:
+                print(f'Image {file_num} is kept away')
+                img = cv2.imread(os.path.join(folder_path, f))
+                plt.imshow(img)
+            else: 
+                continue
+                
 
 # test - this will be removed     
 # Get the project root directory (2 levels up from current file)
