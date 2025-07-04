@@ -9,10 +9,38 @@ class Dataset:
     def __init__(self, data_path: str):
         self.data_path = data_path
         print("Init Dataset")
+
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+
+        self.rgb_train_mask_dir = os.path.join(project_root, "data/processed_data/rgb/train/masks/Tumor")
+        self.rgb_val_mask_dir = os.path.join(project_root, "data/processed_data/rgb/val/masks/Tumor")
+        self.rgb_test_mask_dir = os.path.join(project_root, "data/processed_data/rgb/test/masks/Tumor")
+
+        self.rgb_train_dir = os.path.join(project_root, "data/processed_data/rgb/train/images/")
+        self.rgb_val_dir = os.path.join(project_root, "data/processed_data/rgb/val/images/")
+        self.rgb_test_dir = os.path.join(project_root, "data/processed_data/rgb/test/images/")
+
+        self.depth_train_mask_dir = os.path.join(project_root, "data/processed_data/depth/train/masks/Tumor")
+        self.depth_val_mask_dir = os.path.join(project_root, "data/processed_data/depth/val/masks/Tumor")
+        self.depth_test_mask_dir = os.path.join(project_root, "data/processed_data/depth/test/masks/Tumor")
+
+        self.depth_train_dir = os.path.join(project_root, "data/processed_data/depth/train/images/")
+        self.depth_val_dir = os.path.join(project_root, "data/processed_data/depth/val/images/")
+        self.depth_test_dir = os.path.join(project_root, "data/processed_data/depth/test/images/")
+
+        self.rgd_train_mask_dir = os.path.join(project_root, "data/processed_data/rgd/train/masks/Tumor")
+        self.rgd_val_mask_dir = os.path.join(project_root, "data/processed_data/rgd/val/masks/Tumor")
+        self.rgd_test_mask_dir = os.path.join(project_root, "data/processed_data/rgd/test/masks/Tumor")
+
+        self.rgd_train_dir = os.path.join(project_root, "data/processed_data/rgd/train/images/")
+        self.rgd_val_dir = os.path.join(project_root, "data/processed_data/rgd/val/images/")
+        self.rgd_test_dir = os.path.join(project_root, "data/processed_data/rgd/test/images/")
     
-    # methods of this class 
-    # TODO: add image augentation functions 
-    # note: we will add image augmentation in the detectron2 training loader itself 
+    """methods of this class 
+    TODO: add image augentation functions 
+    note: we will add image augmentation in the detectron2 training loader itself 
+    """
+   # image processing functions
     read_images_to_array = read_images_to_array
     crop_raw_images = crop_raw_images
     crop_masks = crop_masks
@@ -32,6 +60,11 @@ class Dataset:
     # coco_json methods 
     images_annotations_info = images_annotations_info
     process_masks = process_masks
+
+    # methods for data filtering 
+    filter_subset_in_folder = filter_subset_in_folder
+    remove_files_in_dir = remove_files_in_dir
+    save_subset_array = save_subset_array
 
     # preprocess function (by default preprocesses for rgb images)
     # might remove the settings feature
@@ -284,7 +317,7 @@ class Dataset:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
-        #rgb
+        #depth
         train_mask_dir = os.path.join(project_root, "data/processed_data/depth/train/masks")
         val_mask_dir = os.path.join(project_root, "data/processed_data/depth/val/masks")
         test_mask_dir = os.path.join(project_root, "data/processed_data/depth/test/masks")
@@ -297,7 +330,7 @@ class Dataset:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
-        #rgb
+        #rgd
         train_mask_dir = os.path.join(project_root, "data/processed_data/rgd/train/masks")
         val_mask_dir = os.path.join(project_root, "data/processed_data/rgd/val/masks")
         test_mask_dir = os.path.join(project_root, "data/processed_data/rgd/test/masks")
@@ -316,30 +349,34 @@ class Dataset:
     """
     # this function only works partially right now
     def create_subset(self, arr: List[int], folder_path) -> None:
-        exts = [".jpg", ".png"]
-        files = [
-            f for f in os.listdir(folder_path)
-            if os.path.isfile(os.path.join(folder_path, f))
-            and os.path.splitext(f)[1].lower() in exts
+        dir_arr: List[str] = [
+            self.rgb_train_dir,
+            self.rgb_train_mask_dir,
+            self.rgb_val_dir,
+            self.rgb_val_mask_dir,
+            self.rgb_test_dir,
+            self.rgb_test_mask_dir,
+
+            self.depth_train_dir,
+            self.depth_train_mask_dir,
+            self.depth_val_dir,
+            self.depth_val_mask_dir,
+            self.depth_test_dir,
+            self.depth_test_mask_dir,
+
+            self.rgd_train_dir,
+            self.rgd_train_mask_dir,
+            self.rgd_val_dir,
+            self.rgd_val_mask_dir,
+            self.rgd_test_dir,
+            self.rgd_test_mask_dir,
         ]
-
-        for f in files:
-            file_num = int(re.search(r"\d+", f).group())
-            if file_num in arr:
-                print(f'Image {file_num} is kept away')
-                img = cv2.imread(os.path.join(folder_path, f))
-                plt.imshow(img)
-            else: 
-                continue
+        for dir in dir_arr: 
+            image_array = self.filter_subset_in_folder(arr=arr, folder_path=folder_path)
+            self.remove_files_in_dir(folder_path=folder_path)
+            if "images" in dir: 
+                self.save_subset_array(folder_path=folder_path, image_array=image_array, type="image")
+            elif "masks" in dir: 
+                self.save_subset_array(folder_path=folder_path, image_array=image_array, type="mask")
                 
-
-# test - this will be removed     
-# Get the project root directory (2 levels up from current file)
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
-# d = Dataset(os.path.join(project_root, "data/raw_data/useable_data"))
-# d.preprocess_images(rgb=True)
-# d.split_train_val_test(80, 10, 10)
-
-# d.cashe_data()
-# train_images, train_masks, val_images, val_masks, test_images, test_masks = d.load_data()
 
