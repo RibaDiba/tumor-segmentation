@@ -348,7 +348,7 @@ class Dataset:
     this new filtered image directory will only contain images that do not have the number in the int array
     """
     # this function only works partially right now
-    def create_subset(self, arr: List[int], folder_path) -> None:
+    def create_subset(self, arr: List[int]) -> None:
         dir_arr: List[str] = [
             self.rgb_train_dir,
             self.rgb_train_mask_dir,
@@ -372,11 +372,11 @@ class Dataset:
             self.rgd_test_mask_dir,
         ]
         for dir in dir_arr: 
-            image_array = self.filter_subset_in_folder(arr=arr, folder_path=folder_path)
-            self.remove_files_in_dir(folder_path=folder_path)
+            image_array = self.filter_subset_in_folder(arr=arr, folder_path=dir)
+            self.remove_files_in_dir(folder_path=dir)
             if "images" in dir: 
-                self.save_subset_array(folder_path=folder_path, image_array=image_array, type="image")
+                self.save_subset_array(folder_path=dir, image_array=image_array, type="image")
             elif "masks" in dir: 
-                self.save_subset_array(folder_path=folder_path, image_array=image_array, type="mask")
+                self.save_subset_array(folder_path=dir, image_array=image_array, type="mask")
                 
 
