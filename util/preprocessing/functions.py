@@ -556,4 +556,4 @@ def remove_files_in_dir(self, folder_path):
 def save_subset_array(self, folder_path: str, image_array: List[np.ndarray], type: str):
     for i, img in enumerate(image_array):
         # could use original names here but max
-        cv2.imwrite(os.path.join(folder_path, f"{type}_{i}.jpg"))
+        cv2.imwrite(os.path.join(folder_path, f"{type}_{i}.jpg"), img)
