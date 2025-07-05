@@ -1,28 +1,62 @@
 # imports 
 import matplotlib.pyplot as plt 
 import numpy as np 
-import cv2, os, random, io
+import cv2, os, random, io, re, shutil
 from scipy.interpolate import griddata
 from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
+from typing import Tuple, List 
+
+def read_images_to_array(self, folder_path: str) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
+    segmented_images = []
+    base_images = []
+    depth_info = []
+
+    filenames = sorted(os.listdir(folder_path))
+    for filename in tqdm(filenames, desc="Reading files"):
+        full_path = os.path.join(folder_path, filename)
+
+        if filename.endswith(".jpg") and not filename.endswith("_texture.jpg"):
+            img = cv2.imread(full_path)
+            if img is not None:
+                segmented_images.append(img)
+
+        elif filename.endswith("_texture.jpg"):
+            img = cv2.imread(full_path)
+            if img is not None:
+                base_images.append(img)
+
+        elif filename.endswith(".bin"):
+            try:
+                file_path = os.path.join(folder_path, filename)
+                x, y, z = read_bin(file_path)
+                depth_info.append((x, y, z, filename)) 
+            except Exception as e:
+                print(f"Failed to read binary file {filename}: {e}")
+
+    return segmented_images, base_images, depth_info
+
+def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
+    filenames = sorted(os.listdir)
+    neg_images = []
+    for filename in tqdm(filenames, desc="Reading negative images"):
+        full_path = os.path.join(folder_path, filename)
+        img = cv2.imread(full_path)
+        neg_images.append(img)
+
+    return neg_images
+
+def create_neg_masks(self, length: float) -> List[np.ndarray]:
+    negative_masks = []
+    for i in range(length):
+        negative_mask = np.ones((256, 256), dtype=np.uint8) * 0
+        negative_masks.append(negative_mask)
+
+    return negative_masks 
 
 
-def read_images_to_array(folder_path):
-
-  image_array = []
-  # Get a sorted list of filenames
-  filenames = sorted(os.listdir(folder_path))
-  for filename in filenames:
-    if filename.endswith(".jpg") or filename.endswith(".png"):
-      img_path = os.path.join(folder_path, filename)
-      img = cv2.imread(img_path)
-
-      if img is not None:
-        image_array.append(img)
-
-  return image_array
-
+@DeprecationWarning
 def read_bin_files_to_array(folder_path):
     bin_files = []
     filenames = sorted(os.listdir(folder_path))
@@ -35,6 +69,7 @@ def read_bin_files_to_array(folder_path):
 
     return bin_files
 
+@DeprecationWarning
 def split_images(image_array): 
 
     red_region_images = []
@@ -71,7 +106,7 @@ def split_train_val_test(images, masks, per_train, per_val, per_test):
     
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
-def crop_raw_images(image_array): 
+def crop_raw_images(self, image_array: List[np.ndarray]): 
     
     cropped_images = [] 
     
@@ -89,7 +124,7 @@ def crop_raw_images(image_array):
 
     return cropped_images
 
-def crop_masks(image_array):
+def crop_masks(self, image_array: List[np.ndarray]):
     cropped_images = []
 
     for i in range(len(image_array)): 
@@ -105,7 +140,7 @@ def crop_masks(image_array):
 
     return cropped_images
 
-def add_padding(image_array, mask_array):
+def add_padding(self, image_array: List[np.ndarray], mask_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
 
     padded_images = []
     padded_masks = []
@@ -171,9 +206,7 @@ def add_padding(image_array, mask_array):
 
     return padded_images, padded_masks
 
-
-
-def zoom_at(image_array, zoom, coord=None):
+def zoom_at(self, image_array: List[np.ndarray], zoom: float, coord: float=None) -> List[np.ndarray]:
     
     zoomed_array = []
     
@@ -192,7 +225,7 @@ def zoom_at(image_array, zoom, coord=None):
     
     return zoomed_array
 
-def create_binary_masks(image_array):
+def create_binary_masks(self, image_array: List[np.ndarray]) -> List[np.ndarray]:
     binary_masks = []
     
     for image in image_array:
@@ -221,7 +254,7 @@ def create_binary_masks(image_array):
         
     return binary_masks
 
-def crop_images(image_array): 
+def crop_images(self, image_array: List[np.ndarray]) -> List[np.ndarray]: 
     
     cropped_images = []
     
@@ -244,7 +277,7 @@ def crop_images(image_array):
                               
     return cropped_images
 
-def crop_images_offset(image_array, x_offset=0, y_offset=0):
+def crop_images_offset(self, image_array: List[np.ndarray], x_offset: float=0, y_offset: float=0) -> List[np.ndarray]:
     cropped_images = []
     
     for image in image_array:
@@ -276,7 +309,7 @@ def crop_images_offset(image_array, x_offset=0, y_offset=0):
                               
     return cropped_images
 
-def translate_images(images, x_offset, y_offset=0):
+def translate_images(self, images: List[np.ndarray], x_offset: float, y_offset: float=0):
     translated_images = [] 
 
     for img_np in images:
@@ -299,7 +332,6 @@ def translate_images(images, x_offset, y_offset=0):
         translated_images.append(translated_img_np)
 
     return translated_images
-
 
 def read_bin(file_path): 
     with open(file_path, 'rb') as fid:
@@ -324,6 +356,7 @@ def read_bin(file_path):
 
     return grid_x, grid_y, grid_z
 
+@DeprecationWarning
 def read_all_bins(folder_path):
 
      data_array = []
@@ -368,7 +401,7 @@ def read_contours_array(data_array):
 
      return image_array      
 
-def read_contours_array_depth(data_array):
+def read_contours_array_depth(self, data_array):
      
      image_array = []
 
@@ -394,7 +427,7 @@ def read_contours_array_depth(data_array):
 
      return image_array
 
-def infuse_depth_into_blue_channel(image_array, depth_array):
+def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
     image_array_infused = []
 
     for i in tqdm(range(len(image_array)), desc="Infusing Images"):
@@ -431,7 +464,6 @@ def infuse_depth_into_blue_channel(image_array, depth_array):
     return image_array_infused
 
 # this function exists for various reasons
-
 def convert_array_to_rgb(image_array):
 
     converted_images = []
@@ -443,4 +475,112 @@ def convert_array_to_rgb(image_array):
         converted_images.append(image)
     
     return converted_images
+
+"""
+this is specifically to read images in order from the array (riya u can use this for testing)
+also to remove speciifc image numbers from the original directory (to standardize what images we decide on removing)
+
+root path refers to the path of the directory containing "train", "val", "test" folders 
+for loading purposes, while 3 levels of abstraction here arent really neccecary, they do help with debugging individual files
+"""
+
+def read_folder_to_array(self, folder_path: str) -> List[np.ndarray]:
+    image_array = []
+
+    exts = [".jpg", ".png"]
+    files = [
+        f for f in os.listdir(folder_path)
+        if os.path.isfile(os.path.join(folder_path, f))
+        and os.path.splitext(f)[1].lower() in exts
+    ]
+
+    # sort the files in the same way 
+    files.sort()
+
+    for f in files: 
+        full_path = os.path.join(folder_path, f)
+        img = cv2.imread(full_path)
+        if img is None: 
+            print("error with file read")
+            continue
+        image_array.append(img)
+    
+    return image_array
+
+def read_to_array_post(self, root_path: str) -> List[np.ndarray]:
+    train_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/images"))
+    train_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/masks/Tumor"))
+
+    val_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "val/images"))
+    val_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "val/masks/Tumor"))
+
+    test_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "test/images"))
+    test_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "test/masks/Tumor"))
+
+    return train_images, train_masks, val_images, val_masks, test_images, test_masks
+
+# this is made for individual directories
+def filter_subset_in_folder(self, arr: List[int], folder_path):
+        exts = [".jpg", ".png"]
+        files = [
+            f for f in os.listdir(folder_path)
+            if os.path.isfile(os.path.join(folder_path, f))
+            and os.path.splitext(f)[1].lower() in exts
+        ]
+
+        image_array = []
+
+        for f in files:
+            file_num = int(re.search(r"\d+", f).group())
+            if file_num in arr:
+                print(f'Image {file_num} is removed')
+            else: 
+                img = cv2.imread(os.path.join(folder_path, f))
+                image_array.append(img)
+
+        return image_array
+
+def remove_files_in_dir(self, folder_path):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.remove(file_path)  # remove file or symbolic link
+            elif os.path.isdir(file_path):
+                # this is bassically if for some reason there is a folder
+                continue
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
+# saves the new image array 
+def save_subset_array(self, folder_path: str, image_array: List[np.ndarray], type: str):
+    for i, img in enumerate(image_array):
+        # could use original names here but max
+        cv2.imwrite(os.path.join(folder_path, f"{type}_{i}.jpg"), img)
+
+def subet_automation(self, dir_array, arr): 
+        for dir in dir_array: 
+            # First, get the filtered array of images to keep
+            image_array = self.filter_subset_in_folder(arr=arr, folder_path=dir)
+            
+            # Create a unique backup directory for each original directory
+            dir_name = os.path.basename(dir)
+            backup_dir = os.path.join(os.path.dirname(dir), f"temp_backup_{dir_name}")
+            os.makedirs(backup_dir, exist_ok=True)
+            
+            # Save the filtered images to the backup directory
+            img_type = "image" if "images" in dir else "mask"
+            self.save_subset_array(folder_path=backup_dir, image_array=image_array, type=img_type)
+            
+            # Now that we have a backup, it's safe to remove all files from the original directory
+            self.remove_files_in_dir(folder_path=dir)
+            
+            # Move the files from the backup to the original directory
+            for file in os.listdir(backup_dir):
+                src = os.path.join(backup_dir, file)
+                dst = os.path.join(dir, file)
+                shutil.move(src, dst)
+            
+            # Remove the backup directory for this directory
+            shutil.rmtree(backup_dir)
 
