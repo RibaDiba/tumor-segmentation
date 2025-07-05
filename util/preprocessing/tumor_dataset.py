@@ -1,4 +1,4 @@
-import numpy as np, re
+import numpy as np, re, shutil
 from typing import List, Tuple
 from preprocess_images import *
 from functions import *
@@ -65,6 +65,7 @@ class Dataset:
     filter_subset_in_folder = filter_subset_in_folder
     remove_files_in_dir = remove_files_in_dir
     save_subset_array = save_subset_array
+    subet_automation = subet_automation
 
     # preprocess function (by default preprocesses for rgb images)
     # might remove the settings feature
@@ -347,36 +348,34 @@ class Dataset:
     this function takes in an array of ints that correspond to the file name and creates a new directory of filtered images 
     this new filtered image directory will only contain images that do not have the number in the int array
     """
-    # this function only works partially right now
-    def create_subset(self, arr: List[int]) -> None:
-        dir_arr: List[str] = [
+    def create_subset(self, train_arr: List[int], val_arr, test_arr) -> None:
+        dir_arr_train = [
             self.rgb_train_dir,
             self.rgb_train_mask_dir,
-            self.rgb_val_dir,
-            self.rgb_val_mask_dir,
-            self.rgb_test_dir,
-            self.rgb_test_mask_dir,
-
             self.depth_train_dir,
             self.depth_train_mask_dir,
-            self.depth_val_dir,
-            self.depth_val_mask_dir,
-            self.depth_test_dir,
-            self.depth_test_mask_dir,
-
             self.rgd_train_dir,
             self.rgd_train_mask_dir,
+        ]
+        dir_arr_val = [
+            self.rgb_val_dir,
+            self.rgb_val_mask_dir,
+            self.depth_val_dir,
+            self.depth_val_mask_dir,
             self.rgd_val_dir,
             self.rgd_val_mask_dir,
+        ]
+        dir_arr_test = [
+            self.rgb_test_dir,
+            self.rgb_test_mask_dir,
+            self.depth_test_dir,
+            self.depth_test_mask_dir,
             self.rgd_test_dir,
             self.rgd_test_mask_dir,
         ]
-        for dir in dir_arr: 
-            image_array = self.filter_subset_in_folder(arr=arr, folder_path=dir)
-            self.remove_files_in_dir(folder_path=dir)
-            if "images" in dir: 
-                self.save_subset_array(folder_path=dir, image_array=image_array, type="image")
-            elif "masks" in dir: 
-                self.save_subset_array(folder_path=dir, image_array=image_array, type="mask")
+
+        self.subet_automation(dir_array=dir_arr_train, arr=train_arr)
+        self.subet_automation(dir_array=dir_arr_val, arr=val_arr)
+        self.subet_automation(dir_array=dir_arr_test, arr=test_arr)
                 
 

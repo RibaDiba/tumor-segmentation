@@ -1,7 +1,7 @@
 # imports 
 import matplotlib.pyplot as plt 
 import numpy as np 
-import cv2, os, random, io, re
+import cv2, os, random, io, re, shutil
 from scipy.interpolate import griddata
 from tqdm import tqdm
 from PIL import Image
@@ -557,3 +557,30 @@ def save_subset_array(self, folder_path: str, image_array: List[np.ndarray], typ
     for i, img in enumerate(image_array):
         # could use original names here but max
         cv2.imwrite(os.path.join(folder_path, f"{type}_{i}.jpg"), img)
+
+def subet_automation(self, dir_array, arr): 
+        for dir in dir_array: 
+            # First, get the filtered array of images to keep
+            image_array = self.filter_subset_in_folder(arr=arr, folder_path=dir)
+            
+            # Create a unique backup directory for each original directory
+            dir_name = os.path.basename(dir)
+            backup_dir = os.path.join(os.path.dirname(dir), f"temp_backup_{dir_name}")
+            os.makedirs(backup_dir, exist_ok=True)
+            
+            # Save the filtered images to the backup directory
+            img_type = "image" if "images" in dir else "mask"
+            self.save_subset_array(folder_path=backup_dir, image_array=image_array, type=img_type)
+            
+            # Now that we have a backup, it's safe to remove all files from the original directory
+            self.remove_files_in_dir(folder_path=dir)
+            
+            # Move the files from the backup to the original directory
+            for file in os.listdir(backup_dir):
+                src = os.path.join(backup_dir, file)
+                dst = os.path.join(dir, file)
+                shutil.move(src, dst)
+            
+            # Remove the backup directory for this directory
+            shutil.rmtree(backup_dir)
+
