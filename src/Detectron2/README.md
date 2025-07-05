@@ -4,4 +4,6 @@
 
 Run get_depth_map.py first to get all the images, then run save_images.py and process_images.py to fully format the data into coco json format
 
+Note: this readme needs to be updated
+
 
