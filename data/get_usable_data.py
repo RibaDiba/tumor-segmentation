@@ -1,6 +1,6 @@
 import os, shutil
 from tqdm import tqdm
-
+from typing import List
 
 def get_usable_data(src_dir, dest_dir):
     os.makedirs(dest_dir, exist_ok=True)
@@ -47,6 +47,41 @@ def get_total_images(src_dir):
     print(f"\nTotal Images in {src_dir}: {triplet_count}")
     return triplet_count
 
-get_usable_data('data/MC_data', 'data/useable_data')
-get_usable_data('data/invotive', 'data/useable_data')
-get_total_images('data/useable_data')
+def get_num_images(dirs: List[str]):
+    num_images_total = 0
+    num_images_valid = 0
+
+    total_num_bins = 0
+
+    for i, dir in enumerate(dirs):
+        for file_name in (os.listdir(dir)):
+            base_name, ext = os.path.splitext(file_name)
+
+            # sanity 
+            if ext.lower() == ".bin":
+                total_num_bins += 1
+            
+            # this is to make sure that we only count one type of file 
+            if ext.lower() == ".jpg" and not base_name.endswith("_texture"):
+                num_images_total += 1
+                
+                jpg_file = f"{base_name}.jpg"
+                texture_file = f"{base_name}_texture.jpg"
+                bin_file = f"{base_name}.bin"
+
+                required_files = [jpg_file, texture_file, bin_file]
+                if all(os.path.exists(os.path.join(dir, f)) for f in required_files):
+                    num_images_valid += 1
+
+    # print for logging 
+    print(f"Number of total images: {num_images_total}")
+    print(f"Number of valid images: {num_images_valid}")
+    print(f"Number of invalid images: {num_images_total - num_images_valid}")
+    print(f"Number of bin files: {total_num_bins}")
+
+
+get_num_images(["data/MC_data", "data/invotive"])
+
+# get_usable_data('data/MC_data', 'data/useable_data')
+# get_usable_data('data/invotive', 'data/useable_data')
+# get_total_images('data/useable_data')
