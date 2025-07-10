@@ -476,6 +476,24 @@ def convert_array_to_rgb(image_array):
     
     return converted_images
 
+# this is to correct the chroma key error with the previous function 
+def correct_binary_masks(self, mask_array: List[np.ndarray]) -> List[np.ndarray]:
+    fixed_images = []
+    for i, img in enumerate(mask_array):
+        # apprently they are saved as 3 channel color images 
+        binary = cv2.cvtColor(img, cv2.COLOR_BAYER_BG2GRAY)
+
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        binary = binary.astype(np.uint8)
+
+        filled = np.zeros_like(binary)
+        cv2.fillPoly(filled, contours, 255)
+
+        fixed_images.append(filled)
+    
+    return fixed_images
+
+
 """
 this is specifically to read images in order from the array (riya u can use this for testing)
 also to remove speciifc image numbers from the original directory (to standardize what images we decide on removing)
