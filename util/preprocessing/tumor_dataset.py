@@ -56,6 +56,7 @@ class Dataset:
     read_contours_array_depth = read_contours_array_depth
     read_to_array_post = read_to_array_post
     read_folder_to_array = read_folder_to_array
+    correct_binary_masks = correct_binary_masks
 
     # coco_json methods 
     images_annotations_info = images_annotations_info
@@ -95,6 +96,7 @@ class Dataset:
         self.masks = self.create_binary_masks(self.masks)
         self.images_rgb = self.crop_images(self.images_rgb)
         self.masks = self.crop_images_offset(self.masks, x_offset=-25)
+        self.masks = self.correct_binary_masks(self.masks)
 
         # preprocess grayscale data 
         self.masks_clone_depth = self.og_masks
