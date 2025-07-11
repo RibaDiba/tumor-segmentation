@@ -3,6 +3,8 @@ from typing import List, Tuple
 from preprocess_images import *
 from functions import *
 from process_coco_json import *
+from detectron2.data import MetadataCatalog
+from detectron2.data.datasets import register_coco_instances
 
 class Dataset: 
 
@@ -40,7 +42,7 @@ class Dataset:
     TODO: add image augentation functions 
     note: we will add image augmentation in the detectron2 training loader itself 
     """
-   # image processing functions
+    # image processing functions
     read_images_to_array = read_images_to_array
     crop_raw_images = crop_raw_images
     crop_masks = crop_masks
@@ -346,6 +348,24 @@ class Dataset:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
+    """
+    this function is js for convience to be used everywhere 
+    also because some versions dont have the correct paths 
+    """
+    def register_instances(self, rgb: bool=True, depth: bool=False, rgd: bool=False) -> None:
+        if rgb: 
+            register_coco_instances("my_dataset_train", {}, os.path.join(self.rgb_train_dir, "train.json"), self.rgb_train_dir)
+            register_coco_instances("my_dataset_val", {}, os.path.join(self.rgb_val_dir, "val.json"), self.rgb_val_dir)
+            register_coco_instances("my_dataset_test", {}, os.path.join(self.rgb_test_dir, "test.json"), self.rgb_test_dir)
+        elif depth: 
+            register_coco_instances("my_dataset_train", {}, os.path.join(self.depth_train_dir, "train.json"), self.depth_train_dir)
+            register_coco_instances("my_dataset_val", {}, os.path.join(self.depth_val_dir, "val.json"), self.depth_val_dir)
+            register_coco_instances("my_dataset_test", {}, os.path.join(self.depth_test_dir, "test.json"), self.depth_test_dir)
+        elif rgd: 
+            register_coco_instances("my_dataset_train", {}, os.path.join(self.rgd_train_dir, "train.json"), self.rgd_train_dir)
+            register_coco_instances("my_dataset_val", {}, os.path.join(self.rgd_val_dir, "val.json"), self.rgd_val_dir)
+            register_coco_instances("my_dataset_test", {}, os.path.join(self.rgd_test_dir, "test.json"), self.rgd_test_dir)
+            
     """
     this function takes in an array of ints that correspond to the file name and creates a new directory of filtered images 
     this new filtered image directory will only contain images that do not have the number in the int array
