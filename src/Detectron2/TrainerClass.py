@@ -30,8 +30,8 @@ class Trainer(DefaultTrainer):
 
 augs = T.AugmentationList([
     T.RandomFlip(0.2, horizontal=True, vertical=False),
-    # T.RandomFlip(0.2, horizontal=False, vertical=True),
-    # T.RandomRotation([-30, 30], expand=False)
+    T.RandomFlip(0.2, horizontal=False, vertical=True),
+    T.RandomRotation([-15, 15], expand=False)
 ])
 
 # custom mapper
