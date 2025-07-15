@@ -98,7 +98,7 @@ class Dataset:
         self.masks = self.create_binary_masks(self.masks)
         self.images_rgb = self.crop_images(self.images_rgb)
         self.masks = self.crop_images_offset(self.masks, x_offset=-25)
-        # self.masks = self.correct_binary_masks(self.masks)
+        self.masks = self.correct_binary_masks(self.masks)
 
         # preprocess grayscale data 
         self.masks_clone_depth = self.og_masks

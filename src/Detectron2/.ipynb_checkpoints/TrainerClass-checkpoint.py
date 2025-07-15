@@ -45,7 +45,9 @@ def tumor_mapper(dataset_dict):
 
     return {
         "image": torch.as_tensor(image.transpose(2, 0, 1).astype("float32")),
-        "instances": instances
+        "instances": instances,
+        "height": image.shape[0], 
+        "width": image.shape[1] 
     }
 
 # custom hook for training loss
