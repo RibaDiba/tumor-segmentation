@@ -27,6 +27,18 @@ class Trainer(DefaultTrainer):
     def build_evaluator(cls, cfg, dataset_name):
         return COCOEvaluator(dataset_name, cfg, False, output_dir=cfg.OUTPUT_DIR)
     
+    def build_hooks(self):
+        hooks = super().build_hooks() # get all hooks 
+        
+        loss_hook = LossVisualizationHook(
+            output_dir='./loss_plots',
+            save_data=True,
+            output_json_dir="./json_data"
+        ) # create an instance of our custom hook 
+        hooks.append(loss_hook) # append hook 
+        
+        return hooks
+    
 
 augs = T.AugmentationList([
     T.RandomFlip(0.2, horizontal=True, vertical=False),
@@ -58,34 +70,35 @@ def tumor_mapper(dataset_dict):
 
 # custom hook for training loss
 class LossVisualizationHook(HookBase):
-    def __init__(self, loss_keys=None, output_dir='./loss_plots', save_data=True, output_json_dir="./json_Data"):
+    def __init__(self, loss_keys=None, output_dir='./loss_plots', save_data=True, output_json_dir="./json_data"):
         self.save_data = save_data
         self.output_dir = output_dir
         self.output_json_dir = output_json_dir
-
         # default types of losses 
         self.loss_keys = [
             "total_loss", "loss_cls", "loss_box_reg",
             "loss_rpn_cls", "loss_rpn_loc", "loss_mask"  
         ]
-
         self.loss_history = defaultdict(list)
         self.iterations = []
-
-        # create the output dir if it doesnt exis
+        # create the output dir if it doesnt exist
         os.makedirs(output_dir, exist_ok=True)
         os.makedirs(output_json_dir, exist_ok=True)
-
-    """
-    this function exectutes after each training step 
-    we need to track our loss here by each step and graph after its done
-    using total_losses here, could change 
-    """
+    
     def after_step(self):
+        """
+        This function executes after each training step 
+        We need to track our loss here by each step and graph after its done
+        using total_losses here, could change 
+        """
         # get current iteration 
         iteration = self.trainer.iter
         storage = get_event_storage()
-
+        
+        # Debug print - remove after confirming it works
+        if iteration % 100 == 0:
+            print(f"Hook running at iteration {iteration}")
+        
         # collect loss in a dict, we are storing all of them but only using one 
         current_losses = {}
         for key in self.loss_keys: 
@@ -98,20 +111,21 @@ class LossVisualizationHook(HookBase):
             for key, value in current_losses.items():
                 self.loss_history[key].append(value)
     
-    """
-    this function runs after training is done 
-    takes the data we recorded and plot/save it 
-    """
     def after_train(self):
-        # makes sure there is data 
-        print("here")
+        """
+        This function runs after training is done 
+        Takes the data we recorded and plot/save it 
+        """
+        print("LossVisualizationHook: Training completed")
         if len(self.iterations) > 1:
             print("Creating Loss Plots")
             # helper function
             self._plot_losses()
             if self.save_data:
                 # helper function
-                self._save_data()
+                self._save_loss_data()
+        else:
+            print("No loss data collected")
         
         print(f"Plots have been saved to {self.output_dir}")
     
@@ -150,15 +164,15 @@ class LossVisualizationHook(HookBase):
         plot_path = os.path.join(self.output_dir, 'final_loss_plot.png')
         plt.savefig(plot_path, dpi=150, bbox_inches='tight')
         plt.close()
-
-    # save data as json 
+    
     def _save_loss_data(self):
+        """Save data as json"""
         data = {
             'iterations': self.iterations,
             'losses': dict(self.loss_history)
         }
-
-        with open(self.output_json_dir, 'w') as f:
+        json_path = os.path.join(self.output_json_dir, 'loss_data.json')
+        with open(json_path, 'w') as f:
             json.dump(data, f, indent=2)
-
+        print(f"Loss data saved to {json_path}")
         
