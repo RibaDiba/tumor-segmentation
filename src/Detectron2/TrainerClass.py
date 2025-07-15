@@ -4,6 +4,7 @@ from detectron2.data import transforms as T
 from detectron2.data import detection_utils as utils
 from detectron2.engine.hooks import HookBase
 from detectron2.utils.events import get_event_storage
+from detectron2.evaluation import COCOEvaluator
 import matplotlib.pyplot as plt
 from collections import defaultdict
 import cv2, torch, os, json
@@ -21,11 +22,16 @@ class Trainer(DefaultTrainer):
             cfg,
             mapper=tumor_mapper,
         )
+    
+    @classmethod 
+    def build_evaluator(cls, cfg, dataset_name):
+        return COCOEvaluator(dataset_name, cfg, False, output_dir=cfg.OUTPUT_DIR)
+    
 
 augs = T.AugmentationList([
     T.RandomFlip(0.2, horizontal=True, vertical=False),
-    T.RandomFlip(0.2, horizontal=False, vertical=True),
-    T.RandomRotation([-30, 30], expand=False)
+    # T.RandomFlip(0.2, horizontal=False, vertical=True),
+    # T.RandomRotation([-30, 30], expand=False)
 ])
 
 # custom mapper
@@ -60,7 +66,7 @@ class LossVisualizationHook(HookBase):
         # default types of losses 
         self.loss_keys = [
             "total_loss", "loss_cls", "loss_box_reg",
-            "loss_objectness", "loss_rpn_box"
+            "loss_rpn_cls", "loss_rpn_loc", "loss_mask"  
         ]
 
         self.loss_history = defaultdict(list)
@@ -98,6 +104,7 @@ class LossVisualizationHook(HookBase):
     """
     def after_train(self):
         # makes sure there is data 
+        print("here")
         if len(self.iterations) > 1:
             print("Creating Loss Plots")
             # helper function
