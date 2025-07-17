@@ -35,7 +35,7 @@ class Trainer(DefaultTrainer):
         loss_hook = LossVisualizationHook(
             output_dir='./loss_plots',
             save_data=True,
-            model_name="test-rgb"
+            model_name=self.cfg.MODELNAME
         ) # create an instance of our custom hook 
         hooks.append(loss_hook) # append hook 
         
