@@ -9,6 +9,7 @@ tqdm
 pillow
 datasets
 ipykernel
+pytest
 
 git+https://github.com/facebookresearch/segment-anything.git
 git+https://github.com/huggingface/transformers.git
