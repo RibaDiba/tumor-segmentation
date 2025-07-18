@@ -72,8 +72,8 @@ class Dataset:
 
     # preprocess function (by default preprocesses for rgb images)
     # might remove the settings feature
-    def preprocess_images(self, rgb: bool=True, grayscale: bool= False, rgd: bool=False, add_negative: bool=False) -> None:
-        self.masks, self.images_rgb, self.depth_info = self.read_images_to_array(self.data_path)
+    def preprocess_images(self, add_negative: bool=False, read_bins: bool = True) -> None:
+        self.masks, self.images_rgb, self.depth_info = self.read_images_to_array(self.data_path, read_bins=read_bins)
         self.og_masks = self.masks.copy()
         self.og_images = self.images_rgb.copy()
 
@@ -100,29 +100,31 @@ class Dataset:
         self.masks = self.crop_images_offset(self.masks, x_offset=-25)
         self.masks = self.correct_binary_masks(self.masks)
 
-        # preprocess grayscale data 
-        self.masks_clone_depth = self.og_masks
-        self.masks_clone_depth = self.crop_masks(self.masks_clone_depth)
-        self.images_depth_maps = self.read_contours_array_depth(self.depth_info)
-        self.images_depth_maps = self.crop_raw_images(self.images_depth_maps)
-        # copies because the masks should be the same accross all data 
-        self.images_depth_maps, self.masks_clone_depth = self.add_padding(self.images_depth_maps, self.masks_clone_depth)
-        self.images_depth_maps = self.crop_images(self.images_depth_maps)
+        if read_bins: 
+            # preprocess grayscale data 
+            self.masks_clone_depth = self.og_masks
+            self.masks_clone_depth = self.crop_masks(self.masks_clone_depth)
+            self.images_depth_maps = self.read_contours_array_depth(self.depth_info)
+            self.images_depth_maps = self.crop_raw_images(self.images_depth_maps)
+            # copies because the masks should be the same accross all data 
+            self.images_depth_maps, self.masks_clone_depth = self.add_padding(self.images_depth_maps, self.masks_clone_depth)
+            self.images_depth_maps = self.crop_images(self.images_depth_maps)
 
-        #RGD data - will not be using this until verified 
-        self.masks_clone_rgd = self.og_masks
-        self.masks_clone_rgd = self.crop_masks(self.masks_clone_rgd)
-        self.images_rgd = self.read_contours_array_depth(self.depth_info)
-        self.images_rgd = self.crop_raw_images(self.images_rgd)
-        self.temp = self.og_images.copy()
-        self.images_rgd = self.infuse_depth_into_blue_channel(self.temp, self.images_rgd)
-        self.images_rgd, self.masks_clone_rgd = self.add_padding(self.images_rgd, self.masks_clone_rgd)
-        self.images_rgd = self.crop_images(self.images_rgd)
+            #RGD data - will not be using this until verified 
+            self.masks_clone_rgd = self.og_masks
+            self.masks_clone_rgd = self.crop_masks(self.masks_clone_rgd)
+            self.images_rgd = self.read_contours_array_depth(self.depth_info)
+            self.images_rgd = self.crop_raw_images(self.images_rgd)
+            self.temp = self.og_images.copy()
+            self.images_rgd = self.infuse_depth_into_blue_channel(self.temp, self.images_rgd)
+            self.images_rgd, self.masks_clone_rgd = self.add_padding(self.images_rgd, self.masks_clone_rgd)
+            self.images_rgd = self.crop_images(self.images_rgd)
 
         print("Preprocessing done!")
         print(f'Number of RGB Images: {len(self.images_rgb)}')
-        print(f'Number of Depth Map Images: {len(self.images_depth_maps)}')
-        print(f'Number of RGD images: {len(self.images_rgd)}')
+        if read_bins:
+            print(f'Number of Depth Map Images: {len(self.images_depth_maps)}')
+            print(f'Number of RGD images: {len(self.images_rgd)}')
 
     # assigns each set to train, val, and test groups 
     def split_train_val_test(self, per_train: float, per_val: float, per_test: float) -> None: 
@@ -186,6 +188,10 @@ class Dataset:
         if rgd: 
             rgd_root = os.path.join(project_root, "data/processed_data/rgd")
             return self.read_to_array_post(rgd_root)
+    
+    # this is only for inline tests (only used for rgb)
+    def return_data(self):
+        return self.images_rgb, self.masks
     
     # this will save our data into directories for each image type, with shared masks
     def cashe_data(self) -> None:
