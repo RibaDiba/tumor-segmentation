@@ -8,7 +8,7 @@ from PIL import Image
 from io import BytesIO
 from typing import Tuple, List 
 
-def read_images_to_array(self, folder_path: str) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
+def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
     segmented_images = []
     base_images = []
     depth_info = []
@@ -27,13 +27,14 @@ def read_images_to_array(self, folder_path: str) -> Tuple[List[np.ndarray], List
             if img is not None:
                 base_images.append(img)
 
-        elif filename.endswith(".bin"):
-            try:
-                file_path = os.path.join(folder_path, filename)
-                x, y, z = read_bin(file_path)
-                depth_info.append((x, y, z, filename)) 
-            except Exception as e:
-                print(f"Failed to read binary file {filename}: {e}")
+        if read_bins: 
+            if filename.endswith(".bin"):
+                try:
+                    file_path = os.path.join(folder_path, filename)
+                    x, y, z = read_bin(file_path)
+                    depth_info.append((x, y, z, filename)) 
+                except Exception as e:
+                    print(f"Failed to read binary file {filename}: {e}")
 
     return segmented_images, base_images, depth_info
 
