@@ -16,8 +16,28 @@ expected_sizes = {
 }
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    ("../../data/raw_data/invotive", expected_sizes),
-    ("../../data/raw_data/MC_data", expected_sizes)
+    # ("../../data/raw_data/useable_data", expected_sizes), # sanity 
+    # ("../../data/raw_data/J&j-1", expected_sizes),
+    # ("../../data/raw_data/J&j-2", expected_sizes),
+    # ("../../data/raw_data/J&j-3", expected_sizes),
+    # ("../../data/raw_data/J&j-4", expected_sizes),
+    # ("../../data/raw_data/J&j-5", expected_sizes),
+    # ("../../data/raw_data/J&j-6", expected_sizes),
+    # ("../../data/raw_data/J&j-7", expected_sizes),
+    # ("../../data/raw_data/J&j-8", expected_sizes),
+    # ("../../data/raw_data/J&j-9", expected_sizes),
+    # ("../../data/raw_data/J&j-10", expected_sizes),
+    # ("../../data/raw_data/J&j-10", expected_sizes),
+    # ("../../data/raw_data/J&j-11", expected_sizes),
+    # ("../../data/raw_data/J&j-12", expected_sizes),
+    # ("../../data/raw_data/J&j-13", expected_sizes),
+    # ("../../data/raw_data/J&j-14", expected_sizes),
+    # ("../../data/raw_data/DTC #326 Scan Images", expected_sizes),
+    # ("../../data/raw_data/DTC #347 Scan Images", expected_sizes),
+    # ("../../data/raw_data/DTC #357", expected_sizes),
+    ("../../data/raw_data/S-065-006", expected_sizes),
+    ("../../data/raw_data/S-069-012", expected_sizes),
+    ("../../data/raw_data/Test Nude - 073-009", expected_sizes),
 ])
 
 def test_image_size_raw(dir: str, expected_sizes: Dict):
@@ -52,8 +72,28 @@ def test_image_size_raw(dir: str, expected_sizes: Dict):
     assert len(new_sizes) == 0, f"{dir} has invalid dimensions of {new_sizes}"
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    ("../../data/raw_data/invotive", expected_sizes),
-    ("../../data/raw_data/MC_data", expected_sizes)
+    ("../../data/raw_data/useable_data", expected_sizes), # sanity 
+    ("../../data/raw_data/J&j-1", expected_sizes),
+    ("../../data/raw_data/J&j-2", expected_sizes),
+    ("../../data/raw_data/J&j-3", expected_sizes),
+    ("../../data/raw_data/J&j-4", expected_sizes),
+    ("../../data/raw_data/J&j-5", expected_sizes),
+    ("../../data/raw_data/J&j-6", expected_sizes),
+    ("../../data/raw_data/J&j-7", expected_sizes),
+    ("../../data/raw_data/J&j-8", expected_sizes),
+    ("../../data/raw_data/J&j-9", expected_sizes),
+    ("../../data/raw_data/J&j-10", expected_sizes),
+    ("../../data/raw_data/J&j-10", expected_sizes),
+    ("../../data/raw_data/J&j-11", expected_sizes),
+    ("../../data/raw_data/J&j-12", expected_sizes),
+    ("../../data/raw_data/J&j-13", expected_sizes),
+    ("../../data/raw_data/J&j-14", expected_sizes),
+    ("../../data/raw_data/DTC #326 Scan Images", expected_sizes),
+    ("../../data/raw_data/DTC #347 Scan Images", expected_sizes),
+    ("../../data/raw_data/DTC #357", expected_sizes),
+    ("../../data/raw_data/S-065-006", expected_sizes),
+    ("../../data/raw_data/S-069-012", expected_sizes),
+    ("../../data/raw_data/Test Nude - 073-009", expected_sizes),
 ])
 
 def test_image_size_mask(dir: str, expected_sizes: Dict):

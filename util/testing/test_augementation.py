@@ -46,7 +46,7 @@ def count_mask_augmentations(mask_image: np.ndarray) -> int:
 
 
 @pytest.mark.parametrize("dir", [
-    (str(PROJECT_ROOT / "data/processed_data/rgb/val/masks/Tumor"))
+    (str(PROJECT_ROOT / "data/raw_data/032224 MCF7 EdPIT")),
 ])
 
 def test_augmentations(dir):
