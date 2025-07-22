@@ -3,46 +3,112 @@ import pytest, os, cv2
 """
 this test is to just show how many sets there are 
 prints the number of sets found and number of basenames that are invalid 
+
+essentially, we are creating a dictionary whose keys are unique "base names" 
+the unique basenames point to a set that contains each found type (bin, jpg, _texture) --> this is filled during a first passthrough 
+the second passthrough through the dict checks to see if each key points to a set that has all 3 file types
 """
 
 @pytest.mark.parametrize("dir", [
-    ("../../data/raw_data/useable_data"), # sanity, not really required
-    ("../../data/raw_data/invotive"),
-    ("../../data/raw_data/MC_Data")
+    ("../../data/raw_data/useable_data"), # sanity 
+    ("../../data/raw_data/J&j-1"),
+    ("../../data/raw_data/J&j-2"),
+    ("../../data/raw_data/J&j-3"),
+    ("../../data/raw_data/J&j-4"),
+    ("../../data/raw_data/J&j-5"),
+    ("../../data/raw_data/J&j-6"),
+    ("../../data/raw_data/J&j-7"),
+    ("../../data/raw_data/J&j-8"),
+    ("../../data/raw_data/J&j-9"),
+    ("../../data/raw_data/J&j-10"),
+    ("../../data/raw_data/J&j-10"),
+    ("../../data/raw_data/J&j-11"),
+    ("../../data/raw_data/J&j-12"),
+    ("../../data/raw_data/J&j-13"),
+    ("../../data/raw_data/J&j-14"),
+    ("../../data/raw_data/DTC #326 Scan Images"),
+    ("../../data/raw_data/DTC #347 Scan Images"),
+    ("../../data/raw_data/DTC #357"),
+    ("../../data/raw_data/DTC #399"),
+    ("../../data/raw_data/S-065-006"),
+    ("../../data/raw_data/S-069-012"),
+    ("../../data/raw_data/Test Nude - 073-009"),
 ])
 
 def test_sets(dir):
-    assert os.path.isdir(dir) == True, "directory does not exist"
+    assert os.path.isdir(dir), "directory does not exist"
 
-    num_images_total = 0
-    num_images_valid = 0
-
-    total_num_bins = 0
-
-    for file_name in (os.listdir(dir)):
-        base_name, ext = os.path.splitext(file_name)
-
-        # sanity 
-        if ext.lower() == ".bin":
-            total_num_bins += 1
-        
-        # this is to make sure that we only count one type of file 
-        if ext.lower() == ".jpg" and not base_name.endswith("_texture"):
-            num_images_total += 1
-            
-            jpg_file = f"{base_name}.jpg"
-            texture_file = f"{base_name}_texture.jpg"
-            bin_file = f"{base_name}.bin"
-
-            required_files = [jpg_file, texture_file, bin_file]
-            if all(os.path.exists(os.path.join(dir, f)) for f in required_files):
-                num_images_valid += 1
+    # creating a dictionary here 
+    file_sets = {}
     
-
-    assert num_images_total == num_images_valid, f"""Here is the report of the failed test
-    Number of total images: {num_images_total}
-    Number of valid images: {num_images_valid}
-    Number of invalid images: {num_images_total - num_images_valid}
-    """
+    # now we're going to get all files and sort them 
+    for file_name in os.listdir(dir):
+        base_name, ext = os.path.splitext(file_name)
+        
+        if base_name.endswith("_texture"):
+            actual_base = base_name[:-8]  # remove "_texture"
+            file_type = "texture"
+        elif ext.lower() == ".bin":
+            actual_base = base_name
+            file_type = "bin"
+        elif ext.lower() == ".jpg":
+            actual_base = base_name
+            file_type = "jpg"
+        else:
+            continue 
+        
+        # create the base set if it doesn't exist 
+        if actual_base not in file_sets:
+            file_sets[actual_base] = set()
+        
+        file_sets[actual_base].add(file_type)
+    
+    complete_sets = 0
+    incomplete_sets = 0
+    missing_files_report = []
+    
+    required_types = {"jpg", "texture", "bin"}
+    
+    for base_name, found_types in file_sets.items():
+        missing_types = required_types - found_types
+        
+        if not missing_types:
+            complete_sets += 1
+        else:
+            incomplete_sets += 1
+            missing_files = []
+            for missing_type in missing_types:
+                if missing_type == "texture":
+                    missing_files.append(f"{base_name}_texture.jpg")
+                elif missing_type == "bin":
+                    missing_files.append(f"{base_name}.bin")
+                elif missing_type == "jpg":
+                    missing_files.append(f"{base_name}.jpg")
+            
+            missing_files_report.append({
+                'base_name': base_name,
+                'found_types': found_types,
+                'missing_files': missing_files
+            })
+    
+    # code below is for logging purposes 
+    print(f"""File Set Validation Report for {dir}
+                =====================================
+                Total file sets found: {len(file_sets)}
+                Complete sets (all 3 files): {complete_sets}
+                Incomplete sets: {incomplete_sets}
+                """)
+    
+    # i wrote this only if the data has few bad ones, not really helpful if there are large amounts of data that are bad
+    # if incomplete_sets > 0:
+    #     print("Detailed breakdown of incomplete sets:")
+    #     print("-" * 40)
+    #     for item in missing_files_report:
+    #         print(f"Base name: {item['base_name']}")
+    #         print(f"  Found: {', '.join(sorted(item['found_types']))}")
+    #         print(f"  Missing: {', '.join(item['missing_files'])}")
+    #         print()
+    
+    assert incomplete_sets == 0, f"Found {incomplete_sets} incomplete file sets. See report above for details."
     
             
