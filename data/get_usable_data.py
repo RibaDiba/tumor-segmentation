@@ -26,6 +26,23 @@ def get_usable_data(src_dir, dest_dir):
         
     print(f"\nTotal images found from {src_dir}: {moved_files_count}")
 
+"""
+this is just useful to manually view all the masks and get rid of bad ones for testing 
+I usually will delete the directory that this function creates 
+"""
+def move_files_mask(src_dir: str, new_dir: str):
+    os.makedirs(new_dir, exist_ok=True)
+
+    for file_name in os.listdir(src_dir):
+        name, ext = os.path.splitext(file_name)
+        if ext == ".jpg" and not name.endswith("_texture"): 
+            src_file = os.path.join(src_dir, file_name)
+            dest_file = os.path.join(new_dir, file_name)
+            if os.path.exists(src_file):
+                shutil.copy(src_file, dest_file)
+    
+    print("moved images")
+
 def get_total_images(src_dir):
     triplet_count = 0
 
@@ -80,8 +97,8 @@ def get_num_images(dirs: List[str]):
     print(f"Number of bin files: {total_num_bins}")
 
 
-get_num_images(["data/MC_data", "data/invotive"])
-
-# get_usable_data('data/MC_data', 'data/useable_data')
-# get_usable_data('data/invotive', 'data/useable_data')
+get_usable_data('data/raw_data/MC_data', 'data/raw_data/useable_data')
+get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
 # get_total_images('data/useable_data')
+get_usable_data('data/raw_data/032224 MCF7 EdPIT', 'data/raw_data/useable_data')
+# move_files_mask("data/raw_data/032224 MCF7 EdPIT", "data/test")
