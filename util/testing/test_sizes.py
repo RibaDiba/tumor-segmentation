@@ -1,5 +1,6 @@
 import pytest, os, cv2 
 from typing import List, Dict
+from pathlib import Path
 
 """
 these will be tests on each individual directory 
@@ -9,6 +10,9 @@ this makes sure the following
 the expected_sizes are the current supported sizes in our preprocessing functions 
 """
 
+# Get project root directory
+project_root = Path(__file__).parent.parent.parent
+
 expected_sizes = {
     # [invotive, MC_data]
     "mask_sizes": [[577, 615], [492, 495]],
@@ -16,36 +20,38 @@ expected_sizes = {
 }
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    # ("../../data/raw_data/useable_data", expected_sizes), # sanity 
-    # ("../../data/raw_data/J&j-1", expected_sizes),
-    # ("../../data/raw_data/J&j-2", expected_sizes),
-    # ("../../data/raw_data/J&j-3", expected_sizes),
-    # ("../../data/raw_data/J&j-4", expected_sizes),
-    # ("../../data/raw_data/J&j-5", expected_sizes),
-    # ("../../data/raw_data/J&j-6", expected_sizes),
-    # ("../../data/raw_data/J&j-7", expected_sizes),
-    # ("../../data/raw_data/J&j-8", expected_sizes),
-    # ("../../data/raw_data/J&j-9", expected_sizes),
-    # ("../../data/raw_data/J&j-10", expected_sizes),
-    # ("../../data/raw_data/J&j-10", expected_sizes),
-    # ("../../data/raw_data/J&j-11", expected_sizes),
-    # ("../../data/raw_data/J&j-12", expected_sizes),
-    # ("../../data/raw_data/J&j-13", expected_sizes),
-    # ("../../data/raw_data/J&j-14", expected_sizes),
-    # ("../../data/raw_data/DTC #326 Scan Images", expected_sizes),
-    # ("../../data/raw_data/DTC #347 Scan Images", expected_sizes),
-    # ("../../data/raw_data/DTC #357", expected_sizes),
-    # ("../../data/raw_data/S-065-006", expected_sizes),
-    # ("../../data/raw_data/S-069-012", expected_sizes),
-    ("../../data/raw_data/032224 MCF7 EdPIT", expected_sizes)
+    # (project_root / "data/raw_data/useable_data", expected_sizes), # sanity 
+    # (project_root / "data/raw_data/J&j-1", expected_sizes),
+    # (project_root / "data/raw_data/J&j-2", expected_sizes),
+    # (project_root / "data/raw_data/J&j-3", expected_sizes),
+    # (project_root / "data/raw_data/J&j-4", expected_sizes),
+    # (project_root / "data/raw_data/J&j-5", expected_sizes),
+    # (project_root / "data/raw_data/J&j-6", expected_sizes),
+    # (project_root / "data/raw_data/J&j-7", expected_sizes),
+    # (project_root / "data/raw_data/J&j-8", expected_sizes),
+    # (project_root / "data/raw_data/J&j-9", expected_sizes),
+    # (project_root / "data/raw_data/J&j-10", expected_sizes),
+    # (project_root / "data/raw_data/J&j-10", expected_sizes),
+    # (project_root / "data/raw_data/J&j-11", expected_sizes),
+    # (project_root / "data/raw_data/J&j-12", expected_sizes),
+    # (project_root / "data/raw_data/J&j-13", expected_sizes),
+    # (project_root / "data/raw_data/J&j-14", expected_sizes),
+    # (project_root / "data/raw_data/DTC #326 Scan Images", expected_sizes),
+    # (project_root / "data/raw_data/DTC #347 Scan Images", expected_sizes),
+    # (project_root / "data/raw_data/DTC #357", expected_sizes),
+    # (project_root / "data/raw_data/S-065-006", expected_sizes),
+    # (project_root / "data/raw_data/S-069-012", expected_sizes),
+    (project_root / "data/raw_data/032224 MCF7 EdPIT", expected_sizes)
 ])
 
-def test_image_size_raw(dir: str, expected_sizes: Dict):
-    assert os.path.isdir(dir) == True, "directory does not exist"
+def test_image_size_raw(dir, expected_sizes: Dict):
+    # Convert to string if it's a Path object for compatibility with os functions
+    dir_str = str(dir)
+    assert os.path.isdir(dir_str) == True, "directory does not exist"
     new_sizes = []
 
-    for filename in os.listdir(dir):
-        img = cv2.imread(os.path.join(dir, filename))
+    for filename in os.listdir(dir_str):
+        img = cv2.imread(os.path.join(dir_str, filename))
         match_found = False
 
         if img is None: 
@@ -72,36 +78,38 @@ def test_image_size_raw(dir: str, expected_sizes: Dict):
     assert len(new_sizes) == 0, f"{dir} has invalid dimensions of {new_sizes}"
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    # ("../../data/raw_data/useable_data", expected_sizes), # sanity 
-    # ("../../data/raw_data/J&j-1", expected_sizes),
-    # ("../../data/raw_data/J&j-2", expected_sizes),
-    # ("../../data/raw_data/J&j-3", expected_sizes),
-    # ("../../data/raw_data/J&j-4", expected_sizes),
-    # ("../../data/raw_data/J&j-5", expected_sizes),
-    # ("../../data/raw_data/J&j-6", expected_sizes),
-    # ("../../data/raw_data/J&j-7", expected_sizes),
-    # ("../../data/raw_data/J&j-8", expected_sizes),
-    # ("../../data/raw_data/J&j-9", expected_sizes),
-    # ("../../data/raw_data/J&j-10", expected_sizes),
-    # ("../../data/raw_data/J&j-10", expected_sizes),
-    # ("../../data/raw_data/J&j-11", expected_sizes),
-    # ("../../data/raw_data/J&j-12", expected_sizes),
-    # ("../../data/raw_data/J&j-13", expected_sizes),
-    # ("../../data/raw_data/J&j-14", expected_sizes),
-    # ("../../data/raw_data/DTC #326 Scan Images", expected_sizes),
-    # ("../../data/raw_data/DTC #347 Scan Images", expected_sizes),
-    # ("../../data/raw_data/DTC #357", expected_sizes),
-    # ("../../data/raw_data/S-065-006", expected_sizes),
-    # ("../../data/raw_data/S-069-012", expected_sizes),
-    ("../../data/raw_data/032224 MCF7 EdPIT", expected_sizes)
+    # (project_root / "data/raw_data/useable_data", expected_sizes), # sanity 
+    # (project_root / "data/raw_data/J&j-1", expected_sizes),
+    # (project_root / "data/raw_data/J&j-2", expected_sizes),
+    # (project_root / "data/raw_data/J&j-3", expected_sizes),
+    # (project_root / "data/raw_data/J&j-4", expected_sizes),
+    # (project_root / "data/raw_data/J&j-5", expected_sizes),
+    # (project_root / "data/raw_data/J&j-6", expected_sizes),
+    # (project_root / "data/raw_data/J&j-7", expected_sizes),
+    # (project_root / "data/raw_data/J&j-8", expected_sizes),
+    # (project_root / "data/raw_data/J&j-9", expected_sizes),
+    # (project_root / "data/raw_data/J&j-10", expected_sizes),
+    # (project_root / "data/raw_data/J&j-10", expected_sizes),
+    # (project_root / "data/raw_data/J&j-11", expected_sizes),
+    # (project_root / "data/raw_data/J&j-12", expected_sizes),
+    # (project_root / "data/raw_data/J&j-13", expected_sizes),
+    # (project_root / "data/raw_data/J&j-14", expected_sizes),
+    # (project_root / "data/raw_data/DTC #326 Scan Images", expected_sizes),
+    # (project_root / "data/raw_data/DTC #347 Scan Images", expected_sizes),
+    # (project_root / "data/raw_data/DTC #357", expected_sizes),
+    # (project_root / "data/raw_data/S-065-006", expected_sizes),
+    # (project_root / "data/raw_data/S-069-012", expected_sizes),
+    (project_root / "data/raw_data/032224 MCF7 EdPIT", expected_sizes)
 ])
 
-def test_image_size_mask(dir: str, expected_sizes: Dict):
-    assert os.path.isdir(dir) == True, "directory does not exist"
+def test_image_size_mask(dir, expected_sizes: Dict):
+    # Convert to string if it's a Path object for compatibility with os functions
+    dir_str = str(dir)
+    assert os.path.isdir(dir_str) == True, "directory does not exist"
     new_sizes = []
 
-    for filename in os.listdir(dir):
-        img = cv2.imread(os.path.join(dir, filename))
+    for filename in os.listdir(dir_str):
+        img = cv2.imread(os.path.join(dir_str, filename))
         match_found = False
 
         if img is None: 
