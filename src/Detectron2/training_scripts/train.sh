@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# slrum options would go here 
+
 # Exit on error
 set -e
 

@@ -1,6 +1,7 @@
 """
 this file is the python exec to start training 
 before this file is ran there should be some checks to make sure that the data is good 
+there are seperate tests created specifically for this worflow in tests
 """
 
 # imports 
