@@ -49,21 +49,40 @@ def count_mask_augmentations(mask_image: np.ndarray) -> int:
     (str(PROJECT_ROOT / "data/raw_data/useable_data")),
 ])
 
-def test_augmentations(dir):
-    assert os.path.isdir(dir) == True, f"directory does not exist: {dir}"
-    invalid_indexes: List[int] = []
+def test_annotations(dir):
+    mask_fnames: List[str] = []
+    masks:       List[np.ndarray] = []
+    image_fnames: List[str] = []
+    images:       List[np.ndarray] = []
 
-    try: 
-        d = Dataset(dir)
-        d.preprocess_images(read_bins=False)
-        images, masks = d.return_data()
+    # first get images/masks and their filenames 
+    for filename in os.listdir(dir):
+        basename, ext = os.path.splitext(filename)
+        if ext.lower() != ".jpg":
+            continue
 
-        for i, img in enumerate(masks): 
-            if count_mask_augmentations(img) > 1: 
-                invalid_indexes.append(i)
+        img = cv2.imread(os.path.join(dir, filename))
+        assert img is not None, f"{filename}: failed to load"
 
-    except Exception as e: # skips if some error was there while preprocessing 
-        print(f"Error: {e}")
-        pytest.skip()
-    
-    assert len(invalid_indexes) == 0, f"Images with more than one annotation at {invalid_indexes}"
+        if basename.endswith("_texture"):
+            image_fnames.append(basename)
+            images.append(img)
+        else:
+            mask_fnames.append(basename)
+            masks.append(img)
+
+
+    d = Dataset(dir)
+
+    # manually apply preprocessing code 
+    masks = d.crop_masks(masks)
+    images, masks = d.add_padding(images, masks)
+    masks = d.zoom_at(masks, 1.333, coord=None)
+    masks = d.create_binary_masks(masks)
+    masks = d.crop_images_offset(masks, x_offset=-25)
+    masks = d.correct_binary_masks(masks)
+
+    # check annotations for those masks
+    for fname, mask in zip(mask_fnames, masks):
+        count = count_mask_augmentations(mask)
+        assert count == 1, f"{fname}: expected 1 annotation, found {count}"
