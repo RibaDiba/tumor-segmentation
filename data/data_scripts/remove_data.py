@@ -11,7 +11,8 @@ r_filenames = [
     "032224 MCF7 EdPIT-Control-1-17-01",
     "032224 MCF7 EdPIT-Control-1-24-24",
     "032224 MCF7 EdPIT-iv only-1-10-09",
-    "032224 MCF7 EdPIT-iv only-1-13-05"
+    "032224 MCF7 EdPIT-iv only-1-13-05",
+    "013023 4T1 EpP + aPD1-Control-1-2-212-3" # this one has an extra annotation
 ]
 
 def remove_data(dir, r_filenames: List[str]):
