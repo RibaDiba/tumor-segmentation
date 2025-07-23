@@ -2,15 +2,14 @@ import pytest, os, cv2, sys
 import numpy as np
 from pathlib import Path
 
-parent_dir = str(Path(__file__).parent.parent)
+parent_dir = str(Path(__file__).parent.parent.parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-preprocessing_dir = str(Path(parent_dir) / "preprocessing")
-if preprocessing_dir not in sys.path:
-    sys.path.append(preprocessing_dir)
-
 PROJECT_ROOT = Path(parent_dir).parent
+util_dir = str(PROJECT_ROOT / "util")
+if util_dir not in sys.path:
+    sys.path.append(util_dir)
 
 from preprocessing.tumor_dataset import Dataset
 from typing import List

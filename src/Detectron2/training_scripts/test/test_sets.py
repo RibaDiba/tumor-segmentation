@@ -11,7 +11,7 @@ the second passthrough through the dict checks to see if each key points to a se
 """
 
 # Get project root directory
-project_root = Path(__file__).parent.parent.parent
+project_root = Path(__file__).parent.parent.parent.parent.parent
 
 @pytest.mark.parametrize("dir", [
     (project_root / "data/raw_data/useable_data"), 
