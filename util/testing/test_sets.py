@@ -1,4 +1,5 @@
 import pytest, os, cv2
+from pathlib import Path
 
 """
 this test is to just show how many sets there are 
@@ -9,41 +10,46 @@ the unique basenames point to a set that contains each found type (bin, jpg, _te
 the second passthrough through the dict checks to see if each key points to a set that has all 3 file types
 """
 
+# Get project root directory
+project_root = Path(__file__).parent.parent.parent
+
 @pytest.mark.parametrize("dir", [
-    ("../../data/raw_data/useable_data"), # sanity 
-    # ("../../data/raw_data/J&j-1"),
-    # ("../../data/raw_data/J&j-2"),
-    # ("../../data/raw_data/J&j-3"),
-    # ("../../data/raw_data/J&j-4"),
-    # ("../../data/raw_data/J&j-5"),
-    # ("../../data/raw_data/J&j-6"),
-    # ("../../data/raw_data/J&j-7"),
-    # ("../../data/raw_data/J&j-8"),
-    # ("../../data/raw_data/J&j-9"),
-    # ("../../data/raw_data/J&j-10"),
-    # ("../../data/raw_data/J&j-10"),
-    # ("../../data/raw_data/J&j-11"),
-    # ("../../data/raw_data/J&j-12"),
-    # ("../../data/raw_data/J&j-13"),
-    # ("../../data/raw_data/J&j-14"),
-    # ("../../data/raw_data/DTC #326 Scan Images"),
-    # ("../../data/raw_data/DTC #347 Scan Images"),
-    # ("../../data/raw_data/DTC #357"),
-    # ("../../data/raw_data/DTC #399"),
-    # ("../../data/raw_data/S-065-006"),
-    # ("../../data/raw_data/S-069-012"),
-    # ("../../data/raw_data/Test Nude - 073-009"),
-    # ("../../data/raw_data/032224 MCF7 EdPIT")
+    (project_root / "data/raw_data/useable_data"), # sanity 
+    # (project_root / "data/raw_data/J&j-1"),
+    # (project_root / "data/raw_data/J&j-2"),
+    # (project_root / "data/raw_data/J&j-3"),
+    # (project_root / "data/raw_data/J&j-4"),
+    # (project_root / "data/raw_data/J&j-5"),
+    # (project_root / "data/raw_data/J&j-6"),
+    # (project_root / "data/raw_data/J&j-7"),
+    # (project_root / "data/raw_data/J&j-8"),
+    # (project_root / "data/raw_data/J&j-9"),
+    # (project_root / "data/raw_data/J&j-10"),
+    # (project_root / "data/raw_data/J&j-10"),
+    # (project_root / "data/raw_data/J&j-11"),
+    # (project_root / "data/raw_data/J&j-12"),
+    # (project_root / "data/raw_data/J&j-13"),
+    # (project_root / "data/raw_data/J&j-14"),
+    # (project_root / "data/raw_data/DTC #326 Scan Images"),
+    # (project_root / "data/raw_data/DTC #347 Scan Images"),
+    # (project_root / "data/raw_data/DTC #357"),
+    # (project_root / "data/raw_data/DTC #399"),
+    # (project_root / "data/raw_data/S-065-006"),
+    # (project_root / "data/raw_data/S-069-012"),
+    # (project_root / "data/raw_data/Test Nude - 073-009"),
+    # (project_root / "data/raw_data/032224 MCF7 EdPIT")
 ])
 
 def test_sets(dir):
-    assert os.path.isdir(dir), "directory does not exist"
+    # Convert to string if it's a Path object for compatibility with os functions
+    dir_str = str(dir)
+    assert os.path.isdir(dir_str), "directory does not exist"
 
     # creating a dictionary here 
     file_sets = {}
     
     # now we're going to get all files and sort them 
-    for file_name in os.listdir(dir):
+    for file_name in os.listdir(dir_str):
         base_name, ext = os.path.splitext(file_name)
         
         if base_name.endswith("_texture"):

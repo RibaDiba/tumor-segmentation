@@ -1,5 +1,8 @@
 import numpy as np, re, shutil
 from typing import List, Tuple
+import sys
+import os
+sys.path.append(os.path.dirname(__file__))
 from preprocess_images import *
 from functions import *
 from process_coco_json import *
