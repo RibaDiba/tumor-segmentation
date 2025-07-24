@@ -4,25 +4,19 @@ before this file is ran there should be some checks to make sure that the data i
 there are seperate tests created specifically for this worflow in tests
 """
 
-"""
-note: need to fix the configs for true/false 
-fix argparse error 
-"""
-
 # imports 
 import detectron2
 from detectron2.utils.logger import setup_logger
 setup_logger()
 
 # import some common libraries
-from pathlib import Path
 import numpy as np
 import os, json, cv2, random, importlib, sys, argparse
 import matplotlib.pyplot as plt
 
 # import some common detectron2 utilities
 from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor, DefaultTrainer
+from detectron2.engine import DefaultPredictor
 from detectron2.config import get_cfg
 from detectron2.utils.visualizer import Visualizer
 from detectron2.data.datasets import register_coco_instances
@@ -34,8 +28,8 @@ from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.config import get_cfg
 
 # some custom classes 
-# Add the project root to the path to make imports system-independent
-sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
+# TODO: update this with della dir
+sys.path.append('/Users/abirmodak/documents/LLP/tumor')
 from util.preprocessing.tumor_dataset import Dataset
 from src.Detectron2.TrainerClass import Trainer
 
@@ -51,13 +45,13 @@ parser.add_argument('model_name', type=str, help="Specifcies model name")
 parser.add_argument('iterations', type=int, help="Specifcies iterations")
 
 # optional arguments
-parser.add_argument("--rgb", type=bool, default=False,
+parser.add_argument("-rgb", type=bool, default=False,
                     help="Set mode to RGB")
-parser.add_argument('--depth', type=bool, default=False, 
+parser.add_argument('-depth', type=bool, default=False, 
                     help="Set mode to depth")
-parser.add_argument('--rgd', type=bool, default=False,
+parser.add_argument('-rgd', type=bool, default=False,
                     help="Set mode to rgd")
-parser.add_argument('--split-cashe', metavar="split_cashe", type=bool, default=False,
+parser.add_argument('-split-cashe', metavar="split_cashe", type=bool, default=False,
                     help="splits data into train/val/test, and then cashes it, recemended if first time")
 
 # collect arguments 
@@ -76,15 +70,20 @@ code is taken from the notebook file
 """
 
 # TODO: implement the argparser stuff here 
-d = Dataset(data_path="/projects/PUCHALLA/LLP2024/tumor-segmentation/data/raw_data/useable_data")
-print("--DEBUGGING SPLIT_CASHE----")
-print("SPLIT_CASHE is", split_cashe)
-# if split_cashe == True: 
-#     d.preprocess_images()
-#     d.split_train_val_test(70, 15, 15)
-#     d.cashe_data()
+d = Dataset(data_path="../../../data/raw_data/useable_data")
+if split_cashe: 
+    d.preprocess_images()
+    d.split_train_val_test(70, 15, 15)
+    d.cashe_data()
 d.convert_binary_to_coco()
-d.register_instances(rgb=True)
+if rgb_bool: 
+    d.register_instances(rgb=True)
+elif depth_bool: 
+    d.register_instances(depth=True)
+elif rgd_bool: 
+    d.register_instances(rgd=True)
+else: 
+    print("Need to specifiy which type of model needs to be trained")
 
 train_metadata = MetadataCatalog.get("my_dataset_train")
 train_dataset_dicts = DatasetCatalog.get("my_dataset_train")
@@ -97,10 +96,10 @@ test_dataset_dicts = DatasetCatalog.get("my_dataset_test")
 
 cfg = get_cfg()
 cfg.MODELNAME = model_name
-cfg.OUTPUT_DIR = f"/projects/PUCHALLA/LLP2024/tumor-segmentation/models/detectron2_default_trainer/{cfg.MODELNAME}"
+cfg.OUTPUT_DIR = f'../../models/detectron2_test/{cfg.MODELNAME}'
 cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
 cfg.DATASETS.TRAIN = ("my_dataset_train", "my_dataset_val")
-cfg.DATASETS.TEST = ("my_dataset_train",)
+cfg.DATASETS.TEST = ("my_dataset_test",)
 cfg.DATALOADER.NUM_WORKERS = 1
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False # this is for our "no tumor" examples 
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
@@ -116,6 +115,8 @@ training code
 """
 
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
-trainer = DefaultTrainer(cfg)
+trainer = Trainer(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
+
+
