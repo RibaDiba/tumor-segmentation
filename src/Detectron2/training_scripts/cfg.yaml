@@ -1,7 +1,5 @@
 # this file is really just for logging 
 
-MODELNAME: "rgb1"
-
 # Output directory (uses the MODELNAME variable)
 OUTPUT_DIR: "../../../models/detectron2_test/rgb1"
 
