@@ -1,11 +1,7 @@
 #!/bin/bash
 
-# slrum options would go here 
-
 # Exit on error
 set -e
-
-echo "Running tests..."
 
 # Default values
 NAME=""
@@ -14,6 +10,7 @@ RGB="true"
 DEPTH="false"
 RGD="false"
 SPLIT_CASHE="false"
+ROOT_PATH="/"
 
 # Parse named arguments
 while [[ "$#" -gt 0 ]]; do
@@ -24,6 +21,7 @@ while [[ "$#" -gt 0 ]]; do
         --depth) DEPTH="$2"; shift ;;
         --rgd) RGD="$2"; shift ;;
         --split-cashe) SPLIT_CASHE="$2"; shift ;;
+        --root-path) ROOT_PATH="$2"; shift;;
         -h|--help)
             echo "Usage: $0 [--name NAME] [--iter ITER] [--rgb true|false] [--depth true|false] [--rgd true|false] [--split-cashe true|false]"
             exit 0
@@ -40,15 +38,18 @@ echo "RGB: $RGB"
 echo "Depth: $DEPTH"
 echo "RGD: $RGD"
 echo "Split Cashe: $SPLIT_CASHE"
+echo "Path: $ROOT_PATH"
 
 sleep 1
 
+echo "Running tests..."
+
 # Run tests
-if pytest -s ../../../util/testing; then
+if pytest "${ROOT_PATH}/test"; then
     echo "Tests successful! Running training script..."
-    python3 train.py \
-        --name "$NAME" \
-        --iter "$ITER" \
+    python3 ${ROOT_PATH}train.py \
+        "$NAME" \
+        "$ITER" \
         --rgb "$RGB" \
         --depth "$DEPTH" \
         --rgd "$RGD" \
