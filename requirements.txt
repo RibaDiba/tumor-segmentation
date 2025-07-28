@@ -1,0 +1,17 @@
+torch
+torchvision
+monai
+opencv-python
+matplotlib
+numpy
+scipy
+tqdm
+pillow
+datasets
+ipykernel
+pytest
+huggingface-hub
+
+git+https://github.com/facebookresearch/segment-anything.git
+git+https://github.com/huggingface/transformers.git
+git+https://github.com/facebookresearch/detectron2.git

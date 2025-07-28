@@ -1,0 +1,30 @@
+# this file is really just for logging 
+
+# Output directory (uses the MODELNAME variable)
+OUTPUT_DIR: "../../../models/detectron2_test/rgb1"
+
+
+# Dataset Configuration
+DATASETS:
+  TRAIN: ("my_dataset_train", "my_dataset_val")  
+  TEST: ("my_dataset_test",)
+
+# Data Loader Configuration  
+DATALOADER:
+  NUM_WORKERS: 1
+  FILTER_EMPTY_ANNOTATIONS: False  # Set to False for "no tumor" examples
+
+# Model Configuration
+MODEL:
+  # Weights from model zoo - will be loaded in Python code
+  WEIGHTS: 
+  ROI_HEADS:
+    BATCH_SIZE_PER_IMAGE: 512  # RoIHead batch size (128 is faster, 512 is default)
+    NUM_CLASSES: 1  # Single class (excluding background)
+
+# Solver (Training) Configuration
+SOLVER:
+  IMS_PER_BATCH: 2  # Real batch size
+  BASE_LR: 0.00025  # Learning rate
+  MAX_ITER: 1000  # Maximum training iterations
+  STEPS: []  # Empty list - no learning rate decay steps

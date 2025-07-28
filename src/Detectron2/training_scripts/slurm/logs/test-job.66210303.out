@@ -1,0 +1,22 @@
+Check logs below to see if args are correct:
+Name: rgb-test
+Iterations: 1000
+RGB: true
+Depth: false
+RGD: false
+Split Cashe: true
+Path: ../
+Running tests...
+============================= test session starts ==============================
+platform linux -- Python 3.12.4, pytest-8.4.1, pluggy-1.6.0
+rootdir: /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts
+plugins: hydra-core-1.3.2
+collected 4 items
+
+../test/test_annotations.py .                                            [ 25%]
+../test/test_sets.py .                                                   [ 50%]
+../test/test_sizes.py ..                                                 [100%]
+
+============================== 4 passed in 23.34s ==============================
+Tests successful! Running training script...
+Init Dataset
