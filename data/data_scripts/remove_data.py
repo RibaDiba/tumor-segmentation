@@ -36,4 +36,4 @@ def remove_data(dir, r_filenames: List[str]):
     print("removed the following filenames")
     print(removed_names)
 
-remove_data("data/raw_data/useable_data", r_filenames)
+# remove_data("data/raw_data/useable_data", r_filenames)

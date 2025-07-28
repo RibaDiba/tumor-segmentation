@@ -1,0 +1,3 @@
+[submodule "data/huggingface-repo"]
+	path = data/huggingface-repo
+	url = https://huggingface.co/datasets/ribAbir/tumor-segmentation/

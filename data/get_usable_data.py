@@ -23,8 +23,8 @@ def get_usable_data(src_dir, dest_dir):
                     if os.path.exists(src_file):
                         shutil.copy(src_file, dest_file)
                         moved_files_count += 1
-        
-    print(f"\nTotal images found from {src_dir}: {moved_files_count}")
+    # TODO: maybe put a better print statement here, this doesnt tell much 
+    # print(f"\nTotal images found from {src_dir}: {moved_files_count}")
 
 """
 this is just useful to manually view all the masks and get rid of bad ones for testing 
@@ -97,8 +97,8 @@ def get_num_images(dirs: List[str]):
     print(f"Number of bin files: {total_num_bins}")
 
 
-get_usable_data('data/raw_data/MC_data', 'data/raw_data/useable_data')
-get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
-# get_total_images('data/useable_data')
-get_usable_data('data/raw_data/032224 MCF7 EdPIT', 'data/raw_data/useable_data')
-# move_files_mask("data/raw_data/032224 MCF7 EdPIT", "data/test")
+# get_usable_data('data/raw_data/MC_data', 'data/raw_data/useable_data')
+# get_usable_data('data/raw_data/invotive', 'data/raw_data/useable_data')
+# # get_total_images('data/useable_data')
+# get_usable_data('data/raw_data/032224 MCF7 EdPIT', 'data/raw_data/useable_data')
+# # move_files_mask("data/raw_data/032224 MCF7 EdPIT", "data/test")

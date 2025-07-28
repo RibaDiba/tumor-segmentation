@@ -45,7 +45,7 @@ def count_mask_augmentations(mask_image: np.ndarray) -> int:
 
 
 @pytest.mark.parametrize("dir", [
-    (str(PROJECT_ROOT / "data/raw_data/useable_data")),
+    (str(PROJECT_ROOT / "data/huggingface-repo/useable_data")),
 ])
 
 def test_annotations(dir):

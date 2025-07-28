@@ -20,9 +20,22 @@ also this is where we can create a hook to visualize training loss
 class Trainer(DefaultTrainer):
     @classmethod 
     def build_train_loader(cls, cfg):
+        augs = T.AugmentationList([
+            T.RandomFlip(0.2, horizontal=True, vertical=False),
+            T.RandomFlip(0.2, horizontal=False, vertical=True),
+            T.RandomRotation([-15, 15], expand=False)
+        ])
+
+        # create a default mapper (had issues with creating a custom one)
+        mapper = DatasetMapper(
+            cfg, 
+            augmentations=augs,
+            use_instance_mask=True,
+        )
+
         return build_detection_train_loader(
             cfg,
-            mapper=tumor_mapper,
+            mapper=mapper,
         )
     
     @classmethod 
@@ -42,13 +55,8 @@ class Trainer(DefaultTrainer):
         return hooks
     
 
-augs = T.AugmentationList([
-    T.RandomFlip(0.2, horizontal=True, vertical=False),
-    T.RandomFlip(0.2, horizontal=False, vertical=True),
-    T.RandomRotation([-15, 15], expand=False)
-])
-
-# custom mapper
+# custom mapper - not used 
+@DeprecationWarning
 def tumor_mapper(dataset_dict):
     dataset_dict = dataset_dict.copy()
     image = utils.read_image(dataset_dict["file_name"], format="BGR")

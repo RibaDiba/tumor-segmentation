@@ -14,7 +14,7 @@ the second passthrough through the dict checks to see if each key points to a se
 project_root = Path(__file__).parent.parent.parent.parent.parent
 
 @pytest.mark.parametrize("dir", [
-    (project_root / "data/raw_data/useable_data"), 
+    (project_root / "data/huggingface-repo/useable_data"), 
 ])
 
 def test_sets(dir):

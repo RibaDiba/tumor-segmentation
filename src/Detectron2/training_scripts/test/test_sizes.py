@@ -20,7 +20,7 @@ expected_sizes = {
 }
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    (project_root / "data/raw_data/useable_data", expected_sizes)
+    (project_root / "data/huggingface-repo/useable_data", expected_sizes)
 ])
 
 def test_image_size_raw(dir, expected_sizes: Dict):
@@ -57,7 +57,7 @@ def test_image_size_raw(dir, expected_sizes: Dict):
     assert len(new_sizes) == 0, f"{dir} has invalid dimensions of {new_sizes}"
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    (project_root / "data/raw_data/useable_data", expected_sizes)
+    (project_root / "data/huggingface-repo/useable_data", expected_sizes)
 ])
 
 def test_image_size_mask(dir, expected_sizes: Dict):
