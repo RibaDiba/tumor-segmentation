@@ -45,7 +45,7 @@ sleep 1
 echo "Running tests..."
 
 # Run tests
-if pytest "${ROOT_PATH}/test"; then
+if pytest -s "${ROOT_PATH}/test"; then
     echo "Tests successful! Running training script..."
     python3 ${ROOT_PATH}train.py \
         "$NAME" \
