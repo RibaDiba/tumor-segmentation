@@ -1,9 +1,0 @@
-Check logs below to see if args are correct:
-Name: rgb-test
-Iterations: 2000
-RGB: true
-Depth: false
-RGD: false
-Split Cashe: true
-Path: ../
-Running tests...
