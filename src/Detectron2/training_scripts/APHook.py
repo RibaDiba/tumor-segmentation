@@ -1,4 +1,4 @@
-import os
+import os, json
 import matplotlib.pyplot as plt
 import torch
 from detectron2.engine import DefaultTrainer
@@ -9,11 +9,12 @@ from detectron2.utils.events import get_event_storage
 
 
 class APVisualizationHook(HookBase):
-    def __init__(self, output_dir: str, cfg):
+    def __init__(self, output_dir: str, cfg, save_data: bool = False):
         super().__init__()
         self.cfg = cfg
         self.output_dir = output_dir  # not from config for now
         self.eval_period = 50
+        self.save_data = save_data
 
         # get info from config
         # use MODEL.NAME, adjust to your config key if different
@@ -46,6 +47,9 @@ class APVisualizationHook(HookBase):
         plt.close()
         print(f"Saved AP curve to {save_path}")
 
+        if self.save_data: 
+            self._save_data()
+
     def _get_ap_numbers(self) -> float:
         cfg = self.trainer.cfg
         evaluator = COCOEvaluator(
@@ -62,3 +66,19 @@ class APVisualizationHook(HookBase):
         mAP50 = results.get("segm", {}).get("AP50", 0.0)
         print(f"[Iter {cfg.SOLVER.IMS_PER_BATCH} AP] → mAP@[.5:.95] = {mAP:.3f}")
         return mAP, mAP75, mAP50
+    
+    def _save_data(self):
+        json_out = os.path.join(self.output_dir, f"/json_{self.model_name}")
+        os.makedirs(json_out, exist_ok=True)
+        # create into one dict 
+        full_dict = {
+            "AP": self.AP_dict,
+            "AP75": self.AP_75,
+            "AP50": self.AP_50
+        }
+
+        with open(f"json_{self.model_name}", "w") as f:
+            json.dump(full_dict, f, indent=4)
+
+
+
