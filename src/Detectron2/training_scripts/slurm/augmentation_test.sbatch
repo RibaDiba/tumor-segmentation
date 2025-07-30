@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=test-parse-4
+#SBATCH --job-name=rgb-testing-ap-1-40000
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,16 +10,16 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=logs/test-parse-4/%x.%j.out   # STDOUT → logs/test-parse-4/<jobid>.out
-#SBATCH --error=logs/test-parse-4/%x.%j.err    # STDERR → logs/test-parse-4/<jobid>.err
+#SBATCH --output=logs/rgb-testing-ap-1-40000/%x.%j.out   # STDOUT → logs/rgb-testing-ap-1-40000/<jobid>.out
+#SBATCH --error=logs/rgb-testing-ap-1-40000/%x.%j.err    # STDERR → logs/rgb-testing-ap-1-40000/<jobid>.err
 
 # config: 
-NAME="test-parse-4"
-ITER=1000
+NAME="rgb-testing-ap-1-40000"
+ITER=40000
 
 # create a logs dir 
 mkdir logs/${NAME}
 
 
 
-../train.sh --name ${NAME} --iter ${ITER}  --root-path ../ --rgb true --split-cashe false
+../train.sh --name ${NAME} --iter ${ITER}  --root-path ../ --rgb true --split-cashe false --skip-tests true
