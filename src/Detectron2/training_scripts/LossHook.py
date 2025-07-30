@@ -1,6 +1,9 @@
-import os, matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import torch, os
 from detectron2.engine.hooks import HookBase
 from detectron2.utils.events import get_event_storage
+from detectron2.data import build_detection_test_loader, MetadataCatalog, DatasetMapper, DatasetCatalog
+from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 
 
 """
@@ -10,16 +13,23 @@ after each step we record the current loss data and after training we save every
 this is not a general use class and is specific to our use case 
 (i.e specifically looking at loss_mask and total_loss)
 
+every 100 iterations, we are going to look at the data and append it to the loss plot 
+
 might make it more general later 
 """
 
-class LossVisualizationHook(HookBase):
+class TrainingLossHook(HookBase):
 
-    def __init__(self, output_dir, model_name, save_data=True):
+    def __init__(self, output_dir, model_name, test_loader, cfg, save_data=True):
         self.save_data = save_data
         self.output_dir = output_dir
-        self.loss_dict_total = {}
-        self.loss_dict_mask = {}
+        self.eval_period = 50
+        self.loss_dict_total_train = {}
+        self.loss_dict_mask_train = {}
+        self.cfg = cfg
+
+        self.test_loader = test_loader
+
         self.model_name = model_name
 
         # make dir if doesnt exsist 
@@ -38,8 +48,8 @@ class LossVisualizationHook(HookBase):
         total_loss = current_scalars["total_loss"][0]
         mask_loss = current_scalars["loss_mask"][0]
 
-        self.loss_dict_total[iteration] = total_loss
-        self.loss_dict_mask[iteration] = mask_loss
+        self.loss_dict_total_train[iteration] = total_loss
+        self.loss_dict_mask_train[iteration] = mask_loss
 
     """
     now we can create the plots and save them to the output dir 
@@ -52,22 +62,44 @@ class LossVisualizationHook(HookBase):
         if self.save_data: 
             self._save_data()
         
-    
     def _save_plots(self):
-        fig, axs = plt.subplots(1, 2)
-        fig.suptitle(f"Losses for {self.model_name} - Trained with {self.trainer.max_iter} iterations")
+        fig, axs = plt.subplots(1, 2, figsize=(12, 5))
+        fig.suptitle(
+            f"Losses for {self.model_name} — {self.trainer.max_iter} iterations",
+            fontsize=14
+        )
 
-        axs[0].plot(list(self.loss_dict_total.keys()), list(self.loss_dict_total.values()))
-        axs[0].set_title("Total Loss Plot")
-  
-        axs[1].plot(list(self.loss_dict_mask.keys()), list(self.loss_dict_mask.values()))
-        axs[1].set_title("Mask Loss Plot")
+        axs[0].plot(
+            list(self.loss_dict_total_train.keys()),
+            list(self.loss_dict_total_train.values()),
+            label="train"
+        )
+        axs[0].set_title("Total Loss")
+        axs[0].set_xlabel("Iteration")
+        axs[0].set_ylabel("Loss")
+        axs[0].legend()
+        axs[0].grid(True)
 
-        fig.savefig(os.path.join(self.output_dir, f"{self.model_name}_plot.png"))
+        axs[1].plot(
+            list(self.loss_dict_mask_train.keys()),
+            list(self.loss_dict_mask_train.values()),
+            label="train"
+        )
+        axs[1].set_title("Mask Loss")
+        axs[1].set_xlabel("Iteration")
+        axs[1].set_ylabel("Loss")
+        axs[1].legend()
+        axs[1].grid(True)
 
-    # todo
-    def _save_data(self):
-        pass 
+        fig.tight_layout(rect=[0, 0.03, 1, 0.95])
+        out_path = os.path.join(self.output_dir, f"{self.model_name}_loss_plot.png")
+        fig.savefig(out_path)
+        plt.close(fig)
+        print(f"Saved loss curves to {out_path}")
+
+
+
     
-
-        
+    # TODO: finish this
+    def _save_data(self):
+        pass
