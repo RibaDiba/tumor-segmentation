@@ -1,5 +1,5 @@
 from detectron2.engine import DefaultTrainer
-from detectron2.data import build_detection_train_loader, DatasetMapper
+from detectron2.data import build_detection_train_loader, DatasetMapper, build_detection_test_loader
 from detectron2.data import transforms as T
 from detectron2.data import detection_utils as utils
 from detectron2.engine.hooks import HookBase
@@ -10,7 +10,8 @@ from collections import defaultdict
 import cv2, torch, os, json
 import numpy as np
 
-from LossHook import LossVisualizationHook
+from LossHook import TrainingLossHook
+from APHook import APVisualizationHook
 
 """
 this custom trainer class allows us to include image augmentations
@@ -20,22 +21,22 @@ also this is where we can create a hook to visualize training loss
 class Trainer(DefaultTrainer):
     @classmethod 
     def build_train_loader(cls, cfg):
-        augs = T.AugmentationList([
-            T.RandomFlip(0.2, horizontal=True, vertical=False),
-            T.RandomFlip(0.2, horizontal=False, vertical=True),
-            T.RandomRotation([-15, 15], expand=False)
-        ])
+        # augs = T.AugmentationList([
+        #     T.RandomFlip(0.2, horizontal=True, vertical=False),
+        #     T.RandomFlip(0.2, horizontal=False, vertical=True),
+        #     T.RandomRotation([-15, 15], expand=False)
+        # ])
 
-        # create a default mapper (had issues with creating a custom one)
-        mapper = DatasetMapper(
-            cfg, 
-            augmentations=augs,
-            use_instance_mask=True,
-        )
+        mapper = DatasetMapper(cfg)
+        return build_detection_train_loader(cfg, mapper=mapper)
 
-        return build_detection_train_loader(
+    @classmethod
+    def build_test_loader(cls, cfg, dataset_name):
+        test_mapper = DatasetMapper(cfg, is_train=True)
+        return build_detection_test_loader(
             cfg,
-            mapper=mapper,
+            dataset_name,
+            mapper=test_mapper
         )
     
     @classmethod 
@@ -45,12 +46,22 @@ class Trainer(DefaultTrainer):
     def build_hooks(self):
         hooks = super().build_hooks() # get all hooks 
         
-        loss_hook = LossVisualizationHook(
+        test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
+
+        loss_hook_training = TrainingLossHook(
             output_dir='./loss_plots',
             save_data=True,
-            model_name=self.cfg.MODELNAME
+            model_name=self.cfg.MODELNAME,
+            test_loader=test_loader,
+            cfg=self.cfg
         ) # create an instance of our custom hook 
-        hooks.append(loss_hook) # append hook 
+        hooks.append(loss_hook_training) # append hook 
+
+        ap_hook = APVisualizationHook(
+            output_dir='./ap_fig',
+            cfg=self.cfg
+        )
+        hooks.append(ap_hook)
         
         return hooks
     
