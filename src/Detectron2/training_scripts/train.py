@@ -46,7 +46,7 @@ def str2bool(v):
 
 # some custom classes 
 # Add the project root to the path to make imports system-independent
-sys.path.append("/home/am0532/tumor-seg/")
+sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
 from util.preprocessing.tumor_dataset import Dataset
 from src.Detectron2.TrainerClass import Trainer
 
