@@ -470,13 +470,15 @@ def infuse_depth_into_blue_channel(
 ) -> List[np.ndarray]:
     """
     Infuses depth map information into the blue channel of RGB images
-    by blending the depth map with the blue channel (50/50 weighted).
+    by fully replacing the blue channel with the normalized depth map.
     
     Parameters:
         image_array (List[np.ndarray]): List of RGB images (each shape: H x W x 3)
         depth_array (List[np.ndarray]): List of grayscale or BGR depth maps (each shape: H x W or H x W x 3)
 
-   """
+    Returns:
+        List[np.ndarray]: List of RGB images with depth fully infused into the blue channel
+    """
     if len(image_array) != len(depth_array):
         raise ValueError("image_array and depth_array must have the same length")
 
@@ -506,14 +508,10 @@ def infuse_depth_into_blue_channel(
         ).astype(np.uint8)
 
         # Split image channels
-        b, g, r = cv2.split(image)
+        _, g, r = cv2.split(image)
 
-        # Ensure matching dtypes before blending
-        b = b.astype(np.uint8)
-        depth_map_normalized = depth_map_normalized.astype(np.uint8)
-
-        # Blend the blue channel with the depth map
-        infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
+        # Replace the blue channel with the depth map
+        infused_blue = depth_map_normalized
 
         # Merge back the channels
         infused_image = cv2.merge((infused_blue, g, r))
@@ -521,6 +519,7 @@ def infuse_depth_into_blue_channel(
         image_array_infused.append(infused_image)
 
     return image_array_infused
+
 
 # this function exists for various reasons
 def convert_array_to_rgb(image_array):
