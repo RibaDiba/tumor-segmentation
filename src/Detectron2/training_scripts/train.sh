@@ -6,7 +6,7 @@ set -e
 # Default values
 NAME=""
 ITER=10
-RGB="true"
+RGB="false"
 DEPTH="false"
 RGD="false"
 SPLIT_CASHE="false"
