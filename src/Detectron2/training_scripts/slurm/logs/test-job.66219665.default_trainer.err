@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts/slurm/../train.py", line 119, in <module>
-    trainer = DefaultTrainer(cfg)
-              ^^^^^^^^^^^^^^
-NameError: name 'DefaultTrainer' is not defined

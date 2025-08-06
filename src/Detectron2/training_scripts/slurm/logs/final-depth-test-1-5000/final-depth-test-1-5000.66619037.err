@@ -1,0 +1,5 @@
+mkdir: cannot create directory ‘logs/final-depth-test-1-5000’: File exists
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts/slurm/../train.py", line 13, in <module>
+    import detectron2
+ModuleNotFoundError: No module named 'detectron2'
