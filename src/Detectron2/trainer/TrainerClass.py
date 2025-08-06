@@ -32,7 +32,7 @@ class Trainer(DefaultTrainer):
 
     @classmethod
     def build_test_loader(cls, cfg, dataset_name):
-        test_mapper = DatasetMapper(cfg, is_train=True)
+        test_mapper = DatasetMapper(cfg, is_train=False)
         return build_detection_test_loader(
             cfg,
             dataset_name,
@@ -49,7 +49,7 @@ class Trainer(DefaultTrainer):
         test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
         loss_hook_training = TrainingLossHook(
-            output_dir='./loss_plots',
+            output_dir='../slurm_output/loss_plots',
             save_data=True,
             model_name=self.cfg.MODELNAME,
             test_loader=test_loader,
@@ -58,7 +58,7 @@ class Trainer(DefaultTrainer):
         hooks.append(loss_hook_training) # append hook 
 
         ap_hook = APVisualizationHook(
-            output_dir='./ap_fig',
+            output_dir='../slurm_output/AP_Fig',
             cfg=self.cfg
         )
         hooks.append(ap_hook)
