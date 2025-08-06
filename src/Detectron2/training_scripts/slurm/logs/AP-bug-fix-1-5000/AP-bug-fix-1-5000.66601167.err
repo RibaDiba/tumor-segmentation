@@ -1,0 +1,2 @@
+mkdir: cannot create directory ‘logs/AP-bug-fix-1-5000’: File exists
+../train.sh: line 54: pytest: command not found

@@ -360,7 +360,7 @@ class Dataset:
     this function is js for convience to be used everywhere 
     also because some versions dont have the correct paths 
     """
-    def register_instances(self, rgb: bool=True, depth: bool=False, rgd: bool=False) -> None:
+    def register_instances(self, rgb: bool=False, depth: bool=False, rgd: bool=False) -> None:
         if rgb: 
             register_coco_instances("my_dataset_train", {}, os.path.join(self.rgb_train_dir, "train.json"), self.rgb_train_dir)
             register_coco_instances("my_dataset_val", {}, os.path.join(self.rgb_val_dir, "val.json"), self.rgb_val_dir)
