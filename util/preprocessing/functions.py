@@ -429,7 +429,7 @@ def read_contours_array_depth(self, data_array):
      return image_array
 
 #def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
-    image_array_infused = []
+    #image_array_infused = []
 
     #for i in tqdm(range(len(image_array)), desc="Infusing Images"):
         #image = image_array[i]
@@ -452,7 +452,7 @@ def read_contours_array_depth(self, data_array):
         # Ensure the blue channel and depth map have the same dimensions
         #if b.shape != depth_map_normalized.shape:
             # If they do not match, resize the depth map again to ensure consistency
-            depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
+            #depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
 
         # Infuse the depth map into the blue channel
         #infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
