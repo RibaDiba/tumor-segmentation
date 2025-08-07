@@ -48,7 +48,7 @@ def str2bool(v):
 # Add the project root to the path to make imports system-independent
 sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
 from util.preprocessing.tumor_dataset import Dataset
-from Detectron2.Trainer.TrainerClass import Trainer
+from src.Detectron2.trainer.TrainerClass import Trainer
 
 """
 now we're going to setup argparse here 
@@ -88,7 +88,7 @@ code is taken from the notebook file
 """
 
 # TODO: implement the argparser stuff here 
-d = Dataset(data_path="../../../../data/huggingface-repo/useable_data")
+d = Dataset(data_path="../../../data/huggingface-repo/useable_data")
 print("--DEBUGGING SPLIT_CASHE----")
 print("SPLIT_CASHE is", split_cashe)
 if split_cashe == True: 
@@ -116,7 +116,7 @@ test_dataset_dicts = DatasetCatalog.get("my_dataset_test")
 
 cfg = get_cfg()
 cfg.MODELNAME = model_name
-cfg.OUTPUT_DIR = f"../../../../models/rgb-testing/{cfg.MODELNAME}"
+cfg.OUTPUT_DIR = f"../../../../../models/rgb-testing/{cfg.MODELNAME}"
 cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
 cfg.DATASETS.TRAIN = ("my_dataset_train", "my_dataset_val")
 cfg.DATASETS.TEST = ("my_dataset_test",)
