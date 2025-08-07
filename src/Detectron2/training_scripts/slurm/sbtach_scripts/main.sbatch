@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=path-test-1-rgb
+#SBATCH --job-name=path-test-3-rgb
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,12 +10,12 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=logs/rgb-testing-ap-1-40000/%x.%j.out   # STDOUT → logs/path-test-1-rgb/<jobid>.out
-#SBATCH --error=logs/rgb-testing-ap-1-40000/%x.%j.err    # STDERR → logs/path-test-1-rgb/<jobid>.err
+#SBATCH --output=../logs/path-test-3-rgb/%x.%j.out   # STDOUT → ../logs/path-test-3-rgb/<jobid>.out
+#SBATCH --error=../logs/path-test-3-rgb/%x.%j.err    # STDERR → ../logs/path-test-3-rgb/<jobid>.err
 
 # config: 
-NAME="path-test-1-rgb"
-ITER=40000
+NAME="path-test-3-rgb"
+ITER=1500
 
 # create a logs dir 
 mkdir logs/${NAME}
