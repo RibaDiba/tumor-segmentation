@@ -10,8 +10,8 @@ from collections import defaultdict
 import cv2, torch, os, json
 import numpy as np
 
-from LossHook import TrainingLossHook
-from APHook import APVisualizationHook
+from ..hooks.LossHook import TrainingLossHook
+from ..hooks.APHook import APVisualizationHook
 
 """
 this custom trainer class allows us to include image augmentations
@@ -88,4 +88,3 @@ def tumor_mapper(dataset_dict):
         "height": image.shape[0], 
         "width": image.shape[1] 
     }
-
