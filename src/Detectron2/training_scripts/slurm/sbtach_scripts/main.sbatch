@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=path-test-3-rgb
+#SBATCH --job-name=rgd-5000-1
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,16 +10,16 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=../logs/path-test-3-rgb/%x.%j.out   # STDOUT → ../logs/path-test-3-rgb/<jobid>.out
-#SBATCH --error=../logs/path-test-3-rgb/%x.%j.err    # STDERR → ../logs/path-test-3-rgb/<jobid>.err
+#SBATCH --output=../logs/rgd-5000-1/%x.%j.out   # STDOUT → ../logs/rgd-5000-1/<jobid>.o3t
+#SBATCH --error=../logs/rgd-5000-1/%x.%j.err    # STDERR → ../logs/rgd-5000-1/<jobid>.e3r
 
 # config: 
-NAME="path-test-3-rgb"
-ITER=1500
+NAME="rgd-5000-1"
+ITER=5000
 
 # create a logs dir 
 mkdir logs/${NAME}
 
 
 
-../../train.sh --name ${NAME} --iter ${ITER}  --root-path ../../ --rgb true --split-cashe false --skip-tests true
+../../train.sh --name ${NAME} --iter ${ITER}  --root-path ../../ --rgd true --split-cashe false --skip-tests true

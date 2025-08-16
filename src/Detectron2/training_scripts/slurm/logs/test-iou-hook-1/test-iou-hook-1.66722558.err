@@ -1,0 +1,9 @@
+mkdir: cannot create directory ‘logs/test-iou-hook-1’: No such file or directory
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts/slurm/sbtach_scripts/../../train.py", line 51, in <module>
+    from src.Detectron2.trainer.TrainerClass import Trainer
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/trainer/TrainerClass.py", line 15, in <module>
+    from ..hooks.IoUHook import IoUHook
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/hooks/IoUHook.py", line 10, in <module>
+    from IoUEvaluator import PerImageIoUEvaluator
+ModuleNotFoundError: No module named 'IoUEvaluator'
