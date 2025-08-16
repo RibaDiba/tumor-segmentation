@@ -465,6 +465,7 @@ def read_contours_array_depth(self, data_array):
     #return image_array_infused
 
 def infuse_depth_into_blue_channel(
+    self,
     image_array: List[np.ndarray], 
     depth_array: List[np.ndarray]
 ) -> List[np.ndarray]:
