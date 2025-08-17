@@ -1,0 +1,11 @@
+Check logs below to see if args are correct:
+Name: test-iou-hook-5
+Iterations: 1500
+RGB: true
+Depth: false
+RGD: false
+Split Cashe: false
+Path: ../../
+Running tests...
+Skipping tests as SKIP_TEST=true
+Running training script...

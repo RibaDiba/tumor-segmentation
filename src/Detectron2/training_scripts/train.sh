@@ -10,7 +10,7 @@ RGB="false"
 DEPTH="false"
 RGD="false"
 SPLIT_CASHE="false"
-ROOT_PATH="/"
+ROOT_PATH="./"
 SKIP_TEST=false
 
 # Parse named arguments
@@ -51,7 +51,7 @@ echo "Running tests..."
 if [ "$SKIP_TEST" = true ]; then
   echo "Skipping tests as SKIP_TEST=true"
 else
-  if pytest -s "${ROOT_PATH}/test"; then
+  if pytest -s "${ROOT_PATH}test"; then
     echo "Tests successful!"
   else
     echo "Tests failed - check logs to adjust data/code"
@@ -61,7 +61,7 @@ fi
 
 # Run training script regardless of test outcome if tests were skipped or passed
 echo "Running training script..."
-python3 ${ROOT_PATH}train.py \
+python3 "${ROOT_PATH}train.py" \
   "$NAME" \
   "$ITER" \
   --rgb "$RGB" \
