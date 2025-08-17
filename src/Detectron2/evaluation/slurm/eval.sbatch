@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=test-job 
-#SBTACH --partition=pli 
+#SBATCH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
@@ -13,4 +13,4 @@
 #SBATCH --output=logs/%x.%j.out   # STDOUT → logs/<jobname>.<jobid>.out
 #SBATCH --error=logs/%x.%j.err    # STDERR → logs/<jobname>.<jobid>.err
 
-srun ../check-one.py 
+srun ../check-one.py

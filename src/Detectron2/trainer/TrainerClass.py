@@ -10,8 +10,9 @@ from collections import defaultdict
 import cv2, torch, os, json
 import numpy as np
 
-from LossHook import TrainingLossHook
-from APHook import APVisualizationHook
+from ..hooks.LossHook import TrainingLossHook
+from ..hooks.APHook import APVisualizationHook
+from ..hooks.IoUHook import IoUHook
 
 """
 this custom trainer class allows us to include image augmentations
@@ -49,7 +50,7 @@ class Trainer(DefaultTrainer):
         test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
         loss_hook_training = TrainingLossHook(
-            output_dir='../slurm_output/loss_plots',
+            output_dir='../../../slurm_output/loss_plots',
             save_data=True,
             model_name=self.cfg.MODELNAME,
             test_loader=test_loader,
@@ -58,10 +59,16 @@ class Trainer(DefaultTrainer):
         hooks.append(loss_hook_training) # append hook 
 
         ap_hook = APVisualizationHook(
-            output_dir='../slurm_output/AP_Fig',
+            output_dir='../../../slurm_output/AP_Fig',
             cfg=self.cfg
         )
         hooks.append(ap_hook)
+
+        iou_hook = IoUHook(
+            output_dir="../../../slurm_output/IoU_fig",
+            save_json=True
+        )
+        hooks.append(iou_hook)
         
         return hooks
     
@@ -88,4 +95,3 @@ def tumor_mapper(dataset_dict):
         "height": image.shape[0], 
         "width": image.shape[1] 
     }
-

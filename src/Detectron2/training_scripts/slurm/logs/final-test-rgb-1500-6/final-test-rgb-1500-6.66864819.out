@@ -1,0 +1,1612 @@
+Check logs below to see if args are correct:
+Name: final-test-rgb-1500-6
+Iterations: 1500
+RGB: true
+Depth: false
+RGD: false
+Split Cashe: false
+Path: ../../
+Running tests...
+Skipping tests as SKIP_TEST=true
+Running training script...
+Init Dataset
+--DEBUGGING SPLIT_CASHE----
+SPLIT_CASHE is False
+Created 411 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/train/masks
+Created 88 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/val/masks
+Created 89 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/masks
+Created 411 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/train/masks
+Created 88 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/val/masks
+Created 89 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/test/masks
+Created 411 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/train/masks
+Created 88 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/val/masks
+Created 89 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/masks
+[08/14 23:28:02 d2.data.datasets.coco]: Loaded 411 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/train/images/train.json
+[08/14 23:28:02 d2.data.datasets.coco]: Loaded 88 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/val/images/val.json
+[08/14 23:28:02 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:03 d2.engine.defaults]: Model:
+GeneralizedRCNN(
+  (backbone): FPN(
+    (fpn_lateral2): Conv2d(256, 256, kernel_size=(1, 1), stride=(1, 1))
+    (fpn_output2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (fpn_lateral3): Conv2d(512, 256, kernel_size=(1, 1), stride=(1, 1))
+    (fpn_output3): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (fpn_lateral4): Conv2d(1024, 256, kernel_size=(1, 1), stride=(1, 1))
+    (fpn_output4): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (fpn_lateral5): Conv2d(2048, 256, kernel_size=(1, 1), stride=(1, 1))
+    (fpn_output5): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+    (top_block): LastLevelMaxPool()
+    (bottom_up): ResNet(
+      (stem): BasicStem(
+        (conv1): Conv2d(
+          3, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False
+          (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+        )
+      )
+      (res2): Sequential(
+        (0): BottleneckBlock(
+          (shortcut): Conv2d(
+            64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv1): Conv2d(
+            64, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+        )
+        (1): BottleneckBlock(
+          (conv1): Conv2d(
+            256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+        )
+        (2): BottleneckBlock(
+          (conv1): Conv2d(
+            256, 64, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=64, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            64, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+        )
+      )
+      (res3): Sequential(
+        (0): BottleneckBlock(
+          (shortcut): Conv2d(
+            256, 512, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv1): Conv2d(
+            256, 128, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+        )
+        (1): BottleneckBlock(
+          (conv1): Conv2d(
+            512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+        )
+        (2): BottleneckBlock(
+          (conv1): Conv2d(
+            512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+        )
+        (3): BottleneckBlock(
+          (conv1): Conv2d(
+            512, 128, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=128, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            128, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+        )
+      )
+      (res4): Sequential(
+        (0): BottleneckBlock(
+          (shortcut): Conv2d(
+            512, 1024, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+          (conv1): Conv2d(
+            512, 256, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+        (1): BottleneckBlock(
+          (conv1): Conv2d(
+            1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+        (2): BottleneckBlock(
+          (conv1): Conv2d(
+            1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+        (3): BottleneckBlock(
+          (conv1): Conv2d(
+            1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+        (4): BottleneckBlock(
+          (conv1): Conv2d(
+            1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+        (5): BottleneckBlock(
+          (conv1): Conv2d(
+            1024, 256, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=256, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            256, 1024, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=1024, eps=1e-05)
+          )
+        )
+      )
+      (res5): Sequential(
+        (0): BottleneckBlock(
+          (shortcut): Conv2d(
+            1024, 2048, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+          )
+          (conv1): Conv2d(
+            1024, 512, kernel_size=(1, 1), stride=(2, 2), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+          )
+        )
+        (1): BottleneckBlock(
+          (conv1): Conv2d(
+            2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+          )
+        )
+        (2): BottleneckBlock(
+          (conv1): Conv2d(
+            2048, 512, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv2): Conv2d(
+            512, 512, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=512, eps=1e-05)
+          )
+          (conv3): Conv2d(
+            512, 2048, kernel_size=(1, 1), stride=(1, 1), bias=False
+            (norm): FrozenBatchNorm2d(num_features=2048, eps=1e-05)
+          )
+        )
+      )
+    )
+  )
+  (proposal_generator): RPN(
+    (rpn_head): StandardRPNHead(
+      (conv): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+        (activation): ReLU()
+      )
+      (objectness_logits): Conv2d(256, 3, kernel_size=(1, 1), stride=(1, 1))
+      (anchor_deltas): Conv2d(256, 12, kernel_size=(1, 1), stride=(1, 1))
+    )
+    (anchor_generator): DefaultAnchorGenerator(
+      (cell_anchors): BufferList()
+    )
+  )
+  (roi_heads): StandardROIHeads(
+    (box_pooler): ROIPooler(
+      (level_poolers): ModuleList(
+        (0): ROIAlign(output_size=(7, 7), spatial_scale=0.25, sampling_ratio=0, aligned=True)
+        (1): ROIAlign(output_size=(7, 7), spatial_scale=0.125, sampling_ratio=0, aligned=True)
+        (2): ROIAlign(output_size=(7, 7), spatial_scale=0.0625, sampling_ratio=0, aligned=True)
+        (3): ROIAlign(output_size=(7, 7), spatial_scale=0.03125, sampling_ratio=0, aligned=True)
+      )
+    )
+    (box_head): FastRCNNConvFCHead(
+      (flatten): Flatten(start_dim=1, end_dim=-1)
+      (fc1): Linear(in_features=12544, out_features=1024, bias=True)
+      (fc_relu1): ReLU()
+      (fc2): Linear(in_features=1024, out_features=1024, bias=True)
+      (fc_relu2): ReLU()
+    )
+    (box_predictor): FastRCNNOutputLayers(
+      (cls_score): Linear(in_features=1024, out_features=2, bias=True)
+      (bbox_pred): Linear(in_features=1024, out_features=4, bias=True)
+    )
+    (mask_pooler): ROIPooler(
+      (level_poolers): ModuleList(
+        (0): ROIAlign(output_size=(14, 14), spatial_scale=0.25, sampling_ratio=0, aligned=True)
+        (1): ROIAlign(output_size=(14, 14), spatial_scale=0.125, sampling_ratio=0, aligned=True)
+        (2): ROIAlign(output_size=(14, 14), spatial_scale=0.0625, sampling_ratio=0, aligned=True)
+        (3): ROIAlign(output_size=(14, 14), spatial_scale=0.03125, sampling_ratio=0, aligned=True)
+      )
+    )
+    (mask_head): MaskRCNNConvUpsampleHead(
+      (mask_fcn1): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+        (activation): ReLU()
+      )
+      (mask_fcn2): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+        (activation): ReLU()
+      )
+      (mask_fcn3): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+        (activation): ReLU()
+      )
+      (mask_fcn4): Conv2d(
+        256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1)
+        (activation): ReLU()
+      )
+      (deconv): ConvTranspose2d(256, 256, kernel_size=(2, 2), stride=(2, 2))
+      (deconv_relu): ReLU()
+      (predictor): Conv2d(256, 1, kernel_size=(1, 1), stride=(1, 1))
+    )
+  )
+)
+[08/14 23:28:03 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in training: [ResizeShortestEdge(short_edge_length=(640, 672, 704, 736, 768, 800), max_size=1333, sample_style='choice'), RandomFlip()]
+[08/14 23:28:03 d2.data.datasets.coco]: Loaded 411 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/train/images/train.json
+[08/14 23:28:03 d2.data.datasets.coco]: Loaded 88 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/val/images/val.json
+[08/14 23:28:03 d2.data.build]: Distribution of instances among all 1 categories:
+|  category  | #instances   |
+|:----------:|:-------------|
+|   Tumor    | 499          |
+|            |              |
+[08/14 23:28:03 d2.data.build]: Using training sampler TrainingSampler
+[08/14 23:28:03 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:03 d2.data.common]: Serializing 499 elements to byte tensors and concatenating them all ...
+[08/14 23:28:03 d2.data.common]: Serialized dataset takes 0.36 MiB
+[08/14 23:28:03 d2.data.build]: Making batched data loader with batch_size=2
+WARNING [08/14 23:28:03 d2.solver.build]: SOLVER.STEPS contains values larger than SOLVER.MAX_ITER. These values will be ignored.
+[08/14 23:28:03 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:03 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:03 d2.data.build]: Distribution of instances among all 1 categories:
+|  category  | #instances   |
+|:----------:|:-------------|
+|   Tumor    | 89           |
+|            |              |
+[08/14 23:28:03 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:03 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:03 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:03 d2.checkpoint.detection_checkpoint]: [DetectionCheckpointer] Loading from https://dl.fbaipublicfiles.com/detectron2/COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x/137849600/model_final_f10217.pkl ...
+[08/14 23:28:03 d2.engine.train_loop]: Starting training from iteration 0
+[08/14 23:28:07 d2.utils.events]:  eta: 0:03:09  iter: 19  total_loss: 1.316  loss_cls: 0.449  loss_box_reg: 0.1633  loss_mask: 0.6797  loss_rpn_cls: 0.006806  loss_rpn_loc: 0.008418    time: 0.1317  last_time: 0.1183  data_time: 0.0119  last_data_time: 0.0022   lr: 6.0688e-05  max_mem: 1600M
+[08/14 23:28:10 d2.utils.events]:  eta: 0:03:01  iter: 39  total_loss: 0.9511  loss_cls: 0.1663  loss_box_reg: 0.148  loss_mask: 0.6068  loss_rpn_cls: 0.005045  loss_rpn_loc: 0.006825    time: 0.1274  last_time: 0.1285  data_time: 0.0023  last_data_time: 0.0021   lr: 7.1938e-05  max_mem: 1600M
+[08/14 23:28:13 d2.utils.events]:  eta: 0:02:59  iter: 59  total_loss: 0.86  loss_cls: 0.1345  loss_box_reg: 0.163  loss_mask: 0.5448  loss_rpn_cls: 0.004622  loss_rpn_loc: 0.007952    time: 0.1267  last_time: 0.1191  data_time: 0.0023  last_data_time: 0.0023   lr: 8.3187e-05  max_mem: 1604M
+[08/14 23:28:15 d2.utils.events]:  eta: 0:02:58  iter: 79  total_loss: 0.732  loss_cls: 0.1246  loss_box_reg: 0.1872  loss_mask: 0.4404  loss_rpn_cls: 0.001606  loss_rpn_loc: 0.005618    time: 0.1267  last_time: 0.1327  data_time: 0.0023  last_data_time: 0.0022   lr: 9.4438e-05  max_mem: 1604M
+[08/14 23:28:18 d2.utils.events]:  eta: 0:02:56  iter: 99  total_loss: 0.6988  loss_cls: 0.1046  loss_box_reg: 0.1654  loss_mask: 0.3963  loss_rpn_cls: 0.001621  loss_rpn_loc: 0.004504    time: 0.1266  last_time: 0.1139  data_time: 0.0022  last_data_time: 0.0022   lr: 0.00010569  max_mem: 1612M
+[08/14 23:28:18 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:28:18 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:18 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:18 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:18 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:18 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:18 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:28:18 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0006 s/iter. Inference: 0.0330 s/iter. Eval: 0.0002 s/iter. Total: 0.0337 s/iter. ETA=0:00:02
+[08/14 23:28:21 d2.evaluation.evaluator]: Total inference time: 0:00:02.864210 (0.034098 s / iter per device, on 1 devices)
+[08/14 23:28:21 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.032954 s / iter per device, on 1 devices)
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.00s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.062
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.282
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.003
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.054
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.066
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.098
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.098
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.098
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.050
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.104
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|  AP   |  AP50  |  AP75  |  APs  |  APm  |  APl  |
+|:-----:|:------:|:------:|:-----:|:-----:|:-----:|
+| 6.236 | 28.160 | 0.297  |  nan  | 5.446 | 6.569 |
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.00s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.112
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.321
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.019
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.083
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.123
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.143
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.144
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.144
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.090
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.151
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm  |  APl   |
+|:------:|:------:|:------:|:-----:|:-----:|:------:|
+| 11.166 | 32.120 | 1.937  |  nan  | 8.350 | 12.286 |
+[08/14 23:28:21 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 11.166
+[08/14 23:28:21 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:21 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:21 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:21 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:21 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:21 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:21 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:28:23 d2.evaluation.evaluator]: Inference done 65/89. Dataloading: 0.0008 s/iter. Inference: 0.0333 s/iter. Eval: 0.0001 s/iter. Total: 0.0342 s/iter. ETA=0:00:00
+[08/14 23:28:24 d2.evaluation.evaluator]: Total inference time: 0:00:02.892516 (0.034435 s / iter per device, on 1 devices)
+[08/14 23:28:24 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033185 s / iter per device, on 1 devices)
+[08/14 23:28:27 d2.utils.events]:  eta: 0:02:53  iter: 119  total_loss: 0.5659  loss_cls: 0.09352  loss_box_reg: 0.1587  loss_mask: 0.3143  loss_rpn_cls: 0.002409  loss_rpn_loc: 0.003221    time: 0.1274  last_time: 0.1257  data_time: 0.0024  last_data_time: 0.0024   lr: 0.00011694  max_mem: 1612M
+[08/14 23:28:29 d2.utils.events]:  eta: 0:02:49  iter: 139  total_loss: 0.5069  loss_cls: 0.08157  loss_box_reg: 0.1635  loss_mask: 0.2548  loss_rpn_cls: 0.0004188  loss_rpn_loc: 0.003399    time: 0.1267  last_time: 0.1304  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00012819  max_mem: 1612M
+[08/14 23:28:32 d2.utils.events]:  eta: 0:02:47  iter: 159  total_loss: 0.5016  loss_cls: 0.07558  loss_box_reg: 0.1728  loss_mask: 0.2453  loss_rpn_cls: 0.0005888  loss_rpn_loc: 0.004273    time: 0.1266  last_time: 0.1258  data_time: 0.0024  last_data_time: 0.0024   lr: 0.00013944  max_mem: 1614M
+[08/14 23:28:34 d2.utils.events]:  eta: 0:02:44  iter: 179  total_loss: 0.4246  loss_cls: 0.06328  loss_box_reg: 0.1595  loss_mask: 0.2044  loss_rpn_cls: 0.0001467  loss_rpn_loc: 0.003523    time: 0.1262  last_time: 0.1196  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00015069  max_mem: 1616M
+[08/14 23:28:37 d2.utils.events]:  eta: 0:02:42  iter: 199  total_loss: 0.4238  loss_cls: 0.06097  loss_box_reg: 0.151  loss_mask: 0.1819  loss_rpn_cls: 0.0001673  loss_rpn_loc: 0.003899    time: 0.1263  last_time: 0.1315  data_time: 0.0024  last_data_time: 0.0024   lr: 0.00016194  max_mem: 1617M
+[08/14 23:28:37 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:28:37 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:37 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:37 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:37 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:37 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:37 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:28:37 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0334 s/iter. Eval: 0.0004 s/iter. Total: 0.0343 s/iter. ETA=0:00:02
+[08/14 23:28:40 d2.evaluation.evaluator]: Total inference time: 0:00:02.951779 (0.035140 s / iter per device, on 1 devices)
+[08/14 23:28:40 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033855 s / iter per device, on 1 devices)
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.340
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.880
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.099
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.260
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.352
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.418
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.445
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.445
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.260
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.468
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 34.005 | 87.953 | 9.936  |  nan  | 26.040 | 35.169 |
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.487
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.879
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.543
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.292
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.519
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.575
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.611
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.611
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.410
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.637
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 48.730 | 87.910 | 54.268 |  nan  | 29.242 | 51.885 |
+[08/14 23:28:40 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 48.730
+[08/14 23:28:40 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:40 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:40 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:40 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:40 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:40 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:40 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:28:42 d2.evaluation.evaluator]: Inference done 62/89. Dataloading: 0.0006 s/iter. Inference: 0.0338 s/iter. Eval: 0.0004 s/iter. Total: 0.0348 s/iter. ETA=0:00:00
+[08/14 23:28:43 d2.evaluation.evaluator]: Total inference time: 0:00:02.931924 (0.034904 s / iter per device, on 1 devices)
+[08/14 23:28:43 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033629 s / iter per device, on 1 devices)
+[08/14 23:28:46 d2.utils.events]:  eta: 0:02:39  iter: 219  total_loss: 0.421  loss_cls: 0.05457  loss_box_reg: 0.162  loss_mask: 0.1946  loss_rpn_cls: 0.0001665  loss_rpn_loc: 0.003278    time: 0.1262  last_time: 0.1142  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00017319  max_mem: 1636M
+[08/14 23:28:48 d2.utils.events]:  eta: 0:02:37  iter: 239  total_loss: 0.3407  loss_cls: 0.04451  loss_box_reg: 0.1457  loss_mask: 0.155  loss_rpn_cls: 0.0001975  loss_rpn_loc: 0.002875    time: 0.1263  last_time: 0.1294  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00018444  max_mem: 1636M
+[08/14 23:28:51 d2.utils.events]:  eta: 0:02:34  iter: 259  total_loss: 0.3358  loss_cls: 0.04075  loss_box_reg: 0.1255  loss_mask: 0.146  loss_rpn_cls: 4.938e-05  loss_rpn_loc: 0.004176    time: 0.1261  last_time: 0.1152  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00019569  max_mem: 1652M
+[08/14 23:28:53 d2.utils.events]:  eta: 0:02:32  iter: 279  total_loss: 0.3444  loss_cls: 0.03855  loss_box_reg: 0.111  loss_mask: 0.1719  loss_rpn_cls: 0.0001892  loss_rpn_loc: 0.004563    time: 0.1262  last_time: 0.1242  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00020694  max_mem: 1652M
+[08/14 23:28:56 d2.utils.events]:  eta: 0:02:30  iter: 299  total_loss: 0.2907  loss_cls: 0.03685  loss_box_reg: 0.0863  loss_mask: 0.1571  loss_rpn_cls: 0.000446  loss_rpn_loc: 0.004805    time: 0.1263  last_time: 0.1325  data_time: 0.0024  last_data_time: 0.0024   lr: 0.00021819  max_mem: 1652M
+[08/14 23:28:56 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:28:56 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:56 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:56 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:56 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:56 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:56 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:28:56 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0006 s/iter. Inference: 0.0339 s/iter. Eval: 0.0004 s/iter. Total: 0.0349 s/iter. ETA=0:00:02
+[08/14 23:28:59 d2.evaluation.evaluator]: Total inference time: 0:00:02.922400 (0.034790 s / iter per device, on 1 devices)
+[08/14 23:28:59 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033536 s / iter per device, on 1 devices)
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.638
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.923
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.826
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.553
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.652
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.703
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.715
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.715
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.733
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 63.810 | 92.255 | 82.588 |  nan  | 55.303 | 65.249 |
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.679
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.923
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.866
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.503
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.706
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.740
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.550
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.782
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 67.905 | 92.255 | 86.625 |  nan  | 50.342 | 70.622 |
+[08/14 23:28:59 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 67.905
+[08/14 23:28:59 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:59 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:28:59 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:28:59 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:28:59 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:28:59 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:28:59 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:01 d2.evaluation.evaluator]: Inference done 62/89. Dataloading: 0.0006 s/iter. Inference: 0.0340 s/iter. Eval: 0.0003 s/iter. Total: 0.0350 s/iter. ETA=0:00:00
+[08/14 23:29:02 d2.evaluation.evaluator]: Total inference time: 0:00:02.965999 (0.035310 s / iter per device, on 1 devices)
+[08/14 23:29:02 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.034054 s / iter per device, on 1 devices)
+[08/14 23:29:05 d2.utils.events]:  eta: 0:02:27  iter: 319  total_loss: 0.2663  loss_cls: 0.03065  loss_box_reg: 0.07666  loss_mask: 0.1597  loss_rpn_cls: 4.149e-05  loss_rpn_loc: 0.003504    time: 0.1260  last_time: 0.1167  data_time: 0.0024  last_data_time: 0.0022   lr: 0.00022944  max_mem: 1652M
+[08/14 23:29:07 d2.utils.events]:  eta: 0:02:24  iter: 339  total_loss: 0.2674  loss_cls: 0.02755  loss_box_reg: 0.07135  loss_mask: 0.1612  loss_rpn_cls: 2.197e-05  loss_rpn_loc: 0.003491    time: 0.1260  last_time: 0.1242  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00024069  max_mem: 1652M
+[08/14 23:29:10 d2.utils.events]:  eta: 0:02:22  iter: 359  total_loss: 0.2606  loss_cls: 0.02874  loss_box_reg: 0.07033  loss_mask: 0.1559  loss_rpn_cls: 1.116e-05  loss_rpn_loc: 0.003239    time: 0.1259  last_time: 0.1147  data_time: 0.0026  last_data_time: 0.0032   lr: 0.00025194  max_mem: 1652M
+[08/14 23:29:12 d2.utils.events]:  eta: 0:02:19  iter: 379  total_loss: 0.2784  loss_cls: 0.02887  loss_box_reg: 0.07362  loss_mask: 0.1722  loss_rpn_cls: 1.215e-05  loss_rpn_loc: 0.004049    time: 0.1260  last_time: 0.1232  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00026319  max_mem: 1652M
+[08/14 23:29:15 d2.utils.events]:  eta: 0:02:17  iter: 399  total_loss: 0.2281  loss_cls: 0.02546  loss_box_reg: 0.05703  loss_mask: 0.1478  loss_rpn_cls: 8.821e-06  loss_rpn_loc: 0.003129    time: 0.1259  last_time: 0.1207  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00027444  max_mem: 1657M
+[08/14 23:29:15 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:29:15 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:15 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:15 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:15 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:15 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:15 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:15 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0338 s/iter. Eval: 0.0003 s/iter. Total: 0.0346 s/iter. ETA=0:00:02
+[08/14 23:29:18 d2.evaluation.evaluator]: Total inference time: 0:00:02.922982 (0.034797 s / iter per device, on 1 devices)
+[08/14 23:29:18 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033551 s / iter per device, on 1 devices)
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.624
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.916
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.809
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.634
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.684
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.687
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.687
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.701
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 62.353 | 91.582 | 80.896 |  nan  | 55.969 | 63.392 |
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.673
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.916
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.846
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.511
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.691
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.729
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.730
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.730
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.752
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 67.311 | 91.582 | 84.609 |  nan  | 51.084 | 69.143 |
+[08/14 23:29:18 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 67.311
+[08/14 23:29:18 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:18 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:18 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:18 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:18 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:18 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:18 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:20 d2.evaluation.evaluator]: Inference done 63/89. Dataloading: 0.0006 s/iter. Inference: 0.0334 s/iter. Eval: 0.0003 s/iter. Total: 0.0344 s/iter. ETA=0:00:00
+[08/14 23:29:21 d2.evaluation.evaluator]: Total inference time: 0:00:02.915877 (0.034713 s / iter per device, on 1 devices)
+[08/14 23:29:21 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033477 s / iter per device, on 1 devices)
+[08/14 23:29:24 d2.utils.events]:  eta: 0:02:14  iter: 419  total_loss: 0.2451  loss_cls: 0.02344  loss_box_reg: 0.06179  loss_mask: 0.1515  loss_rpn_cls: 1.287e-05  loss_rpn_loc: 0.003235    time: 0.1259  last_time: 0.1154  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00028569  max_mem: 1657M
+[08/14 23:29:26 d2.utils.events]:  eta: 0:02:12  iter: 439  total_loss: 0.218  loss_cls: 0.02716  loss_box_reg: 0.05948  loss_mask: 0.1272  loss_rpn_cls: 2.377e-05  loss_rpn_loc: 0.00275    time: 0.1259  last_time: 0.1332  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00029694  max_mem: 1657M
+[08/14 23:29:29 d2.utils.events]:  eta: 0:02:09  iter: 459  total_loss: 0.2384  loss_cls: 0.0248  loss_box_reg: 0.05755  loss_mask: 0.1565  loss_rpn_cls: 1.323e-05  loss_rpn_loc: 0.003162    time: 0.1257  last_time: 0.1185  data_time: 0.0023  last_data_time: 0.0022   lr: 0.00030819  max_mem: 1657M
+[08/14 23:29:31 d2.utils.events]:  eta: 0:02:07  iter: 479  total_loss: 0.2651  loss_cls: 0.02099  loss_box_reg: 0.07418  loss_mask: 0.157  loss_rpn_cls: 0.000432  loss_rpn_loc: 0.003145    time: 0.1256  last_time: 0.1335  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00031944  max_mem: 1657M
+[08/14 23:29:34 d2.utils.events]:  eta: 0:02:04  iter: 499  total_loss: 0.2599  loss_cls: 0.02334  loss_box_reg: 0.05722  loss_mask: 0.1721  loss_rpn_cls: 1.855e-05  loss_rpn_loc: 0.002894    time: 0.1254  last_time: 0.1157  data_time: 0.0023  last_data_time: 0.0022   lr: 0.00033069  max_mem: 1657M
+[08/14 23:29:34 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:29:34 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:34 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:34 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:34 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:34 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:34 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:34 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0350 s/iter. Eval: 0.0003 s/iter. Total: 0.0358 s/iter. ETA=0:00:02
+[08/14 23:29:37 d2.evaluation.evaluator]: Total inference time: 0:00:02.900010 (0.034524 s / iter per device, on 1 devices)
+[08/14 23:29:37 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033261 s / iter per device, on 1 devices)
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.711
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.934
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.893
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.585
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.732
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.767
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.770
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.770
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.590
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.792
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.120 | 93.387 | 89.298 |  nan  | 58.456 | 73.202 |
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.705
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.934
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.893
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.550
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.726
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.757
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.757
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.782
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 70.496 | 93.387 | 89.316 |  nan  | 54.975 | 72.589 |
+[08/14 23:29:37 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 70.496
+[08/14 23:29:37 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:37 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:37 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:37 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:37 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:37 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:37 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:39 d2.evaluation.evaluator]: Inference done 64/89. Dataloading: 0.0006 s/iter. Inference: 0.0339 s/iter. Eval: 0.0003 s/iter. Total: 0.0349 s/iter. ETA=0:00:00
+[08/14 23:29:40 d2.evaluation.evaluator]: Total inference time: 0:00:02.968275 (0.035337 s / iter per device, on 1 devices)
+[08/14 23:29:40 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.034087 s / iter per device, on 1 devices)
+[08/14 23:29:42 d2.utils.events]:  eta: 0:02:01  iter: 519  total_loss: 0.2319  loss_cls: 0.02266  loss_box_reg: 0.06113  loss_mask: 0.1506  loss_rpn_cls: 2.2e-05  loss_rpn_loc: 0.003552    time: 0.1253  last_time: 0.1343  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00034194  max_mem: 1697M
+[08/14 23:29:45 d2.utils.events]:  eta: 0:01:59  iter: 539  total_loss: 0.2463  loss_cls: 0.02387  loss_box_reg: 0.05773  loss_mask: 0.1564  loss_rpn_cls: 6.056e-06  loss_rpn_loc: 0.003013    time: 0.1253  last_time: 0.1357  data_time: 0.0024  last_data_time: 0.0022   lr: 0.00035319  max_mem: 1697M
+[08/14 23:29:47 d2.utils.events]:  eta: 0:01:56  iter: 559  total_loss: 0.2613  loss_cls: 0.02246  loss_box_reg: 0.04969  loss_mask: 0.1656  loss_rpn_cls: 1.406e-05  loss_rpn_loc: 0.003586    time: 0.1253  last_time: 0.1322  data_time: 0.0023  last_data_time: 0.0022   lr: 0.00036444  max_mem: 1697M
+[08/14 23:29:50 d2.utils.events]:  eta: 0:01:54  iter: 579  total_loss: 0.2626  loss_cls: 0.02649  loss_box_reg: 0.05802  loss_mask: 0.1808  loss_rpn_cls: 2.853e-05  loss_rpn_loc: 0.003362    time: 0.1254  last_time: 0.1272  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00037569  max_mem: 1697M
+[08/14 23:29:52 d2.utils.events]:  eta: 0:01:52  iter: 599  total_loss: 0.2365  loss_cls: 0.02336  loss_box_reg: 0.05491  loss_mask: 0.1446  loss_rpn_cls: 1.569e-05  loss_rpn_loc: 0.00261    time: 0.1253  last_time: 0.1204  data_time: 0.0023  last_data_time: 0.0021   lr: 0.00038694  max_mem: 1697M
+[08/14 23:29:53 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:29:53 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:53 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:53 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:53 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:53 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:53 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:53 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0332 s/iter. Eval: 0.0003 s/iter. Total: 0.0340 s/iter. ETA=0:00:02
+[08/14 23:29:56 d2.evaluation.evaluator]: Total inference time: 0:00:02.890103 (0.034406 s / iter per device, on 1 devices)
+[08/14 23:29:56 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033122 s / iter per device, on 1 devices)
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.669
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.907
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.834
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.564
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.683
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.719
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.737
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.737
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.600
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.754
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 66.929 | 90.654 | 83.376 |  nan  | 56.428 | 68.271 |
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.661
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.883
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.818
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.503
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.680
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.700
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.717
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.717
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.590
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.733
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 66.090 | 88.349 | 81.789 |  nan  | 50.265 | 68.013 |
+[08/14 23:29:56 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 66.090
+[08/14 23:29:56 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:56 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:29:56 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:29:56 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:29:56 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:29:56 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:29:56 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:29:58 d2.evaluation.evaluator]: Inference done 64/89. Dataloading: 0.0006 s/iter. Inference: 0.0333 s/iter. Eval: 0.0003 s/iter. Total: 0.0342 s/iter. ETA=0:00:00
+[08/14 23:29:59 d2.evaluation.evaluator]: Total inference time: 0:00:02.899599 (0.034519 s / iter per device, on 1 devices)
+[08/14 23:29:59 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033266 s / iter per device, on 1 devices)
+[08/14 23:30:01 d2.utils.events]:  eta: 0:01:49  iter: 619  total_loss: 0.2193  loss_cls: 0.02443  loss_box_reg: 0.05894  loss_mask: 0.1388  loss_rpn_cls: 7.142e-06  loss_rpn_loc: 0.002844    time: 0.1253  last_time: 0.1303  data_time: 0.0024  last_data_time: 0.0024   lr: 0.00039819  max_mem: 1697M
+[08/14 23:30:04 d2.utils.events]:  eta: 0:01:47  iter: 639  total_loss: 0.2464  loss_cls: 0.02339  loss_box_reg: 0.0606  loss_mask: 0.1466  loss_rpn_cls: 7.678e-06  loss_rpn_loc: 0.002323    time: 0.1252  last_time: 0.1220  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00040944  max_mem: 1697M
+[08/14 23:30:06 d2.utils.events]:  eta: 0:01:44  iter: 659  total_loss: 0.2198  loss_cls: 0.02346  loss_box_reg: 0.06158  loss_mask: 0.1372  loss_rpn_cls: 1.769e-05  loss_rpn_loc: 0.002946    time: 0.1252  last_time: 0.1292  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00042069  max_mem: 1697M
+[08/14 23:30:09 d2.utils.events]:  eta: 0:01:41  iter: 679  total_loss: 0.2287  loss_cls: 0.021  loss_box_reg: 0.05821  loss_mask: 0.1489  loss_rpn_cls: 7.312e-06  loss_rpn_loc: 0.002478    time: 0.1251  last_time: 0.1149  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00043194  max_mem: 1697M
+[08/14 23:30:11 d2.utils.events]:  eta: 0:01:39  iter: 699  total_loss: 0.2299  loss_cls: 0.02117  loss_box_reg: 0.05742  loss_mask: 0.1428  loss_rpn_cls: 5.321e-06  loss_rpn_loc: 0.003156    time: 0.1251  last_time: 0.1331  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00044319  max_mem: 1697M
+[08/14 23:30:11 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:30:11 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:11 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:11 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:11 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:11 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:11 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:12 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0340 s/iter. Eval: 0.0003 s/iter. Total: 0.0349 s/iter. ETA=0:00:02
+[08/14 23:30:15 d2.evaluation.evaluator]: Total inference time: 0:00:02.916295 (0.034718 s / iter per device, on 1 devices)
+[08/14 23:30:15 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033476 s / iter per device, on 1 devices)
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.714
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.896
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.564
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.735
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.760
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.765
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.765
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.790
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.357 | 93.808 | 89.617 |  nan  | 56.356 | 73.472 |
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.728
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.905
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.542
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.751
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.763
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.770
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.770
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.796
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 72.803 | 93.808 | 90.542 |  nan  | 54.204 | 75.104 |
+[08/14 23:30:15 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 72.803
+[08/14 23:30:15 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:15 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:15 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:15 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:15 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:15 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:15 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:17 d2.evaluation.evaluator]: Inference done 64/89. Dataloading: 0.0006 s/iter. Inference: 0.0333 s/iter. Eval: 0.0003 s/iter. Total: 0.0343 s/iter. ETA=0:00:00
+[08/14 23:30:18 d2.evaluation.evaluator]: Total inference time: 0:00:02.892457 (0.034434 s / iter per device, on 1 devices)
+[08/14 23:30:18 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033189 s / iter per device, on 1 devices)
+[08/14 23:30:20 d2.utils.events]:  eta: 0:01:36  iter: 719  total_loss: 0.1986  loss_cls: 0.01857  loss_box_reg: 0.05231  loss_mask: 0.1168  loss_rpn_cls: 6.607e-06  loss_rpn_loc: 0.002733    time: 0.1249  last_time: 0.1211  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00045444  max_mem: 1697M
+[08/14 23:30:22 d2.utils.events]:  eta: 0:01:34  iter: 739  total_loss: 0.2206  loss_cls: 0.02209  loss_box_reg: 0.06491  loss_mask: 0.1388  loss_rpn_cls: 8.91e-05  loss_rpn_loc: 0.002651    time: 0.1248  last_time: 0.1264  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00046569  max_mem: 1697M
+[08/14 23:30:25 d2.utils.events]:  eta: 0:01:31  iter: 759  total_loss: 0.1914  loss_cls: 0.02172  loss_box_reg: 0.05631  loss_mask: 0.1319  loss_rpn_cls: 1.195e-05  loss_rpn_loc: 0.002898    time: 0.1247  last_time: 0.1218  data_time: 0.0023  last_data_time: 0.0023   lr: 0.00047694  max_mem: 1697M
+[08/14 23:30:27 d2.utils.events]:  eta: 0:01:29  iter: 779  total_loss: 0.234  loss_cls: 0.02447  loss_box_reg: 0.05628  loss_mask: 0.1513  loss_rpn_cls: 9.837e-06  loss_rpn_loc: 0.003276    time: 0.1248  last_time: 0.1222  data_time: 0.0024  last_data_time: 0.0023   lr: 0.00048819  max_mem: 1697M
+[08/14 23:30:30 d2.utils.events]:  eta: 0:01:26  iter: 799  total_loss: 0.2323  loss_cls: 0.02249  loss_box_reg: 0.05737  loss_mask: 0.1409  loss_rpn_cls: 5.42e-06  loss_rpn_loc: 0.002724    time: 0.1248  last_time: 0.1218  data_time: 0.0023  last_data_time: 0.0022   lr: 0.00049944  max_mem: 1697M
+[08/14 23:30:30 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:30:30 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:30 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:30 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:30 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:30 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:30 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:30 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0330 s/iter. Eval: 0.0003 s/iter. Total: 0.0338 s/iter. ETA=0:00:02
+[08/14 23:30:33 d2.evaluation.evaluator]: Total inference time: 0:00:02.902827 (0.034557 s / iter per device, on 1 devices)
+[08/14 23:30:33 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033223 s / iter per device, on 1 devices)
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.719
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.895
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.575
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.739
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.772
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.775
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.775
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.590
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.799
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.886 | 93.846 | 89.512 |  nan  | 57.500 | 73.891 |
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.723
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.874
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.520
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.748
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.767
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.580
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.792
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 72.266 | 93.846 | 87.380 |  nan  | 52.023 | 74.759 |
+[08/14 23:30:33 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 72.266
+[08/14 23:30:33 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:33 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:33 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:33 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:33 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:33 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:33 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:36 d2.evaluation.evaluator]: Inference done 63/89. Dataloading: 0.0008 s/iter. Inference: 0.0337 s/iter. Eval: 0.0004 s/iter. Total: 0.0349 s/iter. ETA=0:00:00
+[08/14 23:30:36 d2.evaluation.evaluator]: Total inference time: 0:00:02.971824 (0.035379 s / iter per device, on 1 devices)
+[08/14 23:30:36 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033874 s / iter per device, on 1 devices)
+[08/14 23:30:39 d2.utils.events]:  eta: 0:01:24  iter: 819  total_loss: 0.2178  loss_cls: 0.02536  loss_box_reg: 0.05448  loss_mask: 0.1292  loss_rpn_cls: 3.752e-05  loss_rpn_loc: 0.003074    time: 0.1247  last_time: 0.1205  data_time: 0.0024  last_data_time: 0.0022   lr: 0.0005  max_mem: 1697M
+[08/14 23:30:41 d2.utils.events]:  eta: 0:01:21  iter: 839  total_loss: 0.1998  loss_cls: 0.01959  loss_box_reg: 0.04866  loss_mask: 0.1207  loss_rpn_cls: 4.187e-06  loss_rpn_loc: 0.002632    time: 0.1247  last_time: 0.1312  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:30:44 d2.utils.events]:  eta: 0:01:19  iter: 859  total_loss: 0.2257  loss_cls: 0.02309  loss_box_reg: 0.05874  loss_mask: 0.1441  loss_rpn_cls: 4.69e-06  loss_rpn_loc: 0.002287    time: 0.1247  last_time: 0.1285  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:30:46 d2.utils.events]:  eta: 0:01:17  iter: 879  total_loss: 0.192  loss_cls: 0.02393  loss_box_reg: 0.04828  loss_mask: 0.1285  loss_rpn_cls: 7.338e-06  loss_rpn_loc: 0.002601    time: 0.1248  last_time: 0.1072  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:30:49 d2.utils.events]:  eta: 0:01:14  iter: 899  total_loss: 0.2066  loss_cls: 0.02098  loss_box_reg: 0.05243  loss_mask: 0.124  loss_rpn_cls: 1.013e-05  loss_rpn_loc: 0.002719    time: 0.1247  last_time: 0.1161  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:30:49 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:30:49 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:49 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:49 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:49 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:49 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:49 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:49 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0006 s/iter. Inference: 0.0334 s/iter. Eval: 0.0003 s/iter. Total: 0.0343 s/iter. ETA=0:00:02
+[08/14 23:30:52 d2.evaluation.evaluator]: Total inference time: 0:00:02.911935 (0.034666 s / iter per device, on 1 devices)
+[08/14 23:30:52 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033306 s / iter per device, on 1 devices)
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.702
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.896
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.541
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.723
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.752
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.540
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.784
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 70.176 | 93.804 | 89.556 |  nan  | 54.059 | 72.275 |
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.728
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.908
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.544
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.751
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.766
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.771
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.771
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.797
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 72.796 | 93.804 | 90.752 |  nan  | 54.422 | 75.099 |
+[08/14 23:30:52 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 72.796
+[08/14 23:30:52 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:52 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:30:52 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:30:52 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:30:52 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:30:52 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:30:52 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:30:54 d2.evaluation.evaluator]: Inference done 63/89. Dataloading: 0.0007 s/iter. Inference: 0.0336 s/iter. Eval: 0.0004 s/iter. Total: 0.0347 s/iter. ETA=0:00:00
+[08/14 23:30:55 d2.evaluation.evaluator]: Total inference time: 0:00:02.926026 (0.034834 s / iter per device, on 1 devices)
+[08/14 23:30:55 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033476 s / iter per device, on 1 devices)
+[08/14 23:30:58 d2.utils.events]:  eta: 0:01:12  iter: 919  total_loss: 0.231  loss_cls: 0.02263  loss_box_reg: 0.05955  loss_mask: 0.1421  loss_rpn_cls: 3.374e-05  loss_rpn_loc: 0.002669    time: 0.1248  last_time: 0.1290  data_time: 0.0023  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:00 d2.utils.events]:  eta: 0:01:09  iter: 939  total_loss: 0.2257  loss_cls: 0.02517  loss_box_reg: 0.05884  loss_mask: 0.141  loss_rpn_cls: 2.547e-05  loss_rpn_loc: 0.00327    time: 0.1248  last_time: 0.1336  data_time: 0.0024  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:03 d2.utils.events]:  eta: 0:01:07  iter: 959  total_loss: 0.2195  loss_cls: 0.02209  loss_box_reg: 0.05697  loss_mask: 0.1342  loss_rpn_cls: 4.696e-06  loss_rpn_loc: 0.003096    time: 0.1247  last_time: 0.1332  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:05 d2.utils.events]:  eta: 0:01:04  iter: 979  total_loss: 0.2564  loss_cls: 0.02115  loss_box_reg: 0.06087  loss_mask: 0.1587  loss_rpn_cls: 3.751e-05  loss_rpn_loc: 0.002914    time: 0.1248  last_time: 0.1390  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:08 d2.utils.events]:  eta: 0:01:02  iter: 999  total_loss: 0.2296  loss_cls: 0.02493  loss_box_reg: 0.05804  loss_mask: 0.1406  loss_rpn_cls: 4.243e-06  loss_rpn_loc: 0.002561    time: 0.1249  last_time: 0.1311  data_time: 0.0024  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:08 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:31:08 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:08 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:08 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:08 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:08 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:08 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:09 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0329 s/iter. Eval: 0.0003 s/iter. Total: 0.0338 s/iter. ETA=0:00:02
+[08/14 23:31:11 d2.evaluation.evaluator]: Total inference time: 0:00:02.924355 (0.034814 s / iter per device, on 1 devices)
+[08/14 23:31:11 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033518 s / iter per device, on 1 devices)
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.709
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.941
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.882
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.560
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.729
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.753
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.580
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.778
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 70.899 | 94.086 | 88.232 |  nan  | 56.023 | 72.871 |
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.14s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.716
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.931
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.882
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.579
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.734
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.752
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.753
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.753
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.590
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.773
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.584 | 93.106 | 88.232 |  nan  | 57.874 | 73.366 |
+[08/14 23:31:11 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 71.584
+[08/14 23:31:11 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:11 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:11 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:11 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:11 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:11 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:11 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:14 d2.evaluation.evaluator]: Inference done 60/89. Dataloading: 0.0006 s/iter. Inference: 0.0332 s/iter. Eval: 0.0003 s/iter. Total: 0.0341 s/iter. ETA=0:00:00
+[08/14 23:31:15 d2.evaluation.evaluator]: Total inference time: 0:00:02.886929 (0.034368 s / iter per device, on 1 devices)
+[08/14 23:31:15 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033118 s / iter per device, on 1 devices)
+[08/14 23:31:17 d2.utils.events]:  eta: 0:00:59  iter: 1019  total_loss: 0.2056  loss_cls: 0.02156  loss_box_reg: 0.05488  loss_mask: 0.13  loss_rpn_cls: 2.627e-06  loss_rpn_loc: 0.002598    time: 0.1249  last_time: 0.1120  data_time: 0.0023  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:19 d2.utils.events]:  eta: 0:00:57  iter: 1039  total_loss: 0.1887  loss_cls: 0.02388  loss_box_reg: 0.056  loss_mask: 0.1138  loss_rpn_cls: 3.963e-06  loss_rpn_loc: 0.002306    time: 0.1249  last_time: 0.1233  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:22 d2.utils.events]:  eta: 0:00:54  iter: 1059  total_loss: 0.1905  loss_cls: 0.02119  loss_box_reg: 0.05016  loss_mask: 0.1219  loss_rpn_cls: 1.021e-05  loss_rpn_loc: 0.002426    time: 0.1249  last_time: 0.1322  data_time: 0.0023  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:24 d2.utils.events]:  eta: 0:00:52  iter: 1079  total_loss: 0.1989  loss_cls: 0.02008  loss_box_reg: 0.05044  loss_mask: 0.1248  loss_rpn_cls: 8.921e-06  loss_rpn_loc: 0.00245    time: 0.1249  last_time: 0.1288  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:27 d2.utils.events]:  eta: 0:00:49  iter: 1099  total_loss: 0.2002  loss_cls: 0.01985  loss_box_reg: 0.05342  loss_mask: 0.1187  loss_rpn_cls: 4.357e-06  loss_rpn_loc: 0.002027    time: 0.1248  last_time: 0.1307  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:27 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:31:27 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:27 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:27 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:27 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:27 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:27 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:27 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0331 s/iter. Eval: 0.0003 s/iter. Total: 0.0339 s/iter. ETA=0:00:02
+[08/14 23:31:30 d2.evaluation.evaluator]: Total inference time: 0:00:02.886326 (0.034361 s / iter per device, on 1 devices)
+[08/14 23:31:30 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033118 s / iter per device, on 1 devices)
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.699
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.929
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.878
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.527
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.722
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.747
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.748
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.748
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.540
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.775
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 69.937 | 92.903 | 87.848 |  nan  | 52.726 | 72.174 |
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.712
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.929
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.899
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.559
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.730
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.757
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.757
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.781
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.190 | 92.865 | 89.864 |  nan  | 55.879 | 73.002 |
+[08/14 23:31:30 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 71.190
+[08/14 23:31:30 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:30 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:30 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:30 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:30 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:30 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:30 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:32 d2.evaluation.evaluator]: Inference done 65/89. Dataloading: 0.0006 s/iter. Inference: 0.0328 s/iter. Eval: 0.0003 s/iter. Total: 0.0338 s/iter. ETA=0:00:00
+[08/14 23:31:33 d2.evaluation.evaluator]: Total inference time: 0:00:02.862563 (0.034078 s / iter per device, on 1 devices)
+[08/14 23:31:33 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.032824 s / iter per device, on 1 devices)
+[08/14 23:31:36 d2.utils.events]:  eta: 0:00:47  iter: 1119  total_loss: 0.2115  loss_cls: 0.01941  loss_box_reg: 0.04913  loss_mask: 0.1375  loss_rpn_cls: 2e-05  loss_rpn_loc: 0.002279    time: 0.1248  last_time: 0.1126  data_time: 0.0026  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:38 d2.utils.events]:  eta: 0:00:44  iter: 1139  total_loss: 0.1871  loss_cls: 0.01976  loss_box_reg: 0.04551  loss_mask: 0.1233  loss_rpn_cls: 4.227e-06  loss_rpn_loc: 0.00245    time: 0.1248  last_time: 0.1318  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:41 d2.utils.events]:  eta: 0:00:42  iter: 1159  total_loss: 0.22  loss_cls: 0.02299  loss_box_reg: 0.06136  loss_mask: 0.1374  loss_rpn_cls: 9.266e-06  loss_rpn_loc: 0.002271    time: 0.1247  last_time: 0.1138  data_time: 0.0023  last_data_time: 0.0021   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:43 d2.utils.events]:  eta: 0:00:39  iter: 1179  total_loss: 0.2184  loss_cls: 0.02094  loss_box_reg: 0.05411  loss_mask: 0.1294  loss_rpn_cls: 6.82e-06  loss_rpn_loc: 0.002409    time: 0.1247  last_time: 0.1260  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:46 d2.utils.events]:  eta: 0:00:37  iter: 1199  total_loss: 0.2286  loss_cls: 0.02312  loss_box_reg: 0.05979  loss_mask: 0.1363  loss_rpn_cls: 1.03e-05  loss_rpn_loc: 0.002561    time: 0.1247  last_time: 0.1211  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:46 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:31:46 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:46 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:46 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:46 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:46 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:46 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:46 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0338 s/iter. Eval: 0.0003 s/iter. Total: 0.0347 s/iter. ETA=0:00:02
+[08/14 23:31:49 d2.evaluation.evaluator]: Total inference time: 0:00:02.911771 (0.034664 s / iter per device, on 1 devices)
+[08/14 23:31:49 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033411 s / iter per device, on 1 devices)
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.696
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.935
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.876
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.594
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.714
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.753
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.600
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.776
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 69.634 | 93.490 | 87.619 |  nan  | 59.421 | 71.378 |
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.712
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.935
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.867
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.583
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.731
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.756
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.758
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.758
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.590
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.780
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.199 | 93.490 | 86.672 |  nan  | 58.295 | 73.105 |
+[08/14 23:31:49 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 71.199
+[08/14 23:31:49 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:49 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:31:49 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:31:49 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:31:49 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:31:49 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:31:49 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:31:51 d2.evaluation.evaluator]: Inference done 63/89. Dataloading: 0.0006 s/iter. Inference: 0.0335 s/iter. Eval: 0.0003 s/iter. Total: 0.0344 s/iter. ETA=0:00:00
+[08/14 23:31:52 d2.evaluation.evaluator]: Total inference time: 0:00:02.917495 (0.034732 s / iter per device, on 1 devices)
+[08/14 23:31:52 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033469 s / iter per device, on 1 devices)
+[08/14 23:31:54 d2.utils.events]:  eta: 0:00:34  iter: 1219  total_loss: 0.2053  loss_cls: 0.02301  loss_box_reg: 0.05736  loss_mask: 0.1292  loss_rpn_cls: 1.296e-05  loss_rpn_loc: 0.002672    time: 0.1247  last_time: 0.1253  data_time: 0.0024  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:57 d2.utils.events]:  eta: 0:00:32  iter: 1239  total_loss: 0.2051  loss_cls: 0.01968  loss_box_reg: 0.05327  loss_mask: 0.1306  loss_rpn_cls: 2.57e-06  loss_rpn_loc: 0.002584    time: 0.1246  last_time: 0.1073  data_time: 0.0024  last_data_time: 0.0022   lr: 0.0005  max_mem: 1697M
+[08/14 23:31:59 d2.utils.events]:  eta: 0:00:29  iter: 1259  total_loss: 0.2016  loss_cls: 0.01916  loss_box_reg: 0.04953  loss_mask: 0.13  loss_rpn_cls: 7.476e-06  loss_rpn_loc: 0.002684    time: 0.1246  last_time: 0.1066  data_time: 0.0023  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:02 d2.utils.events]:  eta: 0:00:27  iter: 1279  total_loss: 0.2288  loss_cls: 0.01945  loss_box_reg: 0.05287  loss_mask: 0.1497  loss_rpn_cls: 6.457e-06  loss_rpn_loc: 0.002646    time: 0.1247  last_time: 0.1309  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:04 d2.utils.events]:  eta: 0:00:24  iter: 1299  total_loss: 0.1851  loss_cls: 0.02126  loss_box_reg: 0.05296  loss_mask: 0.1188  loss_rpn_cls: 6.059e-06  loss_rpn_loc: 0.002385    time: 0.1247  last_time: 0.1234  data_time: 0.0025  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:05 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:32:05 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:05 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:05 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:05 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:05 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:05 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:05 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0331 s/iter. Eval: 0.0003 s/iter. Total: 0.0340 s/iter. ETA=0:00:02
+[08/14 23:32:08 d2.evaluation.evaluator]: Total inference time: 0:00:02.881017 (0.034298 s / iter per device, on 1 devices)
+[08/14 23:32:08 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033029 s / iter per device, on 1 devices)
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.715
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.937
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.898
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.565
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.733
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.763
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.767
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.767
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.792
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 71.507 | 93.707 | 89.811 |  nan  | 56.517 | 73.350 |
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.728
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.937
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.898
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.572
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.747
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.765
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.580
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.792
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 72.811 | 93.707 | 89.811 |  nan  | 57.177 | 74.660 |
+[08/14 23:32:08 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 72.811
+[08/14 23:32:08 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:08 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:08 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:08 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:08 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:08 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:08 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:10 d2.evaluation.evaluator]: Inference done 64/89. Dataloading: 0.0006 s/iter. Inference: 0.0338 s/iter. Eval: 0.0003 s/iter. Total: 0.0348 s/iter. ETA=0:00:00
+[08/14 23:32:11 d2.evaluation.evaluator]: Total inference time: 0:00:02.932031 (0.034905 s / iter per device, on 1 devices)
+[08/14 23:32:11 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033646 s / iter per device, on 1 devices)
+[08/14 23:32:13 d2.utils.events]:  eta: 0:00:22  iter: 1319  total_loss: 0.1912  loss_cls: 0.02011  loss_box_reg: 0.04473  loss_mask: 0.1206  loss_rpn_cls: 6.294e-06  loss_rpn_loc: 0.002157    time: 0.1247  last_time: 0.1241  data_time: 0.0024  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:16 d2.utils.events]:  eta: 0:00:19  iter: 1339  total_loss: 0.2053  loss_cls: 0.02206  loss_box_reg: 0.0537  loss_mask: 0.1249  loss_rpn_cls: 1.949e-05  loss_rpn_loc: 0.003139    time: 0.1247  last_time: 0.1152  data_time: 0.0024  last_data_time: 0.0022   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:18 d2.utils.events]:  eta: 0:00:17  iter: 1359  total_loss: 0.2041  loss_cls: 0.01856  loss_box_reg: 0.04874  loss_mask: 0.1321  loss_rpn_cls: 1.923e-05  loss_rpn_loc: 0.002682    time: 0.1247  last_time: 0.1127  data_time: 0.0023  last_data_time: 0.0022   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:21 d2.utils.events]:  eta: 0:00:14  iter: 1379  total_loss: 0.1837  loss_cls: 0.01835  loss_box_reg: 0.04599  loss_mask: 0.1164  loss_rpn_cls: 1.306e-05  loss_rpn_loc: 0.002321    time: 0.1247  last_time: 0.1222  data_time: 0.0023  last_data_time: 0.0025   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:23 d2.utils.events]:  eta: 0:00:12  iter: 1399  total_loss: 0.2199  loss_cls: 0.02162  loss_box_reg: 0.05121  loss_mask: 0.1487  loss_rpn_cls: 2.524e-05  loss_rpn_loc: 0.00226    time: 0.1246  last_time: 0.1146  data_time: 0.0024  last_data_time: 0.0025   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:23 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[08/14 23:32:23 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:23 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:23 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:23 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:23 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:23 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:24 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0346 s/iter. Eval: 0.0003 s/iter. Total: 0.0355 s/iter. ETA=0:00:02
+[08/14 23:32:27 d2.evaluation.evaluator]: Total inference time: 0:00:02.919718 (0.034759 s / iter per device, on 1 devices)
+[08/14 23:32:27 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033495 s / iter per device, on 1 devices)
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.695
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.938
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.842
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.576
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.712
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.744
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.747
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.747
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.580
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.768
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 69.467 | 93.761 | 84.237 |  nan  | 57.611 | 71.161 |
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.702
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.928
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.860
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.575
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.721
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.740
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.743
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.743
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.580
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.763
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 70.183 | 92.760 | 86.012 |  nan  | 57.470 | 72.079 |
+[08/14 23:32:27 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[Iter 2 AP] → mAP@[.5:.95] = 70.183
+[08/14 23:32:27 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:27 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:27 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:27 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:27 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:27 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:27 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:29 d2.evaluation.evaluator]: Inference done 63/89. Dataloading: 0.0006 s/iter. Inference: 0.0336 s/iter. Eval: 0.0003 s/iter. Total: 0.0345 s/iter. ETA=0:00:00
+[08/14 23:32:30 d2.evaluation.evaluator]: Total inference time: 0:00:02.944632 (0.035055 s / iter per device, on 1 devices)
+[08/14 23:32:30 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033803 s / iter per device, on 1 devices)
+[08/14 23:32:32 d2.utils.events]:  eta: 0:00:09  iter: 1419  total_loss: 0.2126  loss_cls: 0.02019  loss_box_reg: 0.05529  loss_mask: 0.1307  loss_rpn_cls: 7.998e-06  loss_rpn_loc: 0.002418    time: 0.1246  last_time: 0.1256  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:35 d2.utils.events]:  eta: 0:00:07  iter: 1439  total_loss: 0.1795  loss_cls: 0.02233  loss_box_reg: 0.05595  loss_mask: 0.1142  loss_rpn_cls: 6.094e-06  loss_rpn_loc: 0.002331    time: 0.1248  last_time: 0.1213  data_time: 0.0024  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:37 d2.utils.events]:  eta: 0:00:04  iter: 1459  total_loss: 0.1868  loss_cls: 0.0199  loss_box_reg: 0.05382  loss_mask: 0.1119  loss_rpn_cls: 1.162e-05  loss_rpn_loc: 0.002736    time: 0.1248  last_time: 0.1147  data_time: 0.0023  last_data_time: 0.0022   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:40 d2.utils.events]:  eta: 0:00:02  iter: 1479  total_loss: 0.1725  loss_cls: 0.01737  loss_box_reg: 0.04263  loss_mask: 0.1136  loss_rpn_cls: 8.497e-06  loss_rpn_loc: 0.002783    time: 0.1247  last_time: 0.1314  data_time: 0.0023  last_data_time: 0.0023   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:43 d2.utils.events]:  eta: 0:00:00  iter: 1499  total_loss: 0.1957  loss_cls: 0.01978  loss_box_reg: 0.05016  loss_mask: 0.1235  loss_rpn_cls: 3.912e-06  loss_rpn_loc: 0.002301    time: 0.1247  last_time: 0.1249  data_time: 0.0023  last_data_time: 0.0024   lr: 0.0005  max_mem: 1697M
+[08/14 23:32:43 d2.engine.hooks]: Overall training speed: 1498 iterations in 0:03:06 (0.1247 s / it)
+[08/14 23:32:43 d2.engine.hooks]: Total training time: 0:04:38 (0:01:31 on hooks)
+[08/14 23:32:43 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:43 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:43 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:43 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:43 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:43 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+WARNING [08/14 23:32:43 d2.evaluation.coco_evaluation]: COCO Evaluator instantiated using config, this is deprecated behavior. Please pass in explicit arguments instead.
+[08/14 23:32:43 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:43 d2.evaluation.evaluator]: Inference done 11/89. Dataloading: 0.0005 s/iter. Inference: 0.0332 s/iter. Eval: 0.0003 s/iter. Total: 0.0340 s/iter. ETA=0:00:02
+[08/14 23:32:46 d2.evaluation.evaluator]: Total inference time: 0:00:02.986158 (0.035550 s / iter per device, on 1 devices)
+[08/14 23:32:46 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.034297 s / iter per device, on 1 devices)
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Saving results to ../../../../../models/rgb-testing/final-test-rgb-1500-6/coco_instances_results.json
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.707
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.936
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.877
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.530
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.730
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.766
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.769
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.530
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.799
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 70.681 | 93.608 | 87.748 |  nan  | 52.970 | 73.021 |
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.727
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.936
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.867
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.571
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.749
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.770
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.771
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.771
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = -1.000
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.570
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.796
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 72.736 | 93.608 | 86.735 |  nan  | 57.129 | 74.862 |
+[08/14 23:32:46 d2.evaluation.coco_evaluation]: Some metrics cannot be computed and is shown as NaN.
+[08/14 23:32:46 d2.engine.defaults]: Evaluation results for my_dataset_test in csv format:
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: Task: bbox
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: AP,AP50,AP75,APs,APm,APl
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: 70.6813,93.6085,87.7480,nan,52.9703,73.0206
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: Task: segm
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: AP,AP50,AP75,APs,APm,APl
+[08/14 23:32:46 d2.evaluation.testing]: copypaste: 72.7359,93.6085,86.7351,nan,57.1287,74.8616
+Training Completed, now saving plots....
+Saved loss curves to ../../../slurm_output/loss_plots/final-test-rgb-1500-6_loss_plot.png
+Saved AP curve to ../../../slurm_output/AP_Fig/final-test-rgb-1500-6_AP_plot.png
+[08/14 23:32:47 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:47 d2.data.datasets.coco]: Loaded 89 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[08/14 23:32:47 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[08/14 23:32:47 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[08/14 23:32:47 d2.data.common]: Serializing 89 elements to byte tensors and concatenating them all ...
+[08/14 23:32:47 d2.data.common]: Serialized dataset takes 0.07 MiB
+[08/14 23:32:47 d2.evaluation.evaluator]: Start inference on 89 batches
+[08/14 23:32:48 d2.evaluation.evaluator]: Inference done 44/89. Dataloading: 0.0006 s/iter. Inference: 0.0335 s/iter. Eval: 0.0003 s/iter. Total: 0.0344 s/iter. ETA=0:00:01
+[08/14 23:32:50 d2.evaluation.evaluator]: Total inference time: 0:00:02.899928 (0.034523 s / iter per device, on 1 devices)
+[08/14 23:32:50 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:02 (0.033302 s / iter per device, on 1 devices)

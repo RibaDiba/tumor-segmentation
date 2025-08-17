@@ -1,25 +1,25 @@
 #!/bin/bash
 
-#SBATCH --job-name=final-depth-test-2-5000
+#SBATCH --job-name=path-test-1-rgb
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=40G 
+#SBATCH --mem=20G 
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=logs/final-depth-test-2-5000/%x.%j.out   # STDOUT → logs/final-depth-test-2-5000/<jobid>.out
-#SBATCH --error=logs/final-depth-test-2-5000/%x.%j.err    # STDERR → logs/final-depth-test-2-5000/<jobid>.err
+#SBATCH --output=logs/rgb-testing-ap-1-40000/%x.%j.out   # STDOUT → logs/path-test-1-rgb/<jobid>.out
+#SBATCH --error=logs/rgb-testing-ap-1-40000/%x.%j.err    # STDERR → logs/path-test-1-rgb/<jobid>.err
 
 # config: 
-NAME="final-depth-test-2-5000"
-ITER=5000
+NAME="path-test-1-rgb"
+ITER=40000
 
 # create a logs dir 
 mkdir logs/${NAME}
 
 
 
-../train.sh --name ${NAME} --iter ${ITER}  --root-path ../ --depth true --split-cashe false --skip-tests true
+../../train.sh --name ${NAME} --iter ${ITER}  --root-path ../../ --rgb true --split-cashe false --skip-tests true
