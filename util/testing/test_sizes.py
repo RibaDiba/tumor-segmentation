@@ -9,7 +9,18 @@ this makes sure the following
 
 the expected_sizes are the current supported sizes in our preprocessing functions 
 """
+#for the J&J data
+def size_supports(folder_path, target_size=(492, 495)):
+    for filename in os.listdir(folder_path):
+        if filename.endswith(".jpg"):
+            full_path = os.path.join(folder_path, filename)
+            img = cv2.imread(full_path)
+            if img is None:
+                continue
+            resized_img = cv2.resize(img, target_size)
+            cv2.imwrite(full_path, resized_img)
 
+size_supports("data/J&J_data/J&J Data/J&J-2", target_size=(492, 495))
 # Get project root directory
 project_root = Path(__file__).parent.parent.parent
 

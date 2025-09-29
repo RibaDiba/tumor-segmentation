@@ -48,7 +48,7 @@ def str2bool(v):
 # Add the project root to the path to make imports system-independent
 sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
 from util.preprocessing.tumor_dataset import Dataset
-from src.Detectron2.TrainerClass import Trainer
+from src.Detectron2.trainer.TrainerClass import Trainer
 
 """
 now we're going to setup argparse here 
@@ -88,7 +88,7 @@ code is taken from the notebook file
 """
 
 # TODO: implement the argparser stuff here 
-d = Dataset(data_path="../../../../data/huggingface-repo/useable_data")
+d = Dataset(data_path="../../../data/huggingface-repo/useable_data")
 print("--DEBUGGING SPLIT_CASHE----")
 print("SPLIT_CASHE is", split_cashe)
 if split_cashe == True: 
@@ -96,7 +96,14 @@ if split_cashe == True:
     d.split_train_val_test(70, 15, 15)
     d.cashe_data()
 d.convert_binary_to_coco()
-d.register_instances(rgb=True)
+if rgb_bool: 
+    d.register_instances(rgb=True)
+elif depth_bool: 
+    d.register_instances(depth=True)
+elif rgd_bool: 
+    d.register_instances(rgd=True)
+else: 
+    raise argparse.ArgumentError("Give a model-type flag")
 
 train_metadata = MetadataCatalog.get("my_dataset_train")
 train_dataset_dicts = DatasetCatalog.get("my_dataset_train")
@@ -109,19 +116,31 @@ test_dataset_dicts = DatasetCatalog.get("my_dataset_test")
 
 cfg = get_cfg()
 cfg.MODELNAME = model_name
-cfg.OUTPUT_DIR = f"../../../../models/rgb-testing/{cfg.MODELNAME}"
+cfg.OUTPUT_DIR = f"../../../../../models/rgb-testing/{cfg.MODELNAME}"
 cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
 cfg.DATASETS.TRAIN = ("my_dataset_train", "my_dataset_val")
-cfg.DATASETS.TEST = ("my_dataset_train",)
+cfg.DATASETS.TEST = ("my_dataset_test",)
 cfg.DATALOADER.NUM_WORKERS = 1
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False # this is for our "no tumor" examples 
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
 cfg.SOLVER.IMS_PER_BATCH = 2  # This is the real "batch size" commonly known to deep learning people
-cfg.SOLVER.BASE_LR = 0.00025  # pick a good LR
 cfg.SOLVER.MAX_ITER = iterations   
 cfg.SOLVER.STEPS = []        
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512   # The "RoIHead batch size". 128 is faster, and good enough for this toy dataset (default: 512)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  
+
+# ROI Head Configuration (Accuracy-focused)
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512
+cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.5  # More positive samples
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.3   # Lower detection threshold
+cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.3     # Lower NMS for medical
+
+cfg.SOLVER.BASE_LR = 0.0005   # Conservative LR for medical data
+cfg.SOLVER.STEPS = [3000, 4000]  # Later LR reduction
+cfg.SOLVER.GAMMA = 0.5        # Gentler LR decay
+cfg.SOLVER.WARMUP_ITERS = 800
+cfg.SOLVER.WARMUP_FACTOR = 0.1
+
 
 """
 training code 
