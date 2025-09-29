@@ -428,41 +428,99 @@ def read_contours_array_depth(self, data_array):
 
      return image_array
 
-def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+#def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+    #image_array_infused = []
+
+    #for i in tqdm(range(len(image_array)), desc="Infusing Images"):
+        #image = image_array[i]
+        #depth_map = depth_array[i]
+
+        # Resize the depth map to match the image dimensions
+        #depth_map_resized = cv2.resize(depth_map, (image.shape[1], image.shape[0]))
+
+        # Ensure depth map is single channel (grayscale)
+        #if len(depth_map_resized.shape) == 3:
+            #depth_map_resized = cv2.cvtColor(depth_map_resized, cv2.COLOR_BGR2GRAY)
+
+        # Split the image into RGB channels
+       # b, g, r = cv2.split(image)
+
+        # Normalize depth map to match the blue channel (0-255) and convert to uint8
+        # inverted this for various reasons
+        #depth_map_normalized = 255 - cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+
+        # Ensure the blue channel and depth map have the same dimensions
+        #if b.shape != depth_map_normalized.shape:
+            # If they do not match, resize the depth map again to ensure consistency
+            #depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
+
+        # Infuse the depth map into the blue channel
+        #infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
+
+        # Merge the channels back
+        #infused_image = cv2.merge((infused_blue, g, r))
+
+        #image_array_infused.append(infused_image)
+
+    #return image_array_infused
+
+def infuse_depth_into_blue_channel(
+    self,
+    image_array: List[np.ndarray], 
+    depth_array: List[np.ndarray]
+) -> List[np.ndarray]:
+    """
+    Infuses depth map information into the blue channel of RGB images
+    by fully replacing the blue channel with the normalized depth map.
+    
+    Parameters:
+        image_array (List[np.ndarray]): List of RGB images (each shape: H x W x 3)
+        depth_array (List[np.ndarray]): List of grayscale or BGR depth maps (each shape: H x W or H x W x 3)
+
+    Returns:
+        List[np.ndarray]: List of RGB images with depth fully infused into the blue channel
+    """
+    if len(image_array) != len(depth_array):
+        raise ValueError("image_array and depth_array must have the same length")
+
     image_array_infused = []
 
     for i in tqdm(range(len(image_array)), desc="Infusing Images"):
         image = image_array[i]
         depth_map = depth_array[i]
 
-        # Resize the depth map to match the image dimensions
+        # Validate image and depth map
+        if image is None or depth_map is None:
+            raise ValueError(f"Missing image or depth map at index {i}")
+
+        if len(image.shape) != 3 or image.shape[2] != 3:
+            raise ValueError(f"Image at index {i} is not 3-channel (RGB)")
+
+        # Resize depth map to match image dimensions
         depth_map_resized = cv2.resize(depth_map, (image.shape[1], image.shape[0]))
 
-        # Ensure depth map is single channel (grayscale)
-        if len(depth_map_resized.shape) == 3:
+        # Convert depth map to grayscale if it's BGR
+        if len(depth_map_resized.shape) == 3 and depth_map_resized.shape[2] == 3:
             depth_map_resized = cv2.cvtColor(depth_map_resized, cv2.COLOR_BGR2GRAY)
 
-        # Split the image into RGB channels
-        b, g, r = cv2.split(image)
+        # Normalize and invert depth map to 0-255 (uint8)
+        depth_map_normalized = 255 - cv2.normalize(
+            depth_map_resized, None, 0, 255, cv2.NORM_MINMAX
+        ).astype(np.uint8)
 
-        # Normalize depth map to match the blue channel (0-255) and convert to uint8
-        # inverted this for various reasons
-        depth_map_normalized = 255 - cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+        # Split image channels
+        _, g, r = cv2.split(image)
 
-        # Ensure the blue channel and depth map have the same dimensions
-        if b.shape != depth_map_normalized.shape:
-            # If they do not match, resize the depth map again to ensure consistency
-            depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
+        # Replace the blue channel with the depth map
+        infused_blue = depth_map_normalized
 
-        # Infuse the depth map into the blue channel
-        infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
-
-        # Merge the channels back
+        # Merge back the channels
         infused_image = cv2.merge((infused_blue, g, r))
 
         image_array_infused.append(infused_image)
 
     return image_array_infused
+
 
 # this function exists for various reasons
 def convert_array_to_rgb(image_array):
