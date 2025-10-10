@@ -51,7 +51,7 @@ def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
 def create_neg_masks(self, length: float) -> List[np.ndarray]:
     negative_masks = []
     for i in range(length):
-        negative_mask = np.ones((256, 256), dtype=np.uint8) * 0
+        negative_mask = np.ones((495, 492), dtype=np.uint8) * 0
         negative_masks.append(negative_mask)
 
     return negative_masks 
