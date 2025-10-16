@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/Detectron2/sort_data"
+    ]
+}
