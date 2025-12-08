@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=test-8
+#SBATCH --job-name=saved-data
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,15 +10,15 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=./logs/test-8/%x.%j.out   # STDOUT → ./logs/test-8/<jobid>.o3t
-#SBATCH --error=./logs/test-8/%x.%j.err    # STDERR → ./logs/test-8/<jobid>.e3r
+#SBATCH --output=./logs/saved-data/%x.%j.out   # STDOUT → ./logs/saved-data/<jobid>.o3t
+#SBATCH --error=./logs/saved-data/%x.%j.err    # STDERR → ./logs/saved-data/<jobid>.e3r
 
 # config: 
-NAME="test-8"
+NAME="saved-data"
 ITER=5000
 
 # create a logs dir 
 mkdir ./logs/${NAME}
 
-python3 save_data.py ./test-8
+python3 save_data.py ./saved-data
 

@@ -1,0 +1,5 @@
+mkdir: cannot create directory ‘./logs/’: File exists
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/util/preprocessing/slurm/main.py", line 1, in <module>
+    from util.preprocessing.tumor_dataset import Dataset
+ModuleNotFoundError: No module named 'util'
