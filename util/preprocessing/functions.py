@@ -12,6 +12,8 @@ def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tupl
     segmented_images = []
     base_images = []
     depth_info = []
+    # take the filenames to save later 
+    valid_filenames = []
 
     filenames = sorted(os.listdir(folder_path))
     for filename in tqdm(filenames, desc="Reading files"):
@@ -21,6 +23,7 @@ def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tupl
             img = cv2.imread(full_path)
             if img is not None:
                 segmented_images.append(img)
+                valid_filenames.append(filename)
 
         elif filename.endswith("_texture.jpg"):
             img = cv2.imread(full_path)
@@ -36,7 +39,7 @@ def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tupl
                 except Exception as e:
                     print(f"Failed to read binary file {filename}: {e}")
 
-    return segmented_images, base_images, depth_info
+    return segmented_images, base_images, depth_info, valid_filenames
 
 def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
     filenames = sorted(os.listdir)

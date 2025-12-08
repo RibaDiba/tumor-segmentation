@@ -75,7 +75,7 @@ class Dataset:
     # preprocess function (by default preprocesses for rgb images)
     # might remove the settings feature
     def preprocess_images(self, add_negative: bool=False, read_bins: bool = True) -> None:
-        self.masks, self.images_rgb, self.depth_info = self.read_images_to_array(self.data_path, read_bins=read_bins)
+        self.masks, self.images_rgb, self.depth_info, self.filenames = self.read_images_to_array(self.data_path, read_bins=read_bins)
         self.og_masks = self.masks.copy()
         self.og_images = self.images_rgb.copy()
 
@@ -143,7 +143,12 @@ class Dataset:
 
         train_indices = indices[:train_num]
         val_indices = indices[train_num:train_num + val_num]
-        test_indices = indices[train_num + val_num:]
+        test_indices = indices[train_num + test_num:]
+
+        # split the filenames to each training set 
+        self.train_filenames = [self.filenames[i] for i in train_indices]
+        self.val_filenames = [self.filenames[i] for i in val_indices]
+        self.test_filenames = [self.filenames[i] for i in test_indices]
 
         # rgb data 
         self.train_images_rgb = [self.images_rgb[i] for i in train_indices]
@@ -249,67 +254,77 @@ class Dataset:
         os.makedirs(test_mask_dir_rgd, exist_ok=True)
         
         # Save RGB images to cache directories
-        for i, img in enumerate(self.train_images_rgb):
-            cv2.imwrite(os.path.join(train_img_dir_rgb, f"train_{i}.jpg"), img)
+
+        for img, name in zip(self.train_images_rgb, self.train_filenames):
+            cv2.imwrite(os.path.join(train_img_dir_rgb, name), img)
         
-        for i, img in enumerate(self.val_images_rgb):
-            cv2.imwrite(os.path.join(val_img_dir_rgb, f"val_{i}.jpg"), img)
-        
-        for i, img in enumerate(self.test_images_rgb):
-            cv2.imwrite(os.path.join(test_img_dir_rgb, f"test_{i}.jpg"), img)
+        for img, name in zip(self.val_images_rgb, self.val_filenames):
+            cv2.imwrite(os.path.join(val_img_dir_rgb, name), img)
+
+        for img, name in zip(self.test_images_rgb, self.test_filenames):
+            cv2.imwrite(os.path.join(test_img_dir_rgb, name), img)
         
         # Save Depth images to cache directories (if they exist)
         if hasattr(self, 'train_images_depth') and self.train_images_depth:
-            for i, img in enumerate(self.train_images_depth):
-                cv2.imwrite(os.path.join(train_img_dir_depth, f"train_{i}.jpg"), img)
+            for img, name in zip(self.train_images_depth, self.train_filenames):
+                cv2.imwrite(os.path.join(train_img_dir_depth, name), img)
             
-            for i, img in enumerate(self.val_images_depth):
-                cv2.imwrite(os.path.join(val_img_dir_depth, f"val_{i}.jpg"), img)
-            
-            for i, img in enumerate(self.test_images_depth):
-                cv2.imwrite(os.path.join(test_img_dir_depth, f"test_{i}.jpg"), img)
+            for img, name in zip(self.val_images_depth, self.val_filenames):
+                cv2.imwrite(os.path.join(val_img_dir_depth, name), img)
+
+            for img, name in zip(self.test_images_depth, self.test_filenames):
+                cv2.imwrite(os.path.join(test_img_dir_depth, name), img)
         
         # Save RGD images to cache directories (if they exist)
         if hasattr(self, 'train_images_rgd') and self.train_images_rgd:
-            for i, img in enumerate(self.train_images_rgd):
-                cv2.imwrite(os.path.join(train_img_dir_rgd, f"train_{i}.jpg"), img)
-            
-            for i, img in enumerate(self.val_images_rgd):
-                cv2.imwrite(os.path.join(val_img_dir_rgd, f"val_{i}.jpg"), img)
-            
-            for i, img in enumerate(self.test_images_rgd):
-                cv2.imwrite(os.path.join(test_img_dir_rgd, f"test_{i}.jpg"), img)
+            for img, name in zip(self.train_images_rgd, self.train_filenames):
+                cv2.imwrite(os.path.join(train_img_dir_rgd, name), img)
+        
+            for img, name in zip(self.val_images_rgd, self.val_filenames):
+                cv2.imwrite(os.path.join(val_img_dir_rgd, name), img)
+
+            for img, name in zip(self.test_images_rgd, self.test_filenames):
+                cv2.imwrite(os.path.join(test_img_dir_rgd, name), img)
         
         # Save masks to all cache directories (same masks for all image types)
         # RGB masks
-        for i, mask in enumerate(self.train_masks):
-            cv2.imwrite(os.path.join(train_mask_dir_rgb, f"train_{i}.png"), mask)
+        for mask, name in zip(self.train_masks, self.train_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(train_mask_dir_rgb, clean_name), mask)
         
-        for i, mask in enumerate(self.val_masks):
-            cv2.imwrite(os.path.join(val_mask_dir_rgb, f"val_{i}.png"), mask)
-        
-        for i, mask in enumerate(self.test_masks):
-            cv2.imwrite(os.path.join(test_mask_dir_rgb, f"test_{i}.png"), mask)
+        for mask, name in zip(self.val_masks, self.val_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(val_mask_dir_rgb, clean_name), mask)
+            
+        for mask, name in zip(self.test_masks, self.test_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(test_mask_dir_rgb, clean_name), mask)
         
         # Depth masks (same as RGB masks)
-        for i, mask in enumerate(self.train_masks):
-            cv2.imwrite(os.path.join(train_mask_dir_depth, f"train_{i}.png"), mask)
+        for mask, name in zip(self.train_masks, self.train_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(train_mask_dir_depth, clean_name), mask)
         
-        for i, mask in enumerate(self.val_masks):
-            cv2.imwrite(os.path.join(val_mask_dir_depth, f"val_{i}.png"), mask)
-        
-        for i, mask in enumerate(self.test_masks):
-            cv2.imwrite(os.path.join(test_mask_dir_depth, f"test_{i}.png"), mask)
+        for mask, name in zip(self.val_masks, self.val_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(val_mask_dir_depth, clean_name), mask)
+            
+        for mask, name in zip(self.test_masks, self.test_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(test_mask_dir_depth, clean_name), mask)
         
         # RGD masks (same as RGB masks)
-        for i, mask in enumerate(self.train_masks):
-            cv2.imwrite(os.path.join(train_mask_dir_rgd, f"train_{i}.png"), mask)
+        for mask, name in zip(self.train_masks, self.train_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(train_mask_dir_rgd, clean_name), mask)
         
-        for i, mask in enumerate(self.val_masks):
-            cv2.imwrite(os.path.join(val_mask_dir_rgd, f"val_{i}.png"), mask)
-        
-        for i, mask in enumerate(self.test_masks):
-            cv2.imwrite(os.path.join(test_mask_dir_rgd, f"test_{i}.png"), mask)
+        for mask, name in zip(self.val_masks, self.val_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(val_mask_dir_rgd, clean_name), mask)
+            
+        for mask, name in zip(self.test_masks, self.test_filenames):
+            clean_name = os.path.splitext(name)[0] + ".png"
+            cv2.imwrite(os.path.join(test_mask_dir_rgd, clean_name), mask)
         
         print("Data cached successfully.")
 
