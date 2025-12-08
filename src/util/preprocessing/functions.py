@@ -8,7 +8,40 @@ from PIL import Image
 from io import BytesIO
 from typing import Tuple, List 
 
-def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
+
+def read_images_to_array(self, folder_path: str, read_bins: bool= True) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray], List[str]]:
+
+    """
+    This assumes a clean dataset. First reads the directory and then returns sorted 
+    images into 3 categories -> 
+
+    Base images 
+    Segmented images from the scanner
+    Binary file information for depth images 
+
+    Parameters 
+    ----------
+    folder_path : str
+        this is the folder path that will contain all the processed data 
+    read_bins : boolean 
+        if we want to get the depth information for our models, then this 
+        should be set to true. The reason this is a boolean because reading 
+        the point cloud information takes a lot of computational overhead 
+    
+    Returns
+    -------
+    segmented_images : List[np.ndarray]
+        this is an array of images of the mice that have been segmented with
+        the scanner 
+    base_images : List[np.ndarray]
+        this is an array of raw images of the tumor with no scanner involved 
+    depth_info : List[np.ndarray] 
+        this currently has the point cloud information from the binary file 
+    valid_filenames : List[str]
+        list of strings that preserve the filenames of all the tumors, which 
+        was mainly helpful for the tumor flagging webapp
+    """
+
     segmented_images = []
     base_images = []
     depth_info = []
@@ -42,6 +75,21 @@ def read_images_to_array(self, folder_path: str, read_bins: bool = True) -> Tupl
     return segmented_images, base_images, depth_info, valid_filenames
 
 def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
+
+    """
+    this reads a path that specifically have images that have "no tumor"
+
+    Parameters
+    ----------
+    folder_path : str
+        path where all the negative images are stored, this was done
+        because the negative images were stored seperate 
+    
+    Returns 
+    -------
+    
+    """
+
     filenames = sorted(os.listdir)
     neg_images = []
     for filename in tqdm(filenames, desc="Reading negative images"):
