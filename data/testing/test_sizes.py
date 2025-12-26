@@ -20,7 +20,7 @@ def size_supports(folder_path, target_size=(492, 495)):
             resized_img = cv2.resize(img, target_size)
             cv2.imwrite(full_path, resized_img)
 
-size_supports("data/J&J_data/J&J Data/J&J-2", target_size=(492, 495))
+# size_supports("data/J&J_data/J&J Data/J&J-2", target_size=(492, 495))
 # Get project root directory
 project_root = Path(__file__).parent.parent.parent
 
@@ -31,28 +31,7 @@ expected_sizes = {
 }
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    # (project_root / "data/raw_data/useable_data", expected_sizes), # sanity 
-    # (project_root / "data/raw_data/J&j-1", expected_sizes),
-    # (project_root / "data/raw_data/J&j-2", expected_sizes),
-    # (project_root / "data/raw_data/J&j-3", expected_sizes),
-    # (project_root / "data/raw_data/J&j-4", expected_sizes),
-    # (project_root / "data/raw_data/J&j-5", expected_sizes),
-    # (project_root / "data/raw_data/J&j-6", expected_sizes),
-    # (project_root / "data/raw_data/J&j-7", expected_sizes),
-    # (project_root / "data/raw_data/J&j-8", expected_sizes),
-    # (project_root / "data/raw_data/J&j-9", expected_sizes),
-    # (project_root / "data/raw_data/J&j-10", expected_sizes),
-    # (project_root / "data/raw_data/J&j-10", expected_sizes),
-    # (project_root / "data/raw_data/J&j-11", expected_sizes),
-    # (project_root / "data/raw_data/J&j-12", expected_sizes),
-    # (project_root / "data/raw_data/J&j-13", expected_sizes),
-    # (project_root / "data/raw_data/J&j-14", expected_sizes),
-    # (project_root / "data/raw_data/DTC #326 Scan Images", expected_sizes),
-    # (project_root / "data/raw_data/DTC #347 Scan Images", expected_sizes),
-    # (project_root / "data/raw_data/DTC #357", expected_sizes),
-    # (project_root / "data/raw_data/S-065-006", expected_sizes),
-    # (project_root / "data/raw_data/S-069-012", expected_sizes),
-    (project_root / "data/raw_data/032224 MCF7 EdPIT", expected_sizes)
+    (project_root / "data/huggingface-repo/useable_data", expected_sizes), # sanity 
 ])
 
 def test_image_size_raw(dir, expected_sizes: Dict):
@@ -89,28 +68,7 @@ def test_image_size_raw(dir, expected_sizes: Dict):
     assert len(new_sizes) == 0, f"{dir} has invalid dimensions of {new_sizes}"
 
 @pytest.mark.parametrize("dir, expected_sizes", [
-    # (project_root / "data/raw_data/useable_data", expected_sizes), # sanity 
-    # (project_root / "data/raw_data/J&j-1", expected_sizes),
-    # (project_root / "data/raw_data/J&j-2", expected_sizes),
-    # (project_root / "data/raw_data/J&j-3", expected_sizes),
-    # (project_root / "data/raw_data/J&j-4", expected_sizes),
-    # (project_root / "data/raw_data/J&j-5", expected_sizes),
-    # (project_root / "data/raw_data/J&j-6", expected_sizes),
-    # (project_root / "data/raw_data/J&j-7", expected_sizes),
-    # (project_root / "data/raw_data/J&j-8", expected_sizes),
-    # (project_root / "data/raw_data/J&j-9", expected_sizes),
-    # (project_root / "data/raw_data/J&j-10", expected_sizes),
-    # (project_root / "data/raw_data/J&j-10", expected_sizes),
-    # (project_root / "data/raw_data/J&j-11", expected_sizes),
-    # (project_root / "data/raw_data/J&j-12", expected_sizes),
-    # (project_root / "data/raw_data/J&j-13", expected_sizes),
-    # (project_root / "data/raw_data/J&j-14", expected_sizes),
-    # (project_root / "data/raw_data/DTC #326 Scan Images", expected_sizes),
-    # (project_root / "data/raw_data/DTC #347 Scan Images", expected_sizes),
-    # (project_root / "data/raw_data/DTC #357", expected_sizes),
-    # (project_root / "data/raw_data/S-065-006", expected_sizes),
-    # (project_root / "data/raw_data/S-069-012", expected_sizes),
-    (project_root / "data/raw_data/032224 MCF7 EdPIT", expected_sizes)
+    (project_root / "data/huggingface-repo/useable_data", expected_sizes), # sanity 
 ])
 
 def test_image_size_mask(dir, expected_sizes: Dict):

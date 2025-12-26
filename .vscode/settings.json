@@ -1,6 +1,7 @@
 {
     "python.analysis.extraPaths": [
         "./src/Detectron2/sort_data",
-        "./src/Detectron2/save_data"
+        "./src/Detectron2/save_data",
+        "./src/util"
     ]
 }
