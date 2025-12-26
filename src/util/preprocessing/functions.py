@@ -77,7 +77,9 @@ def read_images_to_array(self, folder_path: str, read_bins: bool= True) -> Tuple
 def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
 
     """
-    this reads a path that specifically have images that have "no tumor"
+    this reads a path that specifically reads images that have "no tumor"
+    we are not sure that these images don't have tumors, but we made 
+    that assumption when filtering our data 
 
     Parameters
     ----------
@@ -87,7 +89,9 @@ def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
     
     Returns 
     -------
-    
+    neg_images : List[np.ndarray]
+        an array of images that do not contain a tumor
+
     """
 
     filenames = sorted(os.listdir)
@@ -100,6 +104,28 @@ def read_neg_images(self, folder_path: str) -> List[np.ndarray]:
     return neg_images
 
 def create_neg_masks(self, length: float) -> List[np.ndarray]:
+
+    """
+    this function creates a mask for the negative images, whcih 
+    is just an array of 0s (since the image does not have a tumor)
+
+    Parameters
+    ----------
+    length : float 
+        the amount of masks we need for negative images 
+    
+    Returns
+    -------
+        negative_masks : List[np.ndarray]
+            Essentially an array of 0s that represent an empty image
+    
+    Note
+    ----
+    We don't currently use this feature, so the size of the mask is 
+    inaccurate here and must be added as a parameter if this function
+    is used
+    """
+
     negative_masks = []
     for i in range(length):
         negative_mask = np.ones((495, 492), dtype=np.uint8) * 0
@@ -107,35 +133,29 @@ def create_neg_masks(self, length: float) -> List[np.ndarray]:
 
     return negative_masks 
 
+def split_train_val_test(images: List[np.ndarray], masks: List[np.ndarray], per_train: int, per_val: int, per_test: int):
 
-@DeprecationWarning
-def read_bin_files_to_array(folder_path):
-    bin_files = []
-    filenames = sorted(os.listdir(folder_path))
-    for filename in filenames:
-        if filename.endswith('.bin'):
-            file_path = os.path.join(folder_path, filename)
-            with open(file_path, 'rb') as file:
-                data = np.fromfile(file, dtype=np.float32)
-                bin_files.append(data)
+    """
+    takes images and masks and splits them into training, validation, and tests
+    
+    Parameters
+    ----------
+    images : List[np.ndarray]
+        at this point, this should be the annotated images for the tumor 
+    masks : List[np.ndarray] 
+        the masks that correspond to each image 
+    per_train, per_val, per_test : int 
+        these are the percentages that we want to split our data amoung 
 
-    return bin_files
+    Returns
+    -------
+    train_images, val_images, test_images : List[np.ndarray] 
+        image arrays that correspond to train, val, test
+    train_masks, val_masks, test_masks
+        mask arrays that correspond to train, val, test
 
-@DeprecationWarning
-def split_images(image_array): 
+    """
 
-    red_region_images = []
-    raw_images = [] 
-
-    for image in image_array:
-        if image[25,100].sum() == 255*3 :
-            red_region_images.append(image)
-        else: 
-            raw_images.append(image) 
-            
-    return red_region_images, raw_images
-
-def split_train_val_test(images, masks, per_train, per_val, per_test):
     # returns error if they don't add up 
     assert (per_train + per_val + per_test) == 100, "The percentages must sum up to 100."
     
@@ -159,6 +179,21 @@ def split_train_val_test(images, masks, per_train, per_val, per_test):
     return train_images, train_masks, val_images, val_masks, test_images, test_masks
 
 def crop_raw_images(self, image_array: List[np.ndarray]): 
+
+    """
+    crops the raw images by doing a circle crop. These images are part of the set that are just
+    pictures of the tumor 
+
+    Parameters
+    ----------
+    image_array : List[np.ndarray]
+        list of images from the raw picture dataset (unsegmented)
+    
+    Return 
+    ------
+    cropped_images : List[np.ndarray]
+        returns the images after they have been cropped 
+    """
     
     cropped_images = [] 
     
@@ -177,6 +212,22 @@ def crop_raw_images(self, image_array: List[np.ndarray]):
     return cropped_images
 
 def crop_masks(self, image_array: List[np.ndarray]):
+
+    """
+    before any mask processing is done, the images with the 
+    red segmented region have a circle crop 
+
+    Parameters
+    ----------
+    image_array : List[np.ndarray]
+        these are the "masks" before any processing has been done 
+    
+    Return 
+    ------
+    cropped_images : List[np.ndarray]
+        returns the images after they have been cropped 
+    """
+
     cropped_images = []
 
     for i in range(len(image_array)): 
@@ -193,6 +244,32 @@ def crop_masks(self, image_array: List[np.ndarray]):
     return cropped_images
 
 def add_padding(self, image_array: List[np.ndarray], mask_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
+
+    """
+    the goal for our preprocessing code is to make sure that the masks and raw image 
+    line up exactly on top of each other, so adding padding to both images will make 
+    them the same size.
+
+    because the size of the image really matters here, we can only support specific 
+    size images.
+
+    See Also 
+    --------
+    Our pytests for supported sizes shows what image sizes we support 
+
+    Parameters
+    ----------
+    image_array : List[np.ndarray] 
+        this is the array of images without the segmentation 
+    mask_array : List[np.ndarray]
+        at this point we have not chroma keyed them, but these are the images for the 
+        ground truth 
+    
+    Return 
+    ------
+    padded_images, padded_masks : List[np.ndarray]
+        both the image and mask array are changed
+    """
 
     padded_images = []
     padded_masks = []
@@ -260,6 +337,27 @@ def add_padding(self, image_array: List[np.ndarray], mask_array: List[np.ndarray
 
 def zoom_at(self, image_array: List[np.ndarray], zoom: float, coord: float=None) -> List[np.ndarray]:
     
+    """
+    takes the image and "zooms" in at a specific coords. We use this to make sure that
+    the "circles" of the two images are the same size. This is key in making sure that 
+    the tumors lay on top of each other 
+
+    Parameters
+    ----------
+    image_array : List[np.ndarray]
+        list of images that we want to zoom 
+    zoom : float 
+        this is the factor by which we are applying the zoom 
+    coord : float 
+        this is where we are applying the zoom, by default it is in the center
+    
+    Return 
+    ------
+    zoomed_array : List[np.ndarray]
+        image array after the zooming process is done 
+
+    """
+
     zoomed_array = []
     
     for img in image_array: 
@@ -278,6 +376,23 @@ def zoom_at(self, image_array: List[np.ndarray], zoom: float, coord: float=None)
     return zoomed_array
 
 def create_binary_masks(self, image_array: List[np.ndarray]) -> List[np.ndarray]:
+
+    """
+    creates binary masks of the dataset to be used to create the COCO JSON annotations.
+    We did a simple chroma key of the red region of the pre segmented images.
+
+    Parameters
+    ----------
+    image_array : List[np.ndarray] 
+        array of masks 
+    
+    Return 
+    ------
+    binary_masks : List[np.ndarray] 
+        these are binary masks created 
+    
+    """
+
     binary_masks = []
     
     for image in image_array:
@@ -307,6 +422,21 @@ def create_binary_masks(self, image_array: List[np.ndarray]) -> List[np.ndarray]
     return binary_masks
 
 def crop_images(self, image_array: List[np.ndarray]) -> List[np.ndarray]: 
+
+    """
+    crops images to a standard 256 by 256 in the center for training, this 
+    is done for both the images and the masks 
+
+    Parameters 
+    ----------
+    image_array : List[np.ndarray] 
+        image array to crop 
+
+    Return 
+    ------
+    cropped_images : List[np.ndarray] 
+        cropped set of images from the param array 
+    """
     
     cropped_images = []
     
@@ -330,6 +460,30 @@ def crop_images(self, image_array: List[np.ndarray]) -> List[np.ndarray]:
     return cropped_images
 
 def crop_images_offset(self, image_array: List[np.ndarray], x_offset: float=0, y_offset: float=0) -> List[np.ndarray]:
+    
+    """
+    this is a utility function that is used in the case that some formats of images 
+    could need to be offset in order to line up. Takes in x and y values to determine 
+    how much to offset 
+
+    It also applies a crop to the image at the same time. Unclear why this is a 
+    seperate method.
+
+    Parameters 
+    ------
+    image_array : List[np.ndarray] 
+        image array to offset 
+    x_offset : float 
+        x value to offset the image horizontally 
+    y_offset : float 
+        y value to offset the image vertically
+
+    Returns
+    -------
+    cropped_images : List[np.ndarray] 
+        List of images after they have been cropped and offset 
+    """
+    
     cropped_images = []
     
     for image in image_array:
@@ -362,6 +516,22 @@ def crop_images_offset(self, image_array: List[np.ndarray], x_offset: float=0, y
     return cropped_images
 
 def translate_images(self, images: List[np.ndarray], x_offset: float, y_offset: float=0):
+    
+    """
+    this is a utility function that is used in the case that some formats of images 
+    could need to be offset in order to line up. Takes in x and y values to determine 
+    how much to offset 
+
+    Parameters 
+    ------
+    image_array : List[np.ndarray] 
+        image array to offset 
+    x_offset : float 
+        x value to offset the image horizontally 
+    y_offset : float 
+        y value to offset the image vertically
+    """
+    
     translated_images = [] 
 
     for img_np in images:
@@ -386,14 +556,26 @@ def translate_images(self, images: List[np.ndarray], x_offset: float, y_offset: 
     return translated_images
 
 def read_bin(file_path): 
+
+    """
+    opens a binary file in a specific path and extracts the point cloud 
+    information from that. Returns lists of x, y, and z values 
+
+    Parameters
+    ----------
+    file_path : str 
+        file path to binary file 
+
+    Returns 
+    -------
+    grid_x, grid_y, grid_z
+        lists of floats that represent the point cloud of the tumor 
+    """
+
     with open(file_path, 'rb') as fid:
         data = np.fromfile(fid, dtype='>f8')
     
     points = data.reshape(-1, 3)
-
-    #points[:, 0] -= np.median(points[:, 0])
-    #points[:, 1] -= np.median(points[:, 1])
-    #points[:, 2] -= np.median(points[:, 2])
     
     x = points[:, 0]
     y = points[:, 1]
@@ -408,112 +590,49 @@ def read_bin(file_path):
 
     return grid_x, grid_y, grid_z
 
-@DeprecationWarning
-def read_all_bins(folder_path):
-
-     data_array = []
-     filenames = sorted(os.listdir(folder_path))
-     
-     for filename in tqdm(filenames, desc="Reading Bin Files"):
-          if filename.endswith(".bin"):
-               file_path = os.path.join(folder_path, filename)
-               x, y, z = read_bin(file_path)
-               data_array.append((x, y, z, filename)) 
-    
-     return data_array
-
-def read_contours_array(data_array):
-    
-     image_array = []
-    
-     for data in tqdm(data_array, desc="Reading Contour Plots"):
-          x, y, z, filename = data
-
-          plt.contourf(x,y,z, levels=100, cmap="grey")
-          plt.gca().set_aspect('equal')
-          plt.axis('off')
-          x, y, z, filename = data
-
-          plt.contourf(x, y, z, levels=100, cmap="grey")
-          plt.gca().set_aspect('equal')
-          plt.axis('off')
-
-          # Save the plot to a buffer
-          buf = io.BytesIO()
-          plt.savefig(buf, format='png')
-          buf.seek(0)
-
-          # Convert the buffer to an image
-          image = Image.open(buf)
-          image = np.array(image)
-          image_array.append(image)
-
-          buf.close()
-          plt.close()
-
-     return image_array      
-
 def read_contours_array_depth(self, data_array):
      
-     image_array = []
+    """
+    takes the point cloud information from the data_array and generates 
+    contour plots that represent the point cloud. 
 
-     for data in tqdm(data_array, desc="Saving Contour Plots"):
-          x, y, z, original_filename = data
-          base_file_name = os.path.splitext(original_filename)[0]  
-          file_name = f"{base_file_name}.png"
+    After generating contour plots in the "Grays" color, we take a picture 
+    of them from a topview angle and use that as our "depth" image 
 
-          plt.contourf(x, y, z, levels=100, cmap="Grays")
-          plt.gca().set_aspect('equal')
-          plt.axis("off")
+    Parameters
+    ----------
+    data_array : Tuple
+        point cloud information to be turned into contour plots 
+    
+    Returns 
+    -------
+    image_array : List[np.ndarray]
+        image array of contour plots 
+    """
 
-          buf = io.BytesIO()
-          plt.savefig(buf, format='jpg')
-          buf.seek(0)
+    image_array = []
 
-          image = Image.open(buf)
-          image = np.array(image)
-          image_array.append(image)
+    for data in tqdm(data_array, desc="Saving Contour Plots"):
+        x, y, z, original_filename = data
+        base_file_name = os.path.splitext(original_filename)[0]  
+        file_name = f"{base_file_name}.png"
 
-          buf.close()
-          plt.close()
+        plt.contourf(x, y, z, levels=100, cmap="Grays")
+        plt.gca().set_aspect('equal')
+        plt.axis("off")
 
-     return image_array
+        buf = io.BytesIO()
+        plt.savefig(buf, format='jpg')
+        buf.seek(0)
 
-#def infuse_depth_into_blue_channel(self, image_array: List[np.ndarray], depth_array: List[np.ndarray]) -> Tuple[List[np.ndarray], List[np.ndarray]]:
-    #image_array_infused = []
+        image = Image.open(buf)
+        image = np.array(image)
+        image_array.append(image)
 
-    #for i in tqdm(range(len(image_array)), desc="Infusing Images"):
-        #image = image_array[i]
-        #depth_map = depth_array[i]
+        buf.close()
+        plt.close()
 
-        # Resize the depth map to match the image dimensions
-        #depth_map_resized = cv2.resize(depth_map, (image.shape[1], image.shape[0]))
-
-        # Ensure depth map is single channel (grayscale)
-        #if len(depth_map_resized.shape) == 3:
-            #depth_map_resized = cv2.cvtColor(depth_map_resized, cv2.COLOR_BGR2GRAY)
-
-        # Split the image into RGB channels
-       # b, g, r = cv2.split(image)
-
-        # Normalize depth map to match the blue channel (0-255) and convert to uint8
-        # inverted this for various reasons
-        #depth_map_normalized = 255 - cv2.normalize(depth_map_resized, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
-
-        # Ensure the blue channel and depth map have the same dimensions
-        #if b.shape != depth_map_normalized.shape:
-            # If they do not match, resize the depth map again to ensure consistency
-            #depth_map_normalized = cv2.resize(depth_map_normalized, (b.shape[1], b.shape[0]))
-
-        # Infuse the depth map into the blue channel
-        #infused_blue = cv2.addWeighted(b, 0.5, depth_map_normalized, 0.5, 0)
-
-        # Merge the channels back
-        #infused_image = cv2.merge((infused_blue, g, r))
-
-        #image_array_infused.append(infused_image)
-
-    #return image_array_infused
+    return image_array
 
 def infuse_depth_into_blue_channel(
     self,
@@ -572,25 +691,25 @@ def infuse_depth_into_blue_channel(
 
     return image_array_infused
 
-
-# this function exists for various reasons
-def convert_array_to_rgb(image_array):
-
-    converted_images = []
-
-    for i in tqdm(range(len(image_array)), desc="Converting to RGB"):
-        image = image_array[i]
-
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        converted_images.append(image)
-    
-    return converted_images
-
 # this is to correct the chroma key error with the previous function 
 def correct_binary_masks(self, mask_array: List[np.ndarray]) -> List[np.ndarray]:
+    
+    """
+    Makes sure that the binary masks do not have holes, which can be caused by 
+    defects while chroma keying the red region of the images. If there are holes 
+    in the masks, then the coco formatting pipeline will create multiple annotations 
+    for the same image.
+
+    Parameters:
+        mask_array (List[np.ndarray]): List of all masks
+
+    Returns:
+        List[np.ndarray]: fixed images after corrected by this function
+    """
+
     fixed_images = []
     for i, img in enumerate(mask_array):
-        # apprently they are saved as 3 channel color images 
+        # they are saved as 3 channel color images 
         binary = cv2.cvtColor(img, cv2.COLOR_BAYER_BG2GRAY)
 
         contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -604,15 +723,20 @@ def correct_binary_masks(self, mask_array: List[np.ndarray]) -> List[np.ndarray]
     return fixed_images
 
 
-"""
-this is specifically to read images in order from the array (riya u can use this for testing)
-also to remove speciifc image numbers from the original directory (to standardize what images we decide on removing)
-
-root path refers to the path of the directory containing "train", "val", "test" folders 
-for loading purposes, while 3 levels of abstraction here arent really neccecary, they do help with debugging individual files
-"""
-
 def read_folder_to_array(self, folder_path: str) -> List[np.ndarray]:
+    """
+    This function reads a folder and returns an array of images that is 
+    in the folder. This is a helper function that is used to load the data 
+    that has been stored and processed in the /processed_data directory
+
+    Parameters:
+        folder_path (str): directory location of where you want to pull 
+        from 
+    
+    Returns: 
+        image_array: array of images from that directory, ignores other 
+        files 
+    """
     image_array = []
 
     exts = [".jpg", ".png"]
@@ -636,6 +760,17 @@ def read_folder_to_array(self, folder_path: str) -> List[np.ndarray]:
     return image_array
 
 def read_to_array_post(self, root_path: str) -> List[np.ndarray]:
+
+    """
+    This function reads all of the subdirectories in the processed_data 
+    directory and returns their images. 
+
+    Parameters: 
+        root_path (str): processed_data directory
+    Returns: 
+        returns the data for each split 
+    """
+
     train_images = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/images"))
     train_masks = self.read_folder_to_array(folder_path=os.path.join(root_path, "train/masks/Tumor"))
 

@@ -40,10 +40,6 @@ class Dataset:
         self.rgd_val_dir = os.path.join(project_root, "data/processed_data/rgd/val/images/")
         self.rgd_test_dir = os.path.join(project_root, "data/processed_data/rgd/test/images/")
     
-    """methods of this class 
-    TODO: add image augentation functions 
-    note: we will add image augmentation in the detectron2 training loader itself 
-    """
     # image processing functions
     read_images_to_array = read_images_to_array
     crop_raw_images = crop_raw_images
