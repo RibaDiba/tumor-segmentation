@@ -14,30 +14,7 @@ the second passthrough through the dict checks to see if each key points to a se
 project_root = Path(__file__).parent.parent.parent
 
 @pytest.mark.parametrize("dir", [
-    (project_root / "data/raw_data/useable_data"), # sanity 
-    # (project_root / "data/raw_data/J&j-1"),
-    # (project_root / "data/raw_data/J&j-2"),
-    # (project_root / "data/raw_data/J&j-3"),
-    # (project_root / "data/raw_data/J&j-4"),
-    # (project_root / "data/raw_data/J&j-5"),
-    # (project_root / "data/raw_data/J&j-6"),
-    # (project_root / "data/raw_data/J&j-7"),
-    # (project_root / "data/raw_data/J&j-8"),
-    # (project_root / "data/raw_data/J&j-9"),
-    # (project_root / "data/raw_data/J&j-10"),
-    # (project_root / "data/raw_data/J&j-10"),
-    # (project_root / "data/raw_data/J&j-11"),
-    # (project_root / "data/raw_data/J&j-12"),
-    # (project_root / "data/raw_data/J&j-13"),
-    # (project_root / "data/raw_data/J&j-14"),
-    # (project_root / "data/raw_data/DTC #326 Scan Images"),
-    # (project_root / "data/raw_data/DTC #347 Scan Images"),
-    # (project_root / "data/raw_data/DTC #357"),
-    # (project_root / "data/raw_data/DTC #399"),
-    # (project_root / "data/raw_data/S-065-006"),
-    # (project_root / "data/raw_data/S-069-012"),
-    # (project_root / "data/raw_data/Test Nude - 073-009"),
-    # (project_root / "data/raw_data/032224 MCF7 EdPIT")
+    (project_root / "data/huggingface-repo/useable_data"),
 ])
 
 def test_sets(dir):

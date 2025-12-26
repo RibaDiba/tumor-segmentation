@@ -2,15 +2,16 @@ import pytest, os, cv2, sys
 import numpy as np
 from pathlib import Path
 
-parent_dir = str(Path(__file__).parent.parent)
+parent_dir = str(Path(__file__).resolve().parent.parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-preprocessing_dir = str(Path(parent_dir) / "preprocessing")
-if preprocessing_dir not in sys.path:
-    sys.path.append(preprocessing_dir)
+# Add src/util to path to allow importing from preprocessing
+util_dir = str(Path(parent_dir) / "src" / "util")
+if util_dir not in sys.path:
+    sys.path.append(util_dir)
 
-PROJECT_ROOT = Path(parent_dir).parent
+PROJECT_ROOT = Path(parent_dir)
 
 from preprocessing.tumor_dataset import Dataset
 from typing import List
@@ -46,7 +47,7 @@ def count_mask_augmentations(mask_image: np.ndarray) -> int:
 
 
 @pytest.mark.parametrize("dir", [
-    (str(PROJECT_ROOT / "data/raw_data/useable_data")),
+    (str(PROJECT_ROOT / "data/huggingface-repo/useable_data")),
 ])
 
 def test_annotations(dir):
