@@ -14,7 +14,7 @@ class Dataset:
         self.data_path = data_path
         print("Init Dataset")
 
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 
         self.rgb_train_mask_dir = os.path.join(project_root, "data/processed_data/rgb/train/masks/Tumor")
         self.rgb_val_mask_dir = os.path.join(project_root, "data/processed_data/rgb/val/masks/Tumor")
@@ -78,7 +78,7 @@ class Dataset:
         # the option to process the negative images 
         if add_negative: 
             # Get the project root directory (2 levels up from current file)
-            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
             self.negative_images = self.read_neg_images(os.path.join(project_root, "data/raw_data/no_tumor"))
             self.negative_images = self.crop_raw_images(self.negative_images)
             self.negative_images = self.crop_images(self.negative_images) 
@@ -139,7 +139,7 @@ class Dataset:
 
         train_indices = indices[:train_num]
         val_indices = indices[train_num:train_num + val_num]
-        test_indices = indices[train_num + test_num:]
+        test_indices = indices[train_num + val_num:]
 
         # split the filenames to each training set 
         self.train_filenames = [self.filenames[i] for i in train_indices]
@@ -181,7 +181,7 @@ class Dataset:
     # this will load data from the cashe 
     # returns train_images for each type (rgb, depth, rgd) and shared masks
     def load_data(self, rgb: bool=False, depth: bool=False, rgd: bool=False,) -> Tuple[List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray], List[np.ndarray]]:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
         if rgb: 
             rgb_root = os.path.join(project_root, "data/processed_data/rgb")
             return self.read_to_array_post(rgb_root)
@@ -198,7 +198,7 @@ class Dataset:
     
     # this will save our data into directories for each image type, with shared masks
     def cashe_data(self) -> None:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
         
         # Create RGB image and mask directories
         train_img_dir_rgb = os.path.join(project_root, "data/processed_data/rgb/train/images")
@@ -326,7 +326,7 @@ class Dataset:
 
     # this uses the binary mask to generate the json file  
     def convert_binary_to_coco(self) -> None:
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..'))
 
         #rgb
         train_mask_dir = os.path.join(project_root, "data/processed_data/rgb/train/masks")
