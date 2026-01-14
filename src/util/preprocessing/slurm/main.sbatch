@@ -10,8 +10,8 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=./logs/get-images-2/%x.%j.out   # STDOUT → ./logs/get-images-2/<jobid>.o3t
-#SBATCH --error=./logs/get-images-2/%x.%j.err    # STDERR → ./logs/get-images-2/<jobid>.e3r
+#SBATCH --output=./logs/preprocess-images-1/%x.%j.out   # STDOUT → ./logs/preprocess-images-1/<jobid>.o3t
+#SBATCH --error=./logs/preprocess-images-1/%x.%j.err    # STDERR → ./logs/preprocess-images-1/<jobid>.e3r
 
 
 # create a logs dir 
