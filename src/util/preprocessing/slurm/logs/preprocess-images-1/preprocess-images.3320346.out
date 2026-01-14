@@ -1,0 +1,11 @@
+Project root added to path: /projects/PUCHALLA/LLP2024/tumor-segmentation/src
+Init Dataset
+Preprocessing done!
+Number of RGB Images: 588
+Number of Depth Map Images: 588
+Number of RGD images: 588
+
+Number of training sets: 411
+Number of validation sets: 0
+Number of testing sets: 0
+Data cached successfully.

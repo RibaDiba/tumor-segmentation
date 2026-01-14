@@ -1,3 +1,7 @@
 # this file contains processed data. should not be uploaded to github
 data/processed_data/
-models/rgb-testing/
+models/
+src/Detectron2/slurm_output
+src/Detectron2/evaluation/slurm/logs
+src/Detectron2/evaluation/graphs/
+src/Detectron2/training_scripts/slurm/logs

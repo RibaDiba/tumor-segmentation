@@ -1,5 +1,0 @@
-mkdir: cannot create directory ‘logs/final-test-rgb-1500-4’: No such file or directory
-Traceback (most recent call last):
-  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts/slurm/sbtach_scripts/../../train.py", line 13, in <module>
-    import detectron2
-ModuleNotFoundError: No module named 'detectron2'

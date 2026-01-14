@@ -1,0 +1,2 @@
+mkdir: cannot create directory ‘./logs/’: File exists
+[2025-12-28T23:40:19.148] error: *** JOB 3320580 ON della-l03g16 CANCELLED AT 2025-12-28T23:40:19 DUE to SIGNAL Terminated ***

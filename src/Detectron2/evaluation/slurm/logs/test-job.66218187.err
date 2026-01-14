@@ -1,3 +1,0 @@
-slurmstepd: error: execve(): /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/slurm/../check-one.py: Permission denied
-srun: error: della-l02g1: task 0: Exited with exit code 13
-srun: Terminating StepId=66218187.0
