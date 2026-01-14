@@ -21,25 +21,30 @@ args:
 returns: 
     cfg: configuration file 
 """
+
+
 def return_cfg(model_name: str, root_dir: str):
     model_dir = os.path.join(root_dir, model_name)
 
     cfg = get_cfg()
-    cfg.merge_from_file("../training_scripts/cfg.yaml") # pulls previous settings 
+    cfg.merge_from_file("../training_scripts/cfg.yaml")  # pulls previous settings
     cfg.MODEL_WEIGHTS = os.path.join(model_dir, "model_final.pth")
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5 # confidence threshold 
+    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5  # confidence threshold
 
     return cfg
+
 
 """
 this visualizes the results from the output 
 """
-def visualize(img, outputs, cfg): 
+
+
+def visualize(img, outputs, cfg):
     os.makedirs("outputs", exist_ok=True)
 
     v = Visualizer(img[:, :, ::-1], MetadataCatalog.get(cfg.DATASETS.TEST[0]))
     out = v.draw_instance_predictions(outputs["instances"].to("cpu"))
-    
+
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
 
     # Original image
@@ -55,5 +60,3 @@ def visualize(img, outputs, cfg):
     plt.tight_layout()
     plt.savefig("outputs/test.jpg")
     plt.close()
-
-

@@ -9,9 +9,10 @@ note: need to fix the configs for true/false
 fix argparse error 
 """
 
-# imports 
+# imports
 import detectron2
 from detectron2.utils.logger import setup_logger
+
 setup_logger()
 
 # import some common libraries
@@ -33,18 +34,20 @@ import matplotlib.pyplot as plt
 from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.config import get_cfg
 
-# helper function for parsing - might add to another module later 
+
+# helper function for parsing - might add to another module later
 def str2bool(v):
-    if isinstance(v, bool): 
+    if isinstance(v, bool):
         return v
-    elif v.lower() in ('true', 'True'):
+    elif v.lower() in ("true", "True"):
         return True
-    elif v.lower() in ('false', 'False'):
+    elif v.lower() in ("false", "False"):
         return False
-    else: 
+    else:
         raise argparse.ArgumentError("Boolean value expected")
 
-# some custom classes 
+
+# some custom classes
 # Add the project root to the path to make imports system-independent
 sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
 from util.preprocessing.tumor_dataset import Dataset
@@ -57,52 +60,54 @@ we could use the native python solution, but this is easier
 
 parser = argparse.ArgumentParser(description="arguments for training")
 
-# non-optional arguments 
-parser.add_argument('model_name', type=str, help="Specifcies model name")
-parser.add_argument('iterations', type=int, help="Specifcies iterations")
+# non-optional arguments
+parser.add_argument("model_name", type=str, help="Specifcies model name")
+parser.add_argument("iterations", type=int, help="Specifcies iterations")
 
 # optional arguments
-parser.add_argument("--rgb", type=str2bool, default=False,
-                    help="Set mode to RGB")
-parser.add_argument('--depth', type=str2bool, default=False, 
-                    help="Set mode to depth")
-parser.add_argument('--rgd', type=str2bool, default=False,
-                    help="Set mode to rgd")
-parser.add_argument('--split-cashe', metavar="split_cashe", type=str2bool, default=False,
-                    help="splits data into train/val/test, and then cashes it, recemended if first time")
+parser.add_argument("--rgb", type=str2bool, default=False, help="Set mode to RGB")
+parser.add_argument("--depth", type=str2bool, default=False, help="Set mode to depth")
+parser.add_argument("--rgd", type=str2bool, default=False, help="Set mode to rgd")
+parser.add_argument(
+    "--split-cashe",
+    metavar="split_cashe",
+    type=str2bool,
+    default=False,
+    help="splits data into train/val/test, and then cashes it, recemended if first time",
+)
 
-# collect arguments 
+# collect arguments
 args = parser.parse_args()
 model_name = args.model_name
 iterations = args.iterations
-rgb_bool = args.rgb 
+rgb_bool = args.rgb
 depth_bool = args.depth
 rgd_bool = args.rgd
 split_cashe = args.split_cashe
 split_cashe = str2bool(split_cashe)
 
-# check arguments 
+# check arguments
 
 """
 code is taken from the notebook file 
 """
 
-# TODO: implement the argparser stuff here 
+# TODO: implement the argparser stuff here
 d = Dataset(data_path="../../../data/huggingface-repo/useable_data")
 print("--DEBUGGING SPLIT_CASHE----")
 print("SPLIT_CASHE is", split_cashe)
-if split_cashe == True: 
+if split_cashe == True:
     d.preprocess_images()
     d.split_train_val_test(70, 15, 15)
     d.cashe_data()
 d.convert_binary_to_coco()
-if rgb_bool: 
+if rgb_bool:
     d.register_instances(rgb=True)
-elif depth_bool: 
+elif depth_bool:
     d.register_instances(depth=True)
-elif rgd_bool: 
+elif rgd_bool:
     d.register_instances(rgd=True)
-else: 
+else:
     raise argparse.ArgumentError("Give a model-type flag")
 
 train_metadata = MetadataCatalog.get("my_dataset_train")
@@ -117,27 +122,33 @@ test_dataset_dicts = DatasetCatalog.get("my_dataset_test")
 cfg = get_cfg()
 cfg.MODELNAME = model_name
 cfg.OUTPUT_DIR = f"../../../../../models/rgb-testing/{cfg.MODELNAME}"
-cfg.merge_from_file(model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"))
+cfg.merge_from_file(
+    model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+)
 cfg.DATASETS.TRAIN = ("my_dataset_train", "my_dataset_val")
 cfg.DATASETS.TEST = ("my_dataset_test",)
 cfg.DATALOADER.NUM_WORKERS = 1
-cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False # this is for our "no tumor" examples 
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")  # Let training initialize from model zoo
-cfg.SOLVER.IMS_PER_BATCH = 2  # This is the real "batch size" commonly known to deep learning people
-cfg.SOLVER.MAX_ITER = iterations   
-cfg.SOLVER.STEPS = []        
-cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512   # The "RoIHead batch size". 128 is faster, and good enough for this toy dataset (default: 512)
-cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1  
+cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False  # this is for our "no tumor" examples
+cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
+    "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
+)  # Let training initialize from model zoo
+cfg.SOLVER.IMS_PER_BATCH = (
+    2  # This is the real "batch size" commonly known to deep learning people
+)
+cfg.SOLVER.MAX_ITER = iterations
+cfg.SOLVER.STEPS = []
+cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512  # The "RoIHead batch size". 128 is faster, and good enough for this toy dataset (default: 512)
+cfg.MODEL.ROI_HEADS.NUM_CLASSES = 1
 
 # ROI Head Configuration (Accuracy-focused)
 cfg.MODEL.ROI_HEADS.BATCH_SIZE_PER_IMAGE = 512
 cfg.MODEL.ROI_HEADS.POSITIVE_FRACTION = 0.5  # More positive samples
-cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.3   # Lower detection threshold
-cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.3     # Lower NMS for medical
+cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.3  # Lower detection threshold
+cfg.MODEL.ROI_HEADS.NMS_THRESH_TEST = 0.3  # Lower NMS for medical
 
-cfg.SOLVER.BASE_LR = 0.0005   # Conservative LR for medical data
+cfg.SOLVER.BASE_LR = 0.0005  # Conservative LR for medical data
 cfg.SOLVER.STEPS = [3000, 4000]  # Later LR reduction
-cfg.SOLVER.GAMMA = 0.5        # Gentler LR decay
+cfg.SOLVER.GAMMA = 0.5  # Gentler LR decay
 cfg.SOLVER.WARMUP_ITERS = 800
 cfg.SOLVER.WARMUP_FACTOR = 0.1
 
