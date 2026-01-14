@@ -9,29 +9,37 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      
-        # get the code, only the main repo without submodules
+
+      # checkout main repo code
       - name: Checkout code
         uses: actions/checkout@v4
-        with: 
-            submodules: false
-            presist-credentials: false
+        with:
+          submodules: false 
+          persist-credentials: false # important to prevent overwriting git config later
 
-        - name: Configure Hugging Face Auth
-            env:
-            HF_TOKEN: ${{ secrets.HF_TOKEN }}
-            run: |
-            git config --global url."https://user:${HF_TOKEN}@huggingface.co/".insteadOf "https://huggingface.co/"
+      # configure git with HF_TOKEN
+      - name: Configure Hugging Face Auth
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global url."https://user:${HF_TOKEN}@huggingface.co/".insteadOf "https://huggingface.co/"
 
-      # 3. Install dependencies
+      # now update the submodules 
+      - name: Update Submodules
+        run: |
+          git submodule update --init --recursive
+
+      # 4. set up python and run tests
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.4'
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      # 4. Run the tests
+          pip install -r requirements.txt
+          
       - name: Run Pytest
         run: pytest
