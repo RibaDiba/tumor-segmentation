@@ -13,23 +13,26 @@ from .IoUEvaluator import PerImageIoUEvaluator
 this hook will calculate per image IoU mean and give final training metrics 
 """
 
-class IoUHook(HookBase): 
-    def __init__(self, output_dir=None, save_json: bool=False, eval_period: int=100):
+
+class IoUHook(HookBase):
+    def __init__(
+        self, output_dir=None, save_json: bool = False, eval_period: int = 100
+    ):
         self.eval_period = eval_period
         self.output_dir = output_dir
         self.save_json = save_json
 
         self.training_data = {}
 
-        if output_dir: 
-            os.makedirs(output_dir, exist_ok=True) 
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
 
-    # record after certain eval period 
+    # record after certain eval period
     def after_step(self):
         storage = get_event_storage()
         iteration = storage.iter
 
-        if iteration % self.eval_period == 0 and iteration != 0: 
+        if iteration % self.eval_period == 0 and iteration != 0:
             results = self._get_IoU()
             self.training_data[iteration] = {
                 "count_50": results["dataset_metrics"]["count_50"],
@@ -38,16 +41,16 @@ class IoUHook(HookBase):
                 "count_failed": results["dataset_metrics"]["count_failed"],
             }
 
-    def after_train(self): 
+    def after_train(self):
         self.model_name = self.trainer.cfg.MODELNAME
         self._save_graph()
 
-        if self.save_json: 
+        if self.save_json:
             results = self._get_IoU()
             out_path = os.path.join(self.output_dir, "json")
             os.makedirs(out_path, exist_ok=True)
             out_path = os.path.join(out_path, f"{self.model_name}_json_results.json")
-            with open(out_path, "w") as f: 
+            with open(out_path, "w") as f:
                 json.dump({"results": results}, f)
 
     # helpers
@@ -59,8 +62,8 @@ class IoUHook(HookBase):
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 
         return results
-    
-    def _save_graph(self): 
+
+    def _save_graph(self):
         iterations = list(self.training_data.keys())
         count_50 = [v["count_50"] for v in self.training_data.values()]
         count_75 = [v["count_75"] for v in self.training_data.values()]

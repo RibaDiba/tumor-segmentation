@@ -1,2 +1,0 @@
-mkdir: cannot create directory ‘logs/rerun-model-1-rgb’: No such file or directory
-../../train.sh: line 54: pytest: command not found

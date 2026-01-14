@@ -1,0 +1,45 @@
+name: Run Pytest
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # checkout main repo code
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: false 
+          persist-credentials: false # important to prevent overwriting git config later
+
+      # configure git with HF_TOKEN
+      - name: Configure Hugging Face Auth
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global url."https://user:${HF_TOKEN}@huggingface.co/".insteadOf "https://huggingface.co/"
+
+      # now update the submodules 
+      - name: Update Submodules
+        run: |
+          git submodule update --init --recursive
+
+      # 4. set up python and run tests
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.4'
+
+      - name: Install dependencies
+        run: |
+          pip install pytest
+          pip install -r requirements-ci.txt
+          
+      - name: Run Pytest
+        run: pytest data/testing/test_sizes.py data/testing/test_sets.py

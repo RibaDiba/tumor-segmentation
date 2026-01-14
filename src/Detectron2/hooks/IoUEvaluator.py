@@ -6,14 +6,15 @@ from detectron2.evaluation import DatasetEvaluator
 from detectron2.data import DatasetCatalog
 from pycocotools import mask as maskUtils
 
+
 class PerImageIoUEvaluator(DatasetEvaluator):
     """
     Loads GT annotations from DatasetCatalog (COCO-format dicts) and computes
     certain metrics of IoU between GT masks and predicted masks.
 
-    Metrics Calculated: 
-    - Mean IoU of batch 
-    - Per image IoU 
+    Metrics Calculated:
+    - Mean IoU of batch
+    - Per image IoU
     - IoUs at certain thresholds (50, 75, 90)
     - failed IoUs
     """
@@ -24,7 +25,9 @@ class PerImageIoUEvaluator(DatasetEvaluator):
         self.reset()
 
         # Preload GT RLEs mapped by image_id
-        self._imageid_to_gt = {}  # image_id -> {'rles': [rle,...], 'height': H, 'width': W}
+        self._imageid_to_gt = (
+            {}
+        )  # image_id -> {'rles': [rle,...], 'height': H, 'width': W}
         dataset_dicts = DatasetCatalog.get(dataset_name)
         for d in dataset_dicts:
             img_id = d.get("image_id", d.get("id", None))
@@ -49,13 +52,19 @@ class PerImageIoUEvaluator(DatasetEvaluator):
                 else:
                     # frPyObjects might directly return an rle dict
                     rles_for_img.append(rles)
-            self._imageid_to_gt[img_id] = {"rles": rles_for_img, "height": H, "width": W}
+            self._imageid_to_gt[img_id] = {
+                "rles": rles_for_img,
+                "height": H,
+                "width": W,
+            }
 
     def reset(self):
-        self.image_results = {}  # image_id -> {'mean_iou': float or None, 'num_gt', 'num_pred'}
+        self.image_results = (
+            {}
+        )  # image_id -> {'mean_iou': float or None, 'num_gt', 'num_pred'}
 
-        # dicts below are the same format 
-        self.IoU_50 = {} 
+        # dicts below are the same format
+        self.IoU_50 = {}
         self.IoU_75 = {}
         self.IoU_90 = {}
 
@@ -74,6 +83,7 @@ class PerImageIoUEvaluator(DatasetEvaluator):
         # convert to numpy arrays if tensors present
         try:
             import torch
+
             if isinstance(pred_masks, torch.Tensor):
                 pred_masks = pred_masks.cpu().numpy()
         except Exception:
@@ -105,7 +115,10 @@ class PerImageIoUEvaluator(DatasetEvaluator):
                 self._ordered_image_ids.append(image_id)
 
             # get GT rles we preloaded
-            gt_entry = self._imageid_to_gt.get(image_id, {"rles": [], "height": inp.get("height"), "width": inp.get("width")})
+            gt_entry = self._imageid_to_gt.get(
+                image_id,
+                {"rles": [], "height": inp.get("height"), "width": inp.get("width")},
+            )
             gt_rles = gt_entry["rles"]
 
             # get predicted masks from model outputs
@@ -136,28 +149,59 @@ class PerImageIoUEvaluator(DatasetEvaluator):
                 try:
                     iou_mat = maskUtils.iou(pred_masks, gt_rles, iscrowd)  # shape (P,G)
                     # For each GT choose best-pred; average over GTs
-                    best_per_gt = iou_mat.max(axis=0) if iou_mat.size else np.zeros((num_gt,), dtype=float)
+                    best_per_gt = (
+                        iou_mat.max(axis=0)
+                        if iou_mat.size
+                        else np.zeros((num_gt,), dtype=float)
+                    )
                     mean_iou = float(best_per_gt.mean())
                 except Exception as e:
                     # fallback: mark as None and continue
                     mean_iou = None
-                    print(f"[PerImageIoU] pycocotools.iou failed for image {image_id}: {e}")
+                    print(
+                        f"[PerImageIoU] pycocotools.iou failed for image {image_id}: {e}"
+                    )
 
-            self.image_results[image_name] = {"id": image_id, "mean_iou": mean_iou, "num_gt": num_gt, "num_pred": num_pred}
-            if mean_iou >= .90:
-                self.IoU_90[image_name] = {"id": image_id, "mean_iou": mean_iou, "num_gt": num_gt, "num_pred": num_pred}
-            if mean_iou >= .75: 
-                self.IoU_75[image_name] = {"id": image_id, "mean_iou": mean_iou, "num_gt": num_gt, "num_pred": num_pred}
-            if mean_iou >= .50: 
-                self.IoU_50[image_name] = {"id": image_id, "mean_iou": mean_iou, "num_gt": num_gt, "num_pred": num_pred}
-            if mean_iou < .50: 
-                self.IoU_failed[image_name] = {"id": image_id, "mean_iou": mean_iou, "num_gt": num_gt, "num_pred": num_pred}
+            self.image_results[image_name] = {
+                "id": image_id,
+                "mean_iou": mean_iou,
+                "num_gt": num_gt,
+                "num_pred": num_pred,
+            }
+            if mean_iou >= 0.90:
+                self.IoU_90[image_name] = {
+                    "id": image_id,
+                    "mean_iou": mean_iou,
+                    "num_gt": num_gt,
+                    "num_pred": num_pred,
+                }
+            if mean_iou >= 0.75:
+                self.IoU_75[image_name] = {
+                    "id": image_id,
+                    "mean_iou": mean_iou,
+                    "num_gt": num_gt,
+                    "num_pred": num_pred,
+                }
+            if mean_iou >= 0.50:
+                self.IoU_50[image_name] = {
+                    "id": image_id,
+                    "mean_iou": mean_iou,
+                    "num_gt": num_gt,
+                    "num_pred": num_pred,
+                }
+            if mean_iou < 0.50:
+                self.IoU_failed[image_name] = {
+                    "id": image_id,
+                    "mean_iou": mean_iou,
+                    "num_gt": num_gt,
+                    "num_pred": num_pred,
+                }
 
     def evaluate(self):
         per_image = self.image_results
         ious = [v["mean_iou"] for v in per_image.values() if v["mean_iou"] is not None]
         overall_mean = float(np.mean(ious)) if ious else None
-        
+
         count_50 = len(self.IoU_50)
         count_75 = len(self.IoU_75)
         count_90 = len(self.IoU_90)
@@ -168,19 +212,21 @@ class PerImageIoUEvaluator(DatasetEvaluator):
             os.makedirs(self._output_dir, exist_ok=True)
             out_path = os.path.join(self._output_dir, "per_image_iou.json")
             with open(out_path, "w") as f:
-                json.dump({"per_image": per_image, "overall_mean": overall_mean}, f, indent=2)
+                json.dump(
+                    {"per_image": per_image, "overall_mean": overall_mean}, f, indent=2
+                )
 
         return {
-                    "per_image_iou": per_image,
-                    "per_image_50": self.IoU_50,
-                    "per_image_75": self.IoU_75,
-                    "per_image_90": self.IoU_90,
-                    "per_image_failed": self.IoU_failed,
-                    "dataset_metrics": {
-                        "mean_iou": overall_mean,
-                        "count_50": count_50,
-                        "count_75": count_75,
-                        "count_90": count_90,
-                        "count_failed": count_failed    
-                    }
-                }
+            "per_image_iou": per_image,
+            "per_image_50": self.IoU_50,
+            "per_image_75": self.IoU_75,
+            "per_image_90": self.IoU_90,
+            "per_image_failed": self.IoU_failed,
+            "dataset_metrics": {
+                "mean_iou": overall_mean,
+                "count_50": count_50,
+                "count_75": count_75,
+                "count_90": count_90,
+                "count_failed": count_failed,
+            },
+        }
