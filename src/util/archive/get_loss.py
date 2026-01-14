@@ -3,25 +3,35 @@ from statistics import mean
 from transformers import SamModel, SamConfig, SamProcessor
 import torch
 from tqdm import tqdm
+
 importlib.reload(preprocess_images)
 importlib.reload(get_bounding_box)
 
-from lib.preprocessing.preprocess_images import preprocess_rgb, preprocess_grayscale, preprocess_rgbd
+from lib.preprocessing.preprocess_images import (
+    preprocess_rgb,
+    preprocess_grayscale,
+    preprocess_rgbd,
+)
 from get_bounding_box import get_bounding_box
 
-def get_loss_rgb(model_path, UseMedSAM=False): 
 
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = preprocess_rgb('../data/useable_data', 70, 15, 15)
+def get_loss_rgb(model_path, UseMedSAM=False):
+
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = (
+        preprocess_rgb("../data/useable_data", 70, 15, 15)
+    )
 
     # define our loss function
-    seg_loss = monai.losses.DiceFocalLoss(sigmoid=True, squared_pred=True, reduction='mean')
+    seg_loss = monai.losses.DiceFocalLoss(
+        sigmoid=True, squared_pred=True, reduction="mean"
+    )
     total_loss = []
 
     # init our model
-    if (UseMedSAM ==False): 
+    if UseMedSAM == False:
         model_config = SamConfig.from_pretrained("facebook/sam-vit-base")
         processor = SamProcessor.from_pretrained("facebook/sam-vit-base")
-    else: 
+    else:
         model_config = SamConfig.from_pretrained("wanglab/medsam-vit-base")
         processor = SamProcessor.from_pretrained("wanglab/medsam-vit-base")
 
@@ -61,19 +71,24 @@ def get_loss_rgb(model_path, UseMedSAM=False):
 
     return mean_loss
 
-def get_loss_grayscale(model_path, UseMedSAM=False): 
 
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = preprocess_grayscale('../data/useable_data', 70, 15, 15)
+def get_loss_grayscale(model_path, UseMedSAM=False):
+
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = (
+        preprocess_grayscale("../data/useable_data", 70, 15, 15)
+    )
 
     # define our loss function
-    seg_loss = monai.losses.DiceFocalLoss(sigmoid=True, squared_pred=True, reduction='mean')
+    seg_loss = monai.losses.DiceFocalLoss(
+        sigmoid=True, squared_pred=True, reduction="mean"
+    )
     total_loss = []
 
     # init our model
-    if (UseMedSAM ==False): 
+    if UseMedSAM == False:
         model_config = SamConfig.from_pretrained("facebook/sam-vit-base")
         processor = SamProcessor.from_pretrained("facebook/sam-vit-base")
-    else: 
+    else:
         model_config = SamConfig.from_pretrained("wanglab/medsam-vit-base")
         processor = SamProcessor.from_pretrained("wanglab/medsam-vit-base")
 
@@ -113,19 +128,24 @@ def get_loss_grayscale(model_path, UseMedSAM=False):
 
     return mean_loss
 
-def get_loss_rgbd(model_path, UseMedSAM=False): 
 
-    train_images, train_masks, val_images, val_masks, test_images, test_masks = preprocess_rgbd('../data/useable_data', 70, 15, 15)
+def get_loss_rgbd(model_path, UseMedSAM=False):
+
+    train_images, train_masks, val_images, val_masks, test_images, test_masks = (
+        preprocess_rgbd("../data/useable_data", 70, 15, 15)
+    )
 
     # define our loss function
-    seg_loss = monai.losses.DiceFocalLoss(sigmoid=True, squared_pred=True, reduction='mean')
+    seg_loss = monai.losses.DiceFocalLoss(
+        sigmoid=True, squared_pred=True, reduction="mean"
+    )
     total_loss = []
 
     # init our model
-    if (UseMedSAM ==False): 
+    if UseMedSAM == False:
         model_config = SamConfig.from_pretrained("facebook/sam-vit-base")
         processor = SamProcessor.from_pretrained("facebook/sam-vit-base")
-    else: 
+    else:
         model_config = SamConfig.from_pretrained("wanglab/medsam-vit-base")
         processor = SamProcessor.from_pretrained("wanglab/medsam-vit-base")
 
@@ -164,4 +184,3 @@ def get_loss_rgbd(model_path, UseMedSAM=False):
     mean_loss = mean(total_loss)
 
     return mean_loss
-
