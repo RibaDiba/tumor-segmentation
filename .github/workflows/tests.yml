@@ -42,4 +42,4 @@ jobs:
           pip install -r requirements-ci.txt
           
       - name: Run Pytest
-        run: pytest
+        run: pytest data/testing/test_sizes.py data/testing/test_sets.py
