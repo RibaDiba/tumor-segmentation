@@ -1,0 +1,14 @@
+torch
+torchvision
+monai
+opencv-python
+matplotlib
+numpy
+scipy
+tqdm
+pillow
+datasets
+ipykernel
+pytest
+huggingface-hub
+black 
