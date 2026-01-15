@@ -49,8 +49,12 @@ def str2bool(v):
 
 # some custom classes
 # Add the project root to the path to make imports system-independent
-sys.path.append("/projects/PUCHALLA/LLP2024/tumor-segmentation")
-from util.preprocessing.tumor_dataset import Dataset
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, "../../.."))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+
+from src.util.preprocessing.tumor_dataset import Dataset
 from src.Detectron2.trainer.TrainerClass import Trainer
 
 """
@@ -113,6 +117,7 @@ else:
 train_metadata = MetadataCatalog.get("my_dataset_train")
 train_dataset_dicts = DatasetCatalog.get("my_dataset_train")
 
+# not going to use my_dataset_val for this run through 
 val_metadata = MetadataCatalog.get("my_dataset_val")
 val_dataset_dicts = DatasetCatalog.get("my_dataset_val")
 
@@ -125,7 +130,7 @@ cfg.OUTPUT_DIR = f"../../../../../models/rgb-testing/{cfg.MODELNAME}"
 cfg.merge_from_file(
     model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
 )
-cfg.DATASETS.TRAIN = ("my_dataset_train", "my_dataset_val")
+cfg.DATASETS.TRAIN = ("my_dataset_train")
 cfg.DATASETS.TEST = ("my_dataset_test",)
 cfg.DATALOADER.NUM_WORKERS = 1
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False  # this is for our "no tumor" examples
