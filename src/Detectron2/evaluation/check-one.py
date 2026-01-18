@@ -20,9 +20,9 @@ def eval_image(path_img: str, model_name: str, root_dir: str):
 
 
 eval_image(
-    "../../../data/processed_data/rgb/train/images/train_0.jpg",
-    "rgb-test-5000",
-    "../../../models/detectron2_test",
+    "../../../data/useable_data/032224 MCF7 EdPIT-EdPIT-1-49-08.jpg",
+    "depth-7030-4",
+    "../../../models/rgb-testing",
 )
 
 

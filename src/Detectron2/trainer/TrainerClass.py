@@ -17,6 +17,7 @@ import numpy as np
 from ..hooks.LossHook import TrainingLossHook
 from ..hooks.APHook import APVisualizationHook
 from ..hooks.IoUHook import IoUHook
+from ..hooks.APFinalHook import APFinalHook
 
 """
 this custom trainer class allows us to include image augmentations
@@ -27,13 +28,8 @@ also this is where we can create a hook to visualize training loss
 class Trainer(DefaultTrainer):
     @classmethod
     def build_train_loader(cls, cfg):
-        # augs = T.AugmentationList([
-        #     T.RandomFlip(0.2, horizontal=True, vertical=False),
-        #     T.RandomFlip(0.2, horizontal=False, vertical=True),
-        #     T.RandomRotation([-15, 15], expand=False)
-        # ])
 
-        mapper = DatasetMapper(cfg)
+        mapper = DatasetMapper(cfg, is_train=True)
         return build_detection_train_loader(cfg, mapper=mapper)
 
     @classmethod
@@ -66,6 +62,13 @@ class Trainer(DefaultTrainer):
 
         iou_hook = IoUHook(output_dir="../../../slurm_output/IoU_fig", save_json=True)
         hooks.append(iou_hook)
+
+        # final AP Hook to get scores from the best model 
+        ap_hook_final = APFinalHook(
+            output_dir="../../../slurm_output/AP_Final",
+            cfg=self.cfg
+        )
+        hooks.append(ap_hook_final)
 
         return hooks
 

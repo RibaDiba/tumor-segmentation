@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=rgd-5000-1
+#SBATCH --job-name=rgd-7030-4-augs
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,11 +10,11 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=../logs/rgd-5000-1/%x.%j.out   # STDOUT → ../logs/rgd-5000-1/<jobid>.o3t
-#SBATCH --error=../logs/rgd-5000-1/%x.%j.err    # STDERR → ../logs/rgd-5000-1/<jobid>.e3r
+#SBATCH --output=../logs/rgd-7030-4-augs/%x.%j.out   # STDOUT → ../logs/rgd-7030-4-augs/<jobid>.o3t
+#SBATCH --error=../logs/rgd-7030-4-augs/%x.%j.err    # STDERR → ../logs/rgd-7030-4-augs/<jobid>.e3r
 
 # config: 
-NAME="rgd-5000-1"
+NAME="rgd-7030-4-augs"
 ITER=5000
 
 # create a logs dir 
