@@ -51,7 +51,7 @@ class IoUHook(HookBase):
             os.makedirs(out_path, exist_ok=True)
             out_path = os.path.join(out_path, f"{self.model_name}_json_results.json")
             with open(out_path, "w") as f:
-                json.dump({"results": results}, f)
+                json.dump({"results": results}, f, indent=4)
 
     # helpers
     def _get_IoU(self):
