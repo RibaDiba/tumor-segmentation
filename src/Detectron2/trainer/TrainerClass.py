@@ -18,6 +18,7 @@ from ..hooks.LossHook import TrainingLossHook
 from ..hooks.APHook import APVisualizationHook
 from ..hooks.IoUHook import IoUHook
 from ..hooks.APFinalHook import APFinalHook
+from ..hooks.OutputsHook import OutputsHook
 
 """
 this custom trainer class allows us to include image augmentations
@@ -55,6 +56,7 @@ class Trainer(DefaultTrainer):
         )  # create an instance of our custom hook
         hooks.append(loss_hook_training)  # append hook
 
+        # now we append all the hooks onto this 
         ap_hook = APVisualizationHook(
             output_dir="../../../slurm_output/AP_Fig", cfg=self.cfg
         )
@@ -62,6 +64,9 @@ class Trainer(DefaultTrainer):
 
         iou_hook = IoUHook(output_dir="../../../slurm_output/IoU_fig", save_json=True)
         hooks.append(iou_hook)
+
+        outputs_hook = OutputsHook(output_dir="../../../slurm_output/outputs")
+        hooks.append(outputs_hook)
 
         # final AP Hook to get scores from the best model 
         ap_hook_final = APFinalHook(
