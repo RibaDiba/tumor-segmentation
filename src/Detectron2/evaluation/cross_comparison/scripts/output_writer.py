@@ -37,6 +37,10 @@ class OutputWriter:
         """
         print("\nCreating JSON output from failed images data...")
 
+        # Make the output json dir
+        json_dir = os.path.join(output_dir, "json")
+        os.makedirs(json_dir, exist_ok=True)
+
         # Use filtered failed images data (already categorized by best performer)
         best_rgb = {}
         best_depth = {}

@@ -77,15 +77,16 @@ class ComparisonPlotter:
             print(f"  Error plotting {img_data.get('image_name', 'unknown')}: {e}")
             return None
 
-    def generate_plots(self, failed_comparison: Dict, plot_dir: str):
+    def generate_plots(self, failed_comparison: Dict, output_dir: str):
         """
         Generate and save comparison plots for failed images
 
         :param failed_comparison: Dictionary with categorized failed images
         :type failed_comparison: dict
-        :param plot_dir: Directory to save plots
-        :type plot_dir: str
+        :param output_dir: Directory to save plots
+        :type output_dir: str
         """
+        plot_dir = os.path.join(output_dir, "plots")
         os.makedirs(plot_dir, exist_ok=True)
 
         # Plot failed_all_models

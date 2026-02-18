@@ -175,7 +175,6 @@ class TumorEvaluator:
         self,
         plot_results: bool = False,
         output_dir: str = None,
-        plot_dir: str = None,
     ):
         """
         Saves comparison results to JSON and optionally generates plots
@@ -197,13 +196,9 @@ class TumorEvaluator:
         # Set default directories
         if output_dir is None:
             output_dir = os.path.dirname(__file__)
-
-        if plot_dir is None:
-            plot_dir = os.path.join(
-                os.path.dirname(__file__), "..", "evaluation_outputs"
-            )
-
-        os.makedirs(plot_dir, exist_ok=True)
+        else:
+            # Create output dir if not exist 
+            os.makedirs(output_dir, exist_ok=True)
 
         # Save JSON results using OutputWriter
         output_data = self.output_writer.save_results(
@@ -213,7 +208,7 @@ class TumorEvaluator:
         # Generate plots if requested
         if plot_results:
             print("\nGenerating comparison plots...")
-            self.plotter.generate_plots(self.failed_comparison, plot_dir)
+            self.plotter.generate_plots(self.failed_comparison, output_dir)
 
         return output_data
 
