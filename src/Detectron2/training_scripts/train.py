@@ -67,6 +67,7 @@ parser = argparse.ArgumentParser(description="arguments for training")
 # non-optional arguments
 parser.add_argument("model_name", type=str, help="Specifcies model name")
 parser.add_argument("iterations", type=int, help="Specifcies iterations")
+parser.add_argument("model_type", type=str, help="Specifies the set of models")
 
 # optional arguments
 parser.add_argument("--rgb", type=str2bool, default=False, help="Set mode to RGB")
@@ -84,6 +85,7 @@ parser.add_argument(
 args = parser.parse_args()
 model_name = args.model_name
 iterations = args.iterations
+model_type = args.model_type
 rgb_bool = args.rgb
 depth_bool = args.depth
 rgd_bool = args.rgd
@@ -97,12 +99,13 @@ code is taken from the notebook file
 """
 
 # TODO: implement the argparser stuff here
-d = Dataset(data_path="../../../data/huggingface-repo/useable_data")
+d = Dataset(data_path=os.path.join(project_root, "data/huggingface-repo/useable_data"))
 print("--DEBUGGING SPLIT_CASHE----")
 print("SPLIT_CASHE is", split_cashe)
+
 if split_cashe == True:
     d.preprocess_images()
-    d.split_train_val_test(70, 15, 15)
+    d.split_train_val_test(70, 10, 20)
     d.cashe_data()
 d.convert_binary_to_coco()
 if rgb_bool:
@@ -126,7 +129,8 @@ test_dataset_dicts = DatasetCatalog.get("my_dataset_test")
 
 cfg = get_cfg()
 cfg.MODELNAME = model_name
-cfg.OUTPUT_DIR = f"../../../../../models/rgb-testing/{cfg.MODELNAME}"
+cfg.MODELTYPE = model_type
+cfg.OUTPUT_DIR = os.path.join(project_root, f"models/{cfg.MODELTYPE}/{cfg.MODELNAME}")
 cfg.merge_from_file(
     model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
 )

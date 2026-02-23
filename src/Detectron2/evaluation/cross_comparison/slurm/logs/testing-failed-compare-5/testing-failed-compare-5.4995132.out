@@ -1,0 +1,6 @@
+Loading pre-saved inference outputs...
+  rgb: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/RGB-1/outputs/RGB-1_inference_outputs.json
+  depth: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/DEPTH-1/outputs/DEPTH-1_inference_outputs.json
+  rgd: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/RGD-1/outputs/RGD-1_inference_outputs.json
+Outputs loaded!
+Extracting failed images from JSON files...

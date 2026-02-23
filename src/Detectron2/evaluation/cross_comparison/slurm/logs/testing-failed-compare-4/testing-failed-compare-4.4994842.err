@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/slurm/run_evaluator.py", line 51, in <module>
+    main(rgb_model_name, depth_model_name, rgd_model_name, model_type, slurm_output_dir, output_dir)
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/slurm/run_evaluator.py", line 14, in main
+    evaluator = TumorEvaluator(
+                ^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/scripts/tumor_evaluator.py", line 63, in __init__
+    self._get_outputs()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/scripts/tumor_evaluator.py", line 81, in _get_outputs
+    raise FileNotFoundError(
+FileNotFoundError: Inference outputs not found for rgb model 'RGB-1': /projects/PUCHALLA/LLP2024/tumor-segmentation/slurm_output/7030_SPLIT/RGB-1/outputs/RGB-1_inference_outputs.json

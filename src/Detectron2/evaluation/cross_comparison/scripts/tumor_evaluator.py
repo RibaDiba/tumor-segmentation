@@ -1,10 +1,12 @@
 import os
+import json
 import cv2
+import torch
+import numpy as np
 from pathlib import Path
-from detectron2.engine import DefaultPredictor
+from pycocotools import mask as mask_util
 from detectron2.utils.visualizer import Visualizer
-from detectron2.data import MetadataCatalog
-from detectron2.config import get_cfg
+from detectron2.structures import Instances, Boxes
 
 # Import our modular components
 from .json_utils import JSONHandler
@@ -18,11 +20,9 @@ that can compare the image between all models
 """
 
 # Constants
-PROJECT_ROOT = Path(__file__).resolve().parents[5]
 BASE_DATA_DIR = Path(
     "/projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data"
 )
-CONFIG_PATH = PROJECT_ROOT / "configs" / "cfg.yaml"
 
 
 class TumorEvaluator:
@@ -31,24 +31,27 @@ class TumorEvaluator:
     def __init__(
         self,
         model_names: dict,
-        model_root_dir: str,
-        json_root: str = "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/IoU_fig/json",
+        slurm_output_dir: str,
+        model_type: str,
     ):
         """
         Initialize TumorEvaluator
 
         :param model_names: Dictionary mapping mode to model name (e.g., {"rgb": "rgb-7030-4", ...})
         :type model_names: dict
-        :param model_root_dir: Root directory containing model weights
-        :type model_root_dir: str
-        :param json_root: Root directory containing JSON IoU results
-        :type json_root: str
+        :param slurm_output_dir: Root slurm output directory containing pre-saved inference outputs
+        :type slurm_output_dir: str
+        :param model_type: Model type subdirectory used in output path
+        :type model_type: str
         """
         self.model_names = model_names
-        self.model_root_dir = model_root_dir
+        self.model_type = model_type
+        self.slurm_output_dir = slurm_output_dir
         self.failed_comparison = None
-        self.predictors = {}
-        self.configs = {}
+        self.outputs = {}
+
+        # json_root is {slurm_output_dir}/{model_type}, JSONHandler appends /{model_name}/IoU_fig/json/
+        json_root = os.path.join(slurm_output_dir, model_type)
 
         # Initialize modular components
         self.json_handler = JSONHandler(json_root)
@@ -56,13 +59,38 @@ class TumorEvaluator:
         self.plotter = ComparisonPlotter()
         self.output_writer = OutputWriter(model_names)
 
-        print("Loading models....")
-        for mode, name in self.model_names.items():
-            cfg = self._setup_cfgs(name)
-            self.configs[mode] = cfg
-            self.predictors[mode] = DefaultPredictor(cfg)
+        print("Loading pre-saved inference outputs...")
+        self._get_outputs()
+        print("Outputs loaded!")
 
-        print("Models loaded!")
+    def _get_outputs(self):
+        """
+        Load pre-saved inference outputs for all models from JSON files.
+        Outputs are indexed by image basename for fast lookup in _evaluate().
+        """
+        for mode, model_name in self.model_names.items():
+            outputs_path = os.path.join(
+                self.slurm_output_dir,
+                self.model_type,
+                model_name,
+                "outputs",
+                f"{model_name}_inference_outputs.json",
+            )
+
+            if not os.path.exists(outputs_path):
+                raise FileNotFoundError(
+                    f"Inference outputs not found for {mode} model '{model_name}': {outputs_path}"
+                )
+
+            with open(outputs_path, "r") as f:
+                data = json.load(f)
+
+            # Index test-set entries by image basename for O(1) lookup
+            self.outputs[mode] = {
+                os.path.basename(entry["file_name"]): entry
+                for entry in data.get("test", [])
+            }
+            print(f"  {mode}: loaded {len(self.outputs[mode])} test predictions from {outputs_path}")
 
     def process_results(self):
         """
@@ -197,7 +225,7 @@ class TumorEvaluator:
         if output_dir is None:
             output_dir = os.path.dirname(__file__)
         else:
-            # Create output dir if not exist 
+            # Create output dir if not exist
             os.makedirs(output_dir, exist_ok=True)
 
         # Save JSON results using OutputWriter
@@ -212,27 +240,10 @@ class TumorEvaluator:
 
         return output_data
 
-    def _setup_cfgs(self, model_name: str):
-        """
-        Helper function that loads config for a model
-
-        :param model_name: Name of the model
-        :type model_name: str
-        :return: Configuration object
-        :rtype: CfgNode
-        """
-        cfg = get_cfg()
-        cfg.merge_from_file(str(CONFIG_PATH))
-        cfg.MODEL.WEIGHTS = os.path.join(
-            self.model_root_dir, model_name, "model_final.pth"
-        )
-        cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.5
-
-        return cfg
-
     def _evaluate(self, image_name: str, image_id: int):
         """
-        Takes an image and segments it using all 3 loaded models
+        Takes an image and visualizes predictions for all 3 models using
+        pre-saved inference outputs (no model inference at runtime).
 
         :param image_name: Name of the image
         :type image_name: str
@@ -243,26 +254,48 @@ class TumorEvaluator:
         """
         results = {}
 
-        for mode, predictor in self.predictors.items():
+        for mode, mode_outputs in self.outputs.items():
             # Get the full path of the image
             image_path = os.path.join(
                 BASE_DATA_DIR, mode, "test", "images", f"{image_name}"
             )
 
-            # Error if doesn't exist
             if not os.path.exists(image_path):
                 print(f"Error, could not find path: {image_path}")
                 continue
 
-            # Read, inference, and visualize
-            img = cv2.imread(image_path)
-            outputs = predictor(img)
+            entry = mode_outputs.get(image_name)
+            if entry is None:
+                print(f"  Warning: no saved predictions for {image_name} in {mode} outputs")
+                continue
 
-            v = Visualizer(
-                img[:, :, ::-1],
-                MetadataCatalog.get(self.configs[mode].DATASETS.TEST[0]),
-            )
-            vis_output = v.draw_instance_predictions(outputs["instances"].to("cpu"))
+            img = cv2.imread(image_path)
+            h, w = img.shape[:2]
+
+            # Reconstruct Instances from saved predictions
+            instances = Instances((h, w))
+
+            if len(entry["boxes"]) > 0:
+                instances.pred_boxes = Boxes(torch.tensor(entry["boxes"], dtype=torch.float32))
+                instances.scores = torch.tensor(entry["scores"], dtype=torch.float32)
+                instances.pred_classes = torch.tensor(entry["classes"], dtype=torch.int64)
+
+                # Decode RLE masks back to boolean tensors
+                decoded_masks = []
+                for rle in entry["masks"]:
+                    rle_copy = {"size": rle["size"], "counts": rle["counts"].encode("utf-8")}
+                    decoded_masks.append(mask_util.decode(rle_copy))
+                instances.pred_masks = torch.from_numpy(
+                    np.stack(decoded_masks)
+                ).bool()
+            else:
+                instances.pred_boxes = Boxes(torch.empty((0, 4), dtype=torch.float32))
+                instances.scores = torch.empty(0, dtype=torch.float32)
+                instances.pred_classes = torch.empty(0, dtype=torch.int64)
+                instances.pred_masks = torch.empty((0, h, w), dtype=torch.bool)
+
+            v = Visualizer(img[:, :, ::-1])
+            vis_output = v.draw_instance_predictions(instances)
 
             results[mode] = vis_output.get_image()
 
