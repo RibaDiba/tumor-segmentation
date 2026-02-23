@@ -17,8 +17,8 @@ class OutputsHook(HookBase):
 
         all_outputs = {
             "train": self._collect_outputs(cfg.DATASETS.TRAIN),
-            "test":  self._collect_outputs(cfg.DATASETS.TEST[0]),
-            "val":   self._collect_outputs(cfg.DATASETS.TEST[1]),
+            "test":  self._collect_outputs(cfg.DATASETS.TEST[0]) if len(cfg.DATASETS.TEST) > 0 else [],
+            "val":   self._collect_outputs(cfg.DATASETS.TEST[1]) if len(cfg.DATASETS.TEST) > 1 else [],
         }
 
         out_path = os.path.join(self.output_dir, f"{model_name}_inference_outputs.json")

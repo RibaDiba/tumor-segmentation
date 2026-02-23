@@ -47,8 +47,10 @@ class Trainer(DefaultTrainer):
 
         test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
+        base_out = f"../../../slurm_output/{self.cfg.MODELTYPE}/{self.cfg.MODELNAME}"
+
         loss_hook_training = TrainingLossHook(
-            output_dir="../../../slurm_output/loss_plots",
+            output_dir=f"{base_out}/loss_plots",
             save_data=True,
             model_name=self.cfg.MODELNAME,
             test_loader=test_loader,
@@ -56,21 +58,21 @@ class Trainer(DefaultTrainer):
         )  # create an instance of our custom hook
         hooks.append(loss_hook_training)  # append hook
 
-        # now we append all the hooks onto this 
+        # now we append all the hooks onto this
         ap_hook = APVisualizationHook(
-            output_dir="../../../slurm_output/AP_Fig", cfg=self.cfg
+            output_dir=f"{base_out}/AP_Fig", cfg=self.cfg
         )
         hooks.append(ap_hook)
 
-        iou_hook = IoUHook(output_dir="../../../slurm_output/IoU_fig", save_json=True)
+        iou_hook = IoUHook(output_dir=f"{base_out}/IoU_fig", save_json=True)
         hooks.append(iou_hook)
 
-        outputs_hook = OutputsHook(output_dir="../../../slurm_output/outputs")
+        outputs_hook = OutputsHook(output_dir=f"{base_out}/outputs")
         hooks.append(outputs_hook)
 
-        # final AP Hook to get scores from the best model 
+        # final AP Hook to get scores from the best model
         ap_hook_final = APFinalHook(
-            output_dir="../../../slurm_output/AP_Final",
+            output_dir=f"{base_out}/AP_Final",
             cfg=self.cfg
         )
         hooks.append(ap_hook_final)

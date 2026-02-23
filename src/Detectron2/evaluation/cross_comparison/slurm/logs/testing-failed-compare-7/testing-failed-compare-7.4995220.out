@@ -1,0 +1,46 @@
+Loading pre-saved inference outputs...
+  rgb: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/RGB-1/outputs/RGB-1_inference_outputs.json
+  depth: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/DEPTH-1/outputs/DEPTH-1_inference_outputs.json
+  rgd: loaded 177 test predictions from /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/7030_SPLIT/RGD-1/outputs/RGD-1_inference_outputs.json
+Outputs loaded!
+Extracting failed images from JSON files...
+rgb: 4 failed images
+depth: 4 failed images
+rgd: 0 failed images
+
+Overlap Analysis:
+  Failed on all 3 models: 0
+  Failed on 2 models: 1
+  Failed on 1 model: 6
+
+Processing 7 unique failed images...
+  Evaluating 032224 MCF7 EdPIT-iv only-1-41-21.jpg...
+  Evaluating 032224 MCF7 EdPIT-EdPIT-1-45-20.jpg...
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/032224 MCF7 EdPIT-EdPIT-1-45-20.jpg
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/test/images/032224 MCF7 EdPIT-EdPIT-1-45-20.jpg
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/images/032224 MCF7 EdPIT-EdPIT-1-45-20.jpg
+  Evaluating 032224 MCF7 EdPIT-iv only-1-3-02.jpg...
+  Evaluating 032224 MCF7 EdPIT-iv only-1-43-21.jpg...
+  Evaluating 032224 MCF7 EdPIT-iv only-1-8-02.jpg...
+  Evaluating 032224 MCF7 EdPIT-iv only-1-45-21.jpg...
+  Evaluating 032224 MCF7 EdPIT-EdPIT-1-55-29.jpg...
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/032224 MCF7 EdPIT-EdPIT-1-55-29.jpg
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/test/images/032224 MCF7 EdPIT-EdPIT-1-55-29.jpg
+Error, could not find path: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/images/032224 MCF7 EdPIT-EdPIT-1-55-29.jpg
+
+Filtering results by best performer...
+
+Evaluation complete! Use save_results() to output data.
+
+Creating JSON output from failed images data...
+
+Results saved to: ../../evaluation_outputs/cross_comparison/comparison_results.json
+  Best RGB performers: 4
+  Best Depth performers: 3
+  Best RGD performers: 0
+  Failed on all models: 0
+
+Generating comparison plots...
+  Plotting 1 images that failed on rgb_depth...
+
+Plots saved to: ../../evaluation_outputs/cross_comparison/plots

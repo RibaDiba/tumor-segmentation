@@ -8,7 +8,7 @@ class JSONHandler:
 
     def __init__(
         self,
-        json_root: str = "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/IoU_fig/json",
+        json_root: str = "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/",
     ):
         """
         Initialize JSON handler
@@ -31,7 +31,7 @@ class JSONHandler:
         if model_name in self._json_cache:
             return self._json_cache[model_name]
 
-        json_path = os.path.join(self.json_root, f"{model_name}_json_results.json")
+        json_path = os.path.join(self.json_root, model_name, "IoU_fig", "json", f"{model_name}_json_results.json")
 
         if not os.path.exists(json_path):
             raise FileNotFoundError(f"JSON file not found: {json_path}")

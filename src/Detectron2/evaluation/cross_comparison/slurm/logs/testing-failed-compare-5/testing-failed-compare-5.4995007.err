@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/slurm/run_evaluator.py", line 51, in <module>
+    main(rgb_model_name, depth_model_name, rgd_model_name, model_type, slurm_output_dir, output_dir)
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/slurm/run_evaluator.py", line 24, in main
+    comparison = evaluator.process_results()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/scripts/tumor_evaluator.py", line 112, in process_results
+    self.json_handler.get_failed_images(model_name)
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/scripts/json_utils.py", line 54, in get_failed_images
+    json_data = self.load_json_file(model_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/evaluation/cross_comparison/scripts/json_utils.py", line 37, in load_json_file
+    raise FileNotFoundError(f"JSON file not found: {json_path}")
+FileNotFoundError: JSON file not found: /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/slurm_output/IoU_fig/json/RGB-1_json_results.json

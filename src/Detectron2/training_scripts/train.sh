@@ -5,6 +5,7 @@ set -e
 
 # Default values
 NAME=""
+MODELTYPE=""
 ITER=10
 RGB="false"
 DEPTH="false"
@@ -17,6 +18,7 @@ SKIP_TEST=false
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --name) NAME="$2"; shift ;;
+        --model_type) MODELTYPE="$2"; shift;;
         --iter) ITER="$2"; shift ;;
         --rgb) RGB="$2"; shift ;;
         --depth) DEPTH="$2"; shift ;;
@@ -51,7 +53,7 @@ echo "Running tests..."
 if [ "$SKIP_TEST" = true ]; then
   echo "Skipping tests as SKIP_TEST=true"
 else
-  if pytest -s "${ROOT_PATH}test"; then
+  if pytest -s "${ROOT_PATH}../../../data/testing"; then
     echo "Tests successful!"
   else
     echo "Tests failed - check logs to adjust data/code"
@@ -64,6 +66,7 @@ echo "Running training script..."
 python3 "${ROOT_PATH}train.py" \
   "$NAME" \
   "$ITER" \
+  "$MODELTYPE" \
   --rgb "$RGB" \
   --depth "$DEPTH" \
   --rgd "$RGD" \
