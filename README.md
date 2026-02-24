@@ -1,5 +1,12 @@
 # Mouse Tumor Segmentation with Detectron2
 
+![Python](https://img.shields.io/badge/Python-3.9+-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?logo=pytorch&logoColor=white)
+![Detectron2](https://img.shields.io/badge/Detectron2-Mask_R--CNN-0064FF)
+![OpenCV](https://img.shields.io/badge/OpenCV-4.x-5C3EE8?logo=opencv&logoColor=white)
+![Platform](https://img.shields.io/badge/Platform-Linux-FCC624?logo=linux&logoColor=black)
+![HPC](https://img.shields.io/badge/HPC-SLURM%20%7C%20A100-76B900)
+
 This repository contains the full pipeline for automated instance segmentation of subcutaneous mouse tumors using Detectron2 (Mask R-CNN). Data is sourced from Biopticon's TI-2 structured-light scanner. Three model variants are trained and evaluated: **RGB**, **Depth**, and **RGD** (Red-Green-Depth).
 
 The RGD model replaces the blue channel of the texture image with a normalized depth map derived from the scanner's point cloud, producing the strongest overall segmentation results.
