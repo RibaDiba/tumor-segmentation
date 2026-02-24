@@ -1,6 +1,6 @@
 """
-this hook is created to run evaluations on final AP numbers 
-and save them to a directory
+This hook gives the final AP and IoU numbers on the 
+testing dataset 
 """
 
 import os, json
@@ -13,7 +13,9 @@ from detectron2.evaluation import COCOEvaluator, inference_on_dataset
 from detectron2.data import build_detection_test_loader
 from detectron2.utils.events import get_event_storage
 
-class APFinalHook(HookBase): 
+from .IoUEvaluator import PerImageIoUEvaluator
+
+class AP_IOU_FinalResults(HookBase): 
     def __init__(self, output_dir: str, cfg):
         super().__init__()
         self.cfg = cfg
@@ -31,9 +33,24 @@ class APFinalHook(HookBase):
 
         AP_dict = self._create_ap_dict()
 
-        json_file_path = os.path.join(json_out, "results.json")
+        json_file_path = os.path.join(json_out, "ap_results.json")
         with open(json_file_path, "w") as f:
             json.dump(AP_dict, f, indent=4)
+
+        # Save the IoU results as well in a separate file
+        iou_results = self._get_IoU_numbers()
+        iou_file_path = os.path.join(json_out, "iou_results.json")
+        with open(iou_file_path, "w") as f:
+            json.dump(iou_results, f, indent=4)
+
+
+    def _get_IoU_numbers(self): 
+        # gets the IoU numbers from the evaluator 
+        evaluator = PerImageIoUEvaluator(self.cfg.DATASETS.TEST[1])
+        val_loader = build_detection_test_loader(self.cfg, self.cfg.DATASETS.TEST[1])
+
+        results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
+        return results
         
     def _create_ap_dict(self) -> Dict: 
         # get the ap numbers 

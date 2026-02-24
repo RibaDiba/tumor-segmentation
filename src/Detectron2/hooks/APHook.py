@@ -38,7 +38,7 @@ class APVisualizationHook(HookBase):
         plt.plot(list(self.AP_dict.keys()), list(self.AP_dict.values()), label="AP")
         plt.plot(list(self.AP_75.keys()), list(self.AP_75.values()), label="AP75")
         plt.plot(list(self.AP_50.keys()), list(self.AP_50.values()), label="AP50")
-        plt.title(f"AP Curve - {self.model_name}")
+        plt.title(f"AP Curve - {self.model_name} - Validation Set")
         plt.xlabel("Iteration")
         plt.ylabel("AP")
         plt.legend()
@@ -55,11 +55,11 @@ class APVisualizationHook(HookBase):
     def _get_ap_numbers(self) -> float:
         cfg = self.trainer.cfg
         evaluator = COCOEvaluator(
-            cfg.DATASETS.TEST[0],
+            cfg.DATASETS.TEST[1],
             distributed=(cfg.MODEL.DEVICE != "cpu"),
             output_dir=cfg.OUTPUT_DIR,
         )
-        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[0])
+        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[1])
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 
         # pull out just the mAP@[.50:.95]:
