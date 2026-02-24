@@ -5,6 +5,9 @@ from pycocotools import mask as mask_util
 from detectron2.engine.hooks import HookBase
 from detectron2.data import build_detection_test_loader
 
+"""
+saves all outputs from the final versions of the model
+"""
 
 class OutputsHook(HookBase):
     def __init__(self, output_dir):

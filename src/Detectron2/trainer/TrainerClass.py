@@ -17,7 +17,7 @@ import numpy as np
 from ..hooks.LossHook import TrainingLossHook
 from ..hooks.APHook import APVisualizationHook
 from ..hooks.IoUHook import IoUHook
-from ..hooks.APFinalHook import APFinalHook
+from ..hooks.APFinalHook import AP_IOU_FinalResults
 from ..hooks.OutputsHook import OutputsHook
 
 """
@@ -47,6 +47,10 @@ class Trainer(DefaultTrainer):
 
         test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
+        val_loss_loader = build_detection_test_loader(
+            self.cfg, self.cfg.DATASETS.TEST[1], mapper=DatasetMapper(self.cfg, is_train=True)
+        )
+
         base_out = f"../../../slurm_output/{self.cfg.MODELTYPE}/{self.cfg.MODELNAME}"
 
         loss_hook_training = TrainingLossHook(
@@ -54,6 +58,7 @@ class Trainer(DefaultTrainer):
             save_data=True,
             model_name=self.cfg.MODELNAME,
             test_loader=test_loader,
+            val_loss_loader=val_loss_loader,
             cfg=self.cfg,
         )  # create an instance of our custom hook
         hooks.append(loss_hook_training)  # append hook
@@ -71,11 +76,11 @@ class Trainer(DefaultTrainer):
         hooks.append(outputs_hook)
 
         # final AP Hook to get scores from the best model
-        ap_hook_final = APFinalHook(
-            output_dir=f"{base_out}/AP_Final",
+        IoU_AP_Final = AP_IOU_FinalResults(
+            output_dir=f"{base_out}/IoU_AP_Final",
             cfg=self.cfg
         )
-        hooks.append(ap_hook_final)
+        hooks.append(IoU_AP_Final)
 
         return hooks
 

@@ -11,6 +11,7 @@ from .IoUEvaluator import PerImageIoUEvaluator
 
 """
 this hook will calculate per image IoU mean and give final training metrics 
+for the validation set only
 """
 
 
@@ -56,8 +57,8 @@ class IoUHook(HookBase):
     # helpers
     def _get_IoU(self):
         cfg = self.trainer.cfg
-        evaluator = PerImageIoUEvaluator("my_dataset_test")
-        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[0])
+        evaluator = PerImageIoUEvaluator(cfg.DATASETS.TEST[1])
+        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[1])
 
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 
@@ -75,7 +76,7 @@ class IoUHook(HookBase):
         plt.plot(iterations, count_90, label="IoU > 90")
         plt.plot(iterations, count_failed, label="IoU < 50")
 
-        plt.title(f"IoU during training - {self.model_name}")
+        plt.title(f"IoU during training - Validation Set - {self.model_name}")
         plt.xlabel("Iteration")
         plt.ylabel("Count")
         plt.legend()
