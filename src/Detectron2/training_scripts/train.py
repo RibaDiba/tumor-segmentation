@@ -120,7 +120,6 @@ else:
 train_metadata = MetadataCatalog.get("my_dataset_train")
 train_dataset_dicts = DatasetCatalog.get("my_dataset_train")
 
-# not going to use my_dataset_val for this run through 
 val_metadata = MetadataCatalog.get("my_dataset_val")
 val_dataset_dicts = DatasetCatalog.get("my_dataset_val")
 
@@ -132,15 +131,13 @@ cfg.MODELNAME = model_name
 cfg.MODELTYPE = model_type
 cfg.OUTPUT_DIR = os.path.join(project_root, f"models/{cfg.MODELTYPE}/{cfg.MODELNAME}")
 cfg.merge_from_file(
-    model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml")
+    model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml")
 )
-cfg.DATASETS.TRAIN = ("my_dataset_train")
+cfg.DATASETS.TRAIN = ("my_dataset_train",)
 cfg.DATASETS.TEST = ("my_dataset_test", "my_dataset_val")
 cfg.DATALOADER.NUM_WORKERS = 1
 cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS = False  # this is for our "no tumor" examples
-cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
-    "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
-)  # Let training initialize from model zoo
+cfg.MODEL.WEIGHTS = "/projects/PUCHALLA/LLP2024/tumor-segmentation/models/BACKBONES/model_final_a3ec72.pkl" # Let training initialize from model zoo
 cfg.SOLVER.IMS_PER_BATCH = (
     2  # This is the real "batch size" commonly known to deep learning people
 )
