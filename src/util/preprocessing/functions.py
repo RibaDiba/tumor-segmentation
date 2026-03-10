@@ -639,15 +639,15 @@ def infuse_depth_into_blue_channel(
     self, image_array: List[np.ndarray], depth_array: List[np.ndarray]
 ) -> List[np.ndarray]:
     """
-    Infuses depth map information into the blue channel of RGB images
+    Infuses depth map information into the blue channel of BGR images
     by fully replacing the blue channel with the normalized depth map.
 
     Parameters:
-        image_array (List[np.ndarray]): List of RGB images (each shape: H x W x 3)
+        image_array (List[np.ndarray]): List of BGR images (each shape: H x W x 3)
         depth_array (List[np.ndarray]): List of grayscale or BGR depth maps (each shape: H x W or H x W x 3)
 
     Returns:
-        List[np.ndarray]: List of RGB images with depth fully infused into the blue channel
+        List[np.ndarray]: List of BGR images with depth fully infused into the blue channel
     """
     if len(image_array) != len(depth_array):
         raise ValueError("image_array and depth_array must have the same length")
@@ -663,7 +663,7 @@ def infuse_depth_into_blue_channel(
             raise ValueError(f"Missing image or depth map at index {i}")
 
         if len(image.shape) != 3 or image.shape[2] != 3:
-            raise ValueError(f"Image at index {i} is not 3-channel (RGB)")
+            raise ValueError(f"Image at index {i} is not 3-channel (BGR)")
 
         # Resize depth map to match image dimensions
         depth_map_resized = cv2.resize(depth_map, (image.shape[1], image.shape[0]))
