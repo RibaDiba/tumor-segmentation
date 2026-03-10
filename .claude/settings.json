@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls /projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/*.py)",
+      "Bash(ls -lah /projects/PUCHALLA/LLP2024/tumor-segmentation/models/101_MODELS/*/)"
+    ]
+  }
+}
