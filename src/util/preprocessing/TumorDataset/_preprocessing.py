@@ -1,6 +1,6 @@
 import os
 
-from ..fixed_augmentations import AugmentationClass
+from ..augmentations import AugmentationClass
 
 
 class PreprocessingMixin:

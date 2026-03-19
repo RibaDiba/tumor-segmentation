@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(ls /projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/*.py)",
-      "Bash(ls -lah /projects/PUCHALLA/LLP2024/tumor-segmentation/models/101_MODELS/*/)"
+      "Bash(ls -lah /projects/PUCHALLA/LLP2024/tumor-segmentation/models/101_MODELS/*/)",
+      "Bash(chmod +x /projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/training_scripts/cashe.sh)"
     ]
   }
 }
