@@ -14,6 +14,13 @@ SPLIT_CASHE="false"
 ROOT_PATH="./"
 SKIP_TEST=false
 
+# augmentation params 
+AUGMENTATION="false"
+FLIP_PROB=0
+ROTATE_PROB=0
+ROTATE_DEGREES=0
+TARGET=0
+
 # Parse named arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -23,6 +30,10 @@ while [[ "$#" -gt 0 ]]; do
         --rgb) RGB="$2"; shift ;;
         --depth) DEPTH="$2"; shift ;;
         --rgd) RGD="$2"; shift ;;
+        --augmentations) AUGMENTATION="$2"; shift ;;
+        --flip_prob) FLIP_PROB="$2"; shift ;;
+        --rotate-prob) ROTATE_PROB="$2"; shift ;;
+        --rotate-degrees) ROTATE_DEGREES="$2"; shift ;;
         --split-cashe) SPLIT_CASHE="$2"; shift ;;
         --root-path) ROOT_PATH="$2"; shift;;
         --skip-tests) SKIP_TEST="$2"; shift;;
@@ -67,6 +78,11 @@ python3 "${ROOT_PATH}train.py" \
   "$NAME" \
   "$ITER" \
   "$MODELTYPE" \
+  --augmentations "$AUGMENTATION" \
+  --flip_prob "$FLIP_PROB" \
+  --rotate_prob "$ROTATE_PROB" \
+  --rotate_degrees "$ROTATE_DEGREES" \
+  --target "$TARGET" \
   --rgb "$RGB" \
   --depth "$DEPTH" \
   --rgd "$RGD" \

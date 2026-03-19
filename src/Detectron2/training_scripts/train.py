@@ -25,14 +25,9 @@ import matplotlib.pyplot as plt
 from detectron2 import model_zoo
 from detectron2.engine import DefaultPredictor, DefaultTrainer
 from detectron2.config import get_cfg
-from detectron2.utils.visualizer import Visualizer
+from detectron2.utils.visualizer import Visualizer, ColorMode
 from detectron2.data.datasets import register_coco_instances
 from detectron2.data import MetadataCatalog, DatasetCatalog
-import random
-import cv2
-import matplotlib.pyplot as plt
-from detectron2.utils.visualizer import Visualizer, ColorMode
-from detectron2.config import get_cfg
 
 
 # helper function for parsing - might add to another module later
@@ -51,11 +46,15 @@ def str2bool(v):
 # Add the project root to the path to make imports system-independent
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.abspath(os.path.join(current_dir, "../../.."))
-if project_root not in sys.path:
-    sys.path.append(project_root)
+util_dir = os.path.join(project_root, "src", "util")
+src_dir = os.path.join(project_root, "src")
+if util_dir not in sys.path:
+    sys.path.insert(0, util_dir)
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
 
-from src.util.preprocessing.tumor_dataset import Dataset
-from src.Detectron2.trainer.TrainerClass import Trainer
+from preprocessing.TumorDataset.tumor_dataset import Dataset
+from Detectron2.trainer.TrainerClass import Trainer
 
 """
 now we're going to setup argparse here 
@@ -81,6 +80,13 @@ parser.add_argument(
     help="splits data into train/val/test, and then cashes it, recemended if first time",
 )
 
+# augmentation arguments 
+parser.add_argument("--augmentations", type=str2bool, default=False, help="Setting for doing augmentations")
+parser.add_argument("--flip_prob", type=int, help="probability for flipping")
+parser.add_argument("--rotate_prob", type=int, help="Probability for rotating an image")
+parser.add_argument("--rotate_degrees", type=int, help="-/+ range for how much to rotate an image")
+parser.add_argument("--target", type=int, help="Target amount of images post augmentation")
+
 # collect arguments
 args = parser.parse_args()
 model_name = args.model_name
@@ -91,6 +97,13 @@ depth_bool = args.depth
 rgd_bool = args.rgd
 split_cashe = args.split_cashe
 split_cashe = str2bool(split_cashe)
+
+# collect augmentation arguments 
+is_augment = args.augmentations 
+flip_prob = args.flip_prob
+rotate_prob = args.rotate_prob
+rotate_degrees = args.rotate_degrees
+target = args.target
 
 # check arguments
 
@@ -104,7 +117,10 @@ print("--DEBUGGING SPLIT_CASHE----")
 print("SPLIT_CASHE is", split_cashe)
 
 if split_cashe == True:
-    d.preprocess_images()
+    if is_augment == True:
+        d.preprocess_augs(target_size=target)
+    else: 
+        d.preprocess_images()
     d.split_train_val_test(70, 10, 20)
     d.cashe_data()
 d.convert_binary_to_coco()
