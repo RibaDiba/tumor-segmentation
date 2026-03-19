@@ -46,8 +46,8 @@ class AP_IOU_FinalResults(HookBase):
 
     def _get_IoU_numbers(self): 
         # gets the IoU numbers from the evaluator 
-        evaluator = PerImageIoUEvaluator(self.cfg.DATASETS.TEST[1])
-        val_loader = build_detection_test_loader(self.cfg, self.cfg.DATASETS.TEST[1])
+        evaluator = PerImageIoUEvaluator(self.cfg.DATASETS.TEST[0])
+        val_loader = build_detection_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
         return results
