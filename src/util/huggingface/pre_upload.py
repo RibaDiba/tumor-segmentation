@@ -6,7 +6,7 @@ parent_dir = str(Path(__file__).parent.parent.parent)
 if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
-from util.preprocessing.tumor_dataset import Dataset
+from preprocessing.TumorDataset.tumor_dataset import Dataset
 from data.data_scripts.get_usable_data import get_usable_data
 from data.data_scripts.remove_data import remove_data
 

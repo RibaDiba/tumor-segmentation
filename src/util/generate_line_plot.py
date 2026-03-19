@@ -2,15 +2,15 @@ import json
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parents[2] / "src/Detectron2/slurm_output/101_MODELS"
+BASE = Path(__file__).resolve().parents[2] / "src/Detectron2/slurm_output/AUG_1000"
 
 MODELS = {
-    "RGB":   "RGB-101-2",
-    "DEPTH": "DEPTH-101-1",
-    "RGD":   "RGD-101-1",
+    "RGB":   "RGB-1",
+    "DEPTH": "DEPTH-1",
+    "RGD":   "RGD-1",
 }
 
-COLORS = {"RGB": "#E63946", "DEPTH": "#457B9D", "RGD": "#2A9D8F"}
+COLORS = {"RGB": "#4E79A7", "DEPTH": "#F28E2B", "RGD": "#B07AA1"}
 
 
 def load_iou(model_dir: str):
