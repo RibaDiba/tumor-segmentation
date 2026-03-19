@@ -168,28 +168,28 @@ class PerImageIoUEvaluator(DatasetEvaluator):
                 "num_gt": num_gt,
                 "num_pred": num_pred,
             }
-            if mean_iou >= 0.90:
+            if mean_iou is not None and mean_iou >= 0.90:
                 self.IoU_90[image_name] = {
                     "id": image_id,
                     "mean_iou": mean_iou,
                     "num_gt": num_gt,
                     "num_pred": num_pred,
                 }
-            if mean_iou >= 0.75:
+            if mean_iou is not None and mean_iou >= 0.75:
                 self.IoU_75[image_name] = {
                     "id": image_id,
                     "mean_iou": mean_iou,
                     "num_gt": num_gt,
                     "num_pred": num_pred,
                 }
-            if mean_iou >= 0.50:
+            if mean_iou is not None and mean_iou >= 0.50:
                 self.IoU_50[image_name] = {
                     "id": image_id,
                     "mean_iou": mean_iou,
                     "num_gt": num_gt,
                     "num_pred": num_pred,
                 }
-            if mean_iou < 0.50:
+            if mean_iou is None or mean_iou < 0.50:
                 self.IoU_failed[image_name] = {
                     "id": image_id,
                     "mean_iou": mean_iou,
