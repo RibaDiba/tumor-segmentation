@@ -59,6 +59,36 @@ Training was run on the **Princeton Della cluster** using NVIDIA A100 GPUs. The 
 
 ## Running the Pipeline
 
+Our pipeline set up has some specific prerequisits that must be followed. Before beginning training the envoirement needs to properly be set up. Mainly, this includes the `processed_data` directory where all the processed data is stored after moving through our pipeline. 
+
+### Intial Setup 
+Ensure that the hugging face repoistory is correctly set up, on intial clone of this repository, it may not be downloaded. Here is a brief guide on how to properly setup our huggingface database:
+
+#### Make sure `git lfs` is installed 
+
+```bash 
+git lfs install
+```
+
+#### Authenticate with huggingface
+
+You can do this by going to your huggingface account and generating a private access token. See how to do this [here](https://huggingface.co/docs/hub/en/security-tokens).
+
+Also make sure that `huggingface-cli` is installed to authenticate. And then run `huggingface-cli login` in order to login to your huggingface account.
+```bash 
+pip install -U "huggingface_hub[cli]"
+huggingface-cli login
+```
+
+#### Install the submodule 
+
+Now you have to make sure that the submodule is installled 
+
+```bash
+git submodule update --init --recursive
+```
+
+### Launch Training
 Use `train.sh` to run the data validation tests and launch training:
 
 ```bash

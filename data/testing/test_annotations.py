@@ -13,7 +13,7 @@ if util_dir not in sys.path:
 
 PROJECT_ROOT = Path(parent_dir)
 
-from preprocessing.tumor_dataset import Dataset
+from preprocessing.TumorDataset.tumor_dataset import Dataset
 from typing import List
 
 

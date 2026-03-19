@@ -83,27 +83,3 @@ class Trainer(DefaultTrainer):
         hooks.append(IoU_AP_Final)
 
         return hooks
-
-
-# custom mapper - not used
-@DeprecationWarning
-def tumor_mapper(dataset_dict):
-    dataset_dict = dataset_dict.copy()
-    image = utils.read_image(dataset_dict["file_name"], format="BGR")
-
-    aug_input = T.StandardAugInput(image)
-    transforms = augs(aug_input=aug_input)
-    image = aug_input.image
-
-    annos = [
-        utils.transform_instance_annotations(obj, transforms, image.shape[:2])
-        for obj in dataset_dict.pop("annotations")
-    ]
-    instances = utils.annotations_to_instances(annos, image.shape[:2])
-
-    return {
-        "image": torch.as_tensor(image.transpose(2, 0, 1).astype("float32")),
-        "instances": instances,
-        "height": image.shape[0],
-        "width": image.shape[1],
-    }

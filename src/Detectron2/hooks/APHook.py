@@ -66,7 +66,7 @@ class APVisualizationHook(HookBase):
         mAP = results.get("segm", {}).get("AP", 0.0)
         mAP75 = results.get("segm", {}).get("AP75", 0.0)
         mAP50 = results.get("segm", {}).get("AP50", 0.0)
-        print(f"[Iter {cfg.SOLVER.IMS_PER_BATCH} AP] → mAP@[.5:.95] = {mAP:.3f}")
+        print(f"[Iter {self.trainer.iter} AP] → mAP@[.5:.95] = {mAP:.3f}")
         return mAP, mAP75, mAP50
 
     def _save_data(self):
