@@ -6,3 +6,4 @@ src/Detectron2/evaluation/slurm/logs
 src/Detectron2/evaluation/graphs/
 src/Detectron2/training_scripts/slurm/logs
 src/util/failure_analysis
+**/testing_output/
