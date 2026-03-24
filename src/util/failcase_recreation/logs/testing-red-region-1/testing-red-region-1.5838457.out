@@ -1,0 +1,11 @@
+Init Dataset
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/masks
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/test/masks
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/masks
+[03/20 12:56:27 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json

@@ -1,0 +1,34 @@
+/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/torch/functional.py:554: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:4314.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 466, in <module>
+    main()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 454, in main
+    _run_inferencing(
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 296, in _run_inferencing
+    hook.after_train()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/hooks/APFinalHook.py", line 34, in after_train
+    AP_dict = self._create_ap_dict()
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/hooks/APFinalHook.py", line 57, in _create_ap_dict
+    metrics = self._get_ap_numbers()
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/Detectron2/hooks/APFinalHook.py", line 70, in _get_ap_numbers
+    results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/evaluation/evaluator.py", line 215, in inference_on_dataset
+    results = evaluator.evaluate()
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/evaluation/coco_evaluation.py", line 206, in evaluate
+    self._eval_predictions(predictions, img_ids=img_ids)
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/evaluation/coco_evaluation.py", line 266, in _eval_predictions
+    _evaluate_predictions_on_coco(
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/evaluation/coco_evaluation.py", line 627, in _evaluate_predictions_on_coco
+    coco_eval.evaluate()
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/pycocotools/cocoeval.py", line 154, in evaluate
+    self.evalImgs = [evaluateImg(imgId, catId, areaRng, maxDet)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/pycocotools/cocoeval.py", line 251, in evaluateImg
+    if g['ignore'] or (g['area']<aRng[0] or g['area']>aRng[1]):
+                       ~^^^^^^^^
+KeyError: 'area'
