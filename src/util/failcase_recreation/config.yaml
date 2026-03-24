@@ -1,0 +1,90 @@
+options:
+  red_region: true
+  shadows: false
+  output_path: "/test_output"
+  test_mode: false
+
+size_thresholds: # bounding box width in pixels (256x256 images)
+  small: 90    # bbox_width <= 90  (~P25 of dataset, equiv_r ~25-45px)
+  medium: 160  # bbox_width <= 160 (~P75 of dataset, equiv_r ~45-80px)
+  # large: bbox_width > 160 (implicit, equiv_r ~80-120px)
+
+red_region:
+  small:
+    interest_points: 3      # starts at 1
+
+    point_offset_x: 25      # +/- pixels from chosen border point
+    point_offset_y: 25
+
+    radius_min: 15          # pixels
+    radius_max: 25
+
+    red_effect_min: 90      # percentage to increase red channel
+    red_effect_max: 100
+
+    addtional_points:
+      range: 2              # starts at 0
+      offset_x: 25          # pixels
+      offset_y: 25
+
+  medium:
+    interest_points: 5
+
+    point_offset_x: 40
+    point_offset_y: 40
+
+    radius_min: 25
+    radius_max: 45
+
+    red_effect_min: 90
+    red_effect_max: 100
+
+    addtional_points:
+      range: 3
+      offset_x: 40
+      offset_y: 40
+
+  large:
+    interest_points: 7
+
+    point_offset_x: 55
+    point_offset_y: 55
+
+    radius_min: 45
+    radius_max: 65
+
+    red_effect_min: 90
+    red_effect_max: 100
+
+    addtional_points:
+      range: 4
+      offset_x: 55
+      offset_y: 55
+
+shadow:
+  small:
+    number_regions: 5       # range starts at 1
+    length_min: 15          # border arc segment length in pixels
+    length_max: 40
+    offset_min: 25          # shadow band width extending from border (pixels)
+    offset_max: 75
+    decrease_min: 40        # percentage decrease applied to R and G channels
+    decrease_max: 70
+
+  medium:
+    number_regions: 7
+    length_min: 25
+    length_max: 60
+    offset_min: 35
+    offset_max: 100
+    decrease_min: 40
+    decrease_max: 70
+
+  large:
+    number_regions: 9
+    length_min: 35
+    length_max: 80
+    offset_min: 50
+    offset_max: 130
+    decrease_min: 40
+    decrease_max: 70

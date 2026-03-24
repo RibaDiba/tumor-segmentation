@@ -1,0 +1,11 @@
+/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/torch/functional.py:554: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:4314.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 451, in <module>
+    main()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 436, in main
+    _run_inferencing(
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 298, in _run_inferencing
+    hook.set_trainer(types.SimpleNamespace(model=model, cfg=cfg))
+    ^^^^^^^^^^^^^^^^
+AttributeError: 'AP_IOU_FinalResults' object has no attribute 'set_trainer'
