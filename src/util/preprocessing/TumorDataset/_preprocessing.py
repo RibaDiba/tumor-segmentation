@@ -79,9 +79,6 @@ class PreprocessingMixin:
 
     def preprocess_augs(
         self,
-        target_size: int,
-        flip_prob: float = 0.5,
-        rotate_prob: float = 0.5,
         rotate_degrees: float = 15.0,
     ) -> None:
         """
@@ -143,10 +140,7 @@ class PreprocessingMixin:
         # now we can pass the images into the augmentation class
         self.augmentations = AugmentationClass(
             self,
-            flip_prob=flip_prob,
-            rotate_prob=rotate_prob,
             rotate_degrees=rotate_degrees,
-            target_size=target_size,
             test_only=False,
         )
 
