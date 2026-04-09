@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=RGD-1
+#SBATCH --job-name=RGD-4
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,13 +10,13 @@
 #SBATCH --time=04:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=../logs/RGD-1/%x.%j.out   # STDOUT → ../logs/RGD-1/<jobid>.o3t
-#SBATCH --error=../logs/RGD-1/%x.%j.err    # STDERR → ../logs/RGD-1/<jobid>.e3r
+#SBATCH --output=../logs/RGD-4/%x.%j.out   # STDOUT → ../logs/RGD-4/<jobid>.o3t
+#SBATCH --error=../logs/RGD-4/%x.%j.err    # STDERR → ../logs/RGD-4/<jobid>.e3r
 
 # config: 
-NAME="RGD-1"
-MODELTYPE="AUG_1000"
-ITER=5000
+NAME="RGD-4"
+MODELTYPE="AUG_5000"
+ITER=8000
 
 # create a logs dir 
 mkdir logs/${NAME}
