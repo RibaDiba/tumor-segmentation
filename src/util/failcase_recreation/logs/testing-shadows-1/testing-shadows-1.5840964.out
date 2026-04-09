@@ -1,0 +1,135 @@
+Init Dataset
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/masks
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/depth/test/masks
+Created 719 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/train/masks
+Created 104 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/val/masks
+Created 206 annotations for images in folder: /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/masks
+[03/20 14:15:23 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[03/20 14:15:41 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgd/test/images/test.json
+[main] Loading rgb model: RGB-1
+[03/20 14:16:00 d2.checkpoint.detection_checkpoint]: [DetectionCheckpointer] Loading from ../../../models/AUG_1000/RGB-1/model_final.pth ...
+[main] Loading depth model: DEPTH-1
+[03/20 14:16:01 d2.checkpoint.detection_checkpoint]: [DetectionCheckpointer] Loading from ../../../models/AUG_1000/DEPTH-1/model_final.pth ...
+[main] Loading rgd model: RGD-1
+[03/20 14:16:02 d2.checkpoint.detection_checkpoint]: [DetectionCheckpointer] Loading from ../../../models/AUG_1000/RGD-1/model_final.pth ...
+
+[_run_inferencing] model=RGB-1  dataset=my_dataset_rgb_test
+[03/20 14:16:02 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[03/20 14:16:02 d2.data.build]: Distribution of instances among all 1 categories:
+|  category  | #instances   |
+|:----------:|:-------------|
+|   Tumor    | 206          |
+|            |              |
+[03/20 14:16:02 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[03/20 14:16:02 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[03/20 14:16:02 d2.data.common]: Serializing 200 elements to byte tensors and concatenating them all ...
+[03/20 14:16:03 d2.data.common]: Serialized dataset takes 0.17 MiB
+  Saved predictions → ../../../testing_output/rgb/baseline/RGB-1_predictions.json  (200 images)
+[03/20 14:16:13 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[03/20 14:16:13 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[03/20 14:16:13 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[03/20 14:16:13 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[03/20 14:16:13 d2.data.common]: Serializing 200 elements to byte tensors and concatenating them all ...
+[03/20 14:16:13 d2.data.common]: Serialized dataset takes 0.17 MiB
+[03/20 14:16:13 d2.evaluation.evaluator]: Start inference on 200 batches
+[03/20 14:16:13 d2.evaluation.evaluator]: Inference done 11/200. Dataloading: 0.0006 s/iter. Inference: 0.0272 s/iter. Eval: 0.0004 s/iter. Total: 0.0282 s/iter. ETA=0:00:05
+[03/20 14:16:18 d2.evaluation.evaluator]: Inference done 187/200. Dataloading: 0.0007 s/iter. Inference: 0.0274 s/iter. Eval: 0.0003 s/iter. Total: 0.0285 s/iter. ETA=0:00:00
+[03/20 14:16:18 d2.evaluation.evaluator]: Total inference time: 0:00:05.563215 (0.028529 s / iter per device, on 1 devices)
+[03/20 14:16:18 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:05 (0.027331 s / iter per device, on 1 devices)
+[03/20 14:16:18 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[03/20 14:16:18 d2.evaluation.coco_evaluation]: Saving results to /projects/PUCHALLA/LLP2024/tumor-segmentation/models/AUG_1000/RGB-1/coco_instances_results.json
+[03/20 14:16:18 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.04s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.733
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.958
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.918
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.010
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.732
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.771
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.780
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.781
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.781
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.050
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.749
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.824
+[03/20 14:16:18 d2.evaluation.coco_evaluation]: Evaluation results for bbox: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 73.292 | 95.791 | 91.824 | 1.010 | 73.159 | 77.090 |
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *segm*
+DONE (t=0.19s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.753
+ Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=100 ] = 0.968
+ Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=100 ] = 0.921
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.031
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.711
+ Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.800
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=  1 ] = 0.788
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets= 10 ] = 0.791
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.791
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=100 ] = 0.083
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=100 ] = 0.749
+ Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=100 ] = 0.837
+[03/20 14:16:19 d2.evaluation.coco_evaluation]: Evaluation results for segm: 
+|   AP   |  AP50  |  AP75  |  APs  |  APm   |  APl   |
+|:------:|:------:|:------:|:-----:|:------:|:------:|
+| 75.315 | 96.758 | 92.121 | 3.086 | 71.068 | 79.955 |
+[Results] AP: 75.315, AP50: 96.758, AP75: 92.121
+[03/20 14:16:19 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[03/20 14:16:19 d2.data.datasets.coco]: Loaded 200 images in COCO format from /projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/test.json
+[03/20 14:16:19 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[03/20 14:16:19 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[03/20 14:16:19 d2.data.common]: Serializing 200 elements to byte tensors and concatenating them all ...
+[03/20 14:16:19 d2.data.common]: Serialized dataset takes 0.17 MiB
+[03/20 14:16:19 d2.evaluation.evaluator]: Start inference on 200 batches
+[03/20 14:16:23 d2.evaluation.evaluator]: Inference done 152/200. Dataloading: 0.0007 s/iter. Inference: 0.0271 s/iter. Eval: 0.0003 s/iter. Total: 0.0282 s/iter. ETA=0:00:01
+[03/20 14:16:24 d2.evaluation.evaluator]: Total inference time: 0:00:05.535510 (0.028387 s / iter per device, on 1 devices)
+[03/20 14:16:24 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:05 (0.027203 s / iter per device, on 1 devices)
+  Saved AP/IoU results → ../../../testing_output/rgb/baseline/RGB-1/json_RGB-1/
+
+[_run_inferencing] model=RGB-1  dataset=my_dataset_rgb_augmented_test
+[03/20 14:16:24 d2.data.datasets.coco]: Loaded 200 images in COCO format from ../../../testing_output/augmented/rgb/augmented_test.json
+[03/20 14:16:24 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[03/20 14:16:24 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[03/20 14:16:24 d2.data.common]: Serializing 200 elements to byte tensors and concatenating them all ...
+[03/20 14:16:24 d2.data.common]: Serialized dataset takes 0.16 MiB
+  Saved predictions → ../../../testing_output/rgb/augmented/RGB-1_predictions.json  (200 images)
+[03/20 14:16:29 d2.evaluation.coco_evaluation]: Fast COCO eval is not built. Falling back to official COCO eval.
+[03/20 14:16:29 d2.data.datasets.coco]: Loaded 200 images in COCO format from ../../../testing_output/augmented/rgb/augmented_test.json
+[03/20 14:16:29 d2.data.dataset_mapper]: [DatasetMapper] Augmentations used in inference: [ResizeShortestEdge(short_edge_length=(800, 800), max_size=1333, sample_style='choice')]
+[03/20 14:16:29 d2.data.common]: Serializing the dataset using: <class 'detectron2.data.common._TorchSerializedList'>
+[03/20 14:16:29 d2.data.common]: Serializing 200 elements to byte tensors and concatenating them all ...
+[03/20 14:16:29 d2.data.common]: Serialized dataset takes 0.16 MiB
+[03/20 14:16:29 d2.evaluation.evaluator]: Start inference on 200 batches
+[03/20 14:16:30 d2.evaluation.evaluator]: Inference done 11/200. Dataloading: 0.0006 s/iter. Inference: 0.0273 s/iter. Eval: 0.0004 s/iter. Total: 0.0282 s/iter. ETA=0:00:05
+[03/20 14:16:35 d2.evaluation.evaluator]: Inference done 189/200. Dataloading: 0.0007 s/iter. Inference: 0.0272 s/iter. Eval: 0.0003 s/iter. Total: 0.0282 s/iter. ETA=0:00:00
+[03/20 14:16:35 d2.evaluation.evaluator]: Total inference time: 0:00:05.521655 (0.028316 s / iter per device, on 1 devices)
+[03/20 14:16:35 d2.evaluation.evaluator]: Total inference pure compute time: 0:00:05 (0.027143 s / iter per device, on 1 devices)
+[03/20 14:16:35 d2.evaluation.coco_evaluation]: Preparing results for COCO format ...
+[03/20 14:16:35 d2.evaluation.coco_evaluation]: Saving results to /projects/PUCHALLA/LLP2024/tumor-segmentation/models/AUG_1000/RGB-1/coco_instances_results.json
+[03/20 14:16:35 d2.evaluation.coco_evaluation]: Evaluating predictions with official COCO API...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*

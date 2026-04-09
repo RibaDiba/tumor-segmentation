@@ -37,30 +37,17 @@ parser.add_argument("--skip-tests", type=str2bool, default=False, help="Skip pyt
 
 # augmentation arguments
 parser.add_argument("--augmentations", type=str2bool, default=False, help="Setting for doing augmentations")
-parser.add_argument("--flip_prob", type=float, help="probability for flipping")
-parser.add_argument("--rotate_prob", type=float, help="Probability for rotating an image")
 parser.add_argument("--rotate_degrees", type=int, help="-/+ range for how much to rotate an image")
-parser.add_argument("--target", type=int, help="Target amount of images post augmentation")
-
 args = parser.parse_args()
 
 # collect augmentation arguments 
 is_augment = args.augmentations 
-flip_prob = args.flip_prob
-rotate_prob = args.rotate_prob
 rotate_degrees = args.rotate_degrees
-target = args.target
-
 
 d = Dataset(data_path=os.path.join(project_root, "data/huggingface-repo/useable_data"))
 
 if is_augment == True:
-    d.preprocess_augs(
-        target_size=target,
-        flip_prob=flip_prob,
-        rotate_prob=rotate_prob,
-        rotate_degrees=rotate_degrees,
-    )
+    d.preprocess_augs(rotate_degrees=rotate_degrees,)
 else: 
     d.preprocess_images()
 d.split_train_val_test(70, 10, 20)

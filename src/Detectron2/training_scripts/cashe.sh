@@ -9,23 +9,17 @@ SKIP_TEST=false
 
 # Augmentation params
 AUGMENTATION="false"
-FLIP_PROB=0
-ROTATE_PROB=0
 ROTATE_DEGREES=0
-TARGET=0
 
 # Parse named arguments
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --augmentations) AUGMENTATION="$2"; shift ;;
-        --flip_prob) FLIP_PROB="$2"; shift ;;
-        --rotate_prob) ROTATE_PROB="$2"; shift ;;
         --rotate_degrees) ROTATE_DEGREES="$2"; shift ;;
-        --target) TARGET="$2"; shift ;;
         --root-path) ROOT_PATH="$2"; shift ;;
         --skip-tests) SKIP_TEST="$2"; shift ;;
         -h|--help)
-            echo "Usage: $0 [--augmentations true|false] [--flip_prob PROB] [--rotate_prob PROB] [--rotate_degrees DEG] [--target TARGET] [--root-path PATH] [--skip-tests true|false]"
+            echo "Usage: $0 [--augmentations true|false] [--rotate_degrees DEG] [--root-path PATH] [--skip-tests true|false]"
             exit 0
             ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
@@ -35,10 +29,7 @@ done
 
 echo "Check logs below to see if args are correct:"
 echo "Augmentations: $AUGMENTATION"
-echo "Flip Prob: $FLIP_PROB"
-echo "Rotate Prob: $ROTATE_PROB"
 echo "Rotate Degrees: $ROTATE_DEGREES"
-echo "Target: $TARGET"
 echo "Path: $ROOT_PATH"
 
 sleep 1
@@ -68,7 +59,4 @@ echo "Running cashing script..."
 python3 "${ROOT_PATH}cashe.py" \
   --skip-tests "$SKIP_TEST" \
   --augmentations "$AUGMENTATION" \
-  --flip_prob "$FLIP_PROB" \
-  --rotate_prob "$ROTATE_PROB" \
   --rotate_degrees "$ROTATE_DEGREES" \
-  --target "$TARGET"

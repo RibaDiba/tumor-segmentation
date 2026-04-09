@@ -1,0 +1,32 @@
+/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/torch/functional.py:554: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:4314.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 466, in <module>
+    main()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 454, in main
+    _run_inferencing(
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 241, in _run_inferencing
+    loader = build_detection_test_loader(cfg, dataset_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/config/config.py", line 207, in wrapped
+    explicit_args = _get_args_from_config(from_config, *args, **kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/config/config.py", line 245, in _get_args_from_config
+    ret = from_config_func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/data/build.py", line 594, in _test_loader_from_config
+    dataset = get_detection_dataset_dicts(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/data/build.py", line 253, in get_detection_dataset_dicts
+    dataset_dicts = [DatasetCatalog.get(dataset_name) for dataset_name in names]
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/data/catalog.py", line 58, in get
+    return f()
+           ^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/data/datasets/coco.py", line 511, in <lambda>
+    DatasetCatalog.register(name, lambda: load_coco_json(json_file, image_root, name))
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/am0532/.conda/envs/tumor-env/lib/python3.12/site-packages/detectron2/data/datasets/coco.py", line 145, in load_coco_json
+    assert len(set(ann_ids)) == len(ann_ids), "Annotation ids in '{}' are not unique!".format(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Annotation ids in '../../../testing_output/augmented/rgb/augmented_test.json' are not unique!

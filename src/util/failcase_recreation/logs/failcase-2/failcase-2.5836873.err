@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 451, in <module>
+    main()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 399, in main
+    fr.image_recreation()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/FailureRecreation.py", line 240, in image_recreation
+    return self.image_recreation_test()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/FailureRecreation.py", line 340, in image_recreation_test
+    raise ValueError(
+ValueError: image_recreation_test requires both 'image' and 'mask' to be set on the FailureRecreation instance. Pass them to __init__ or assign them directly before calling this method.

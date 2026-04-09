@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 451, in <module>
+    main()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/_run_inference.py", line 399, in main
+    fr.image_recreation()
+  File "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failcase_recreation/FailureRecreation.py", line 306, in image_recreation
+    "id": ann["id"],
+          ~~~^^^^^^
+KeyError: 'id'
