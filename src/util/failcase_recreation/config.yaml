@@ -1,6 +1,6 @@
 options:
-  red_region: true
-  shadows: false
+  red_region: false
+  shadows: true
   output_path: "/test_output"
   test_mode: false
 
@@ -11,13 +11,13 @@ size_thresholds: # bounding box width in pixels (256x256 images)
 
 red_region:
   small:
-    interest_points: 3      # starts at 1
+    interest_points: 7      # starts at 1
 
     point_offset_x: 25      # +/- pixels from chosen border point
     point_offset_y: 25
 
-    radius_min: 15          # pixels
-    radius_max: 25
+    radius_min: 5          # pixels
+    radius_max: 10
 
     red_effect_min: 90      # percentage to increase red channel
     red_effect_max: 100
@@ -28,13 +28,13 @@ red_region:
       offset_y: 25
 
   medium:
-    interest_points: 5
+    interest_points: 10
 
     point_offset_x: 40
     point_offset_y: 40
 
-    radius_min: 25
-    radius_max: 45
+    radius_min: 10
+    radius_max: 15
 
     red_effect_min: 90
     red_effect_max: 100
@@ -45,13 +45,13 @@ red_region:
       offset_y: 40
 
   large:
-    interest_points: 7
+    interest_points: 15
 
     point_offset_x: 55
     point_offset_y: 55
 
-    radius_min: 45
-    radius_max: 65
+    radius_min: 15
+    radius_max: 20
 
     red_effect_min: 90
     red_effect_max: 100
@@ -63,28 +63,28 @@ red_region:
 
 shadow:
   small:
-    number_regions: 5       # range starts at 1
-    length_min: 15          # border arc segment length in pixels
-    length_max: 40
-    offset_min: 25          # shadow band width extending from border (pixels)
-    offset_max: 75
+    number_regions: 2       # range starts at 1
+    length_min: 5          # border arc segment length in pixels
+    length_max: 10
+    offset_min: 10          # shadow band width extending from border (pixels)
+    offset_max: 20
     decrease_min: 40        # percentage decrease applied to R and G channels
     decrease_max: 70
 
   medium:
-    number_regions: 7
-    length_min: 25
-    length_max: 60
-    offset_min: 35
-    offset_max: 100
+    number_regions: 4
+    length_min: 5
+    length_max: 20
+    offset_min: 10
+    offset_max: 20
     decrease_min: 40
     decrease_max: 70
 
   large:
-    number_regions: 9
-    length_min: 35
-    length_max: 80
-    offset_min: 50
-    offset_max: 130
+    number_regions: 5
+    length_min: 10
+    length_max: 30
+    offset_min: 10
+    offset_max: 20
     decrease_min: 40
     decrease_max: 70

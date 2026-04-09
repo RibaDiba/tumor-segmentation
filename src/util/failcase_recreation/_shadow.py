@@ -14,10 +14,13 @@ class ShadowMixin:
     area (extending outward into the background by a random number of pixels)
     is darkened by reducing the red and green colour channels.
 
-    The blue channel is never modified. In RGD images the blue channel encodes
-    depth information, so preserving it means the RGD model retains its depth
-    signal even when shadows are applied — exactly the condition we want to
-    evaluate.
+    The blue channel behaviour depends on ``options['model_type']``:
+
+    - ``'rgb'``: blue channel is never modified. The RGD model retains its depth
+      signal, isolating colour corruption as the only adversarial factor.
+    - ``'rgd'``: blue channel is also darkened by the same factor as R and G,
+      corrupting the depth signal and stress-testing the RGD model under full
+      channel degradation.
 
     This class is not intended to be instantiated directly. It is used as a
     mixin via multiple inheritance in ``FailureRecreation``. The following
@@ -199,13 +202,17 @@ class ShadowMixin:
 
         1. The arc's pixel coordinates are extracted from the stored contour.
         2. Those border pixels are drawn onto a blank canvas.
-        3. The canvas is dilated outward by ``offset`` pixels using a circular
-           structuring element, creating a band around the arc.
+        3. The full tumour mask is dilated outward by ``offset`` pixels using an
+           elliptical structuring element; subtracting the original mask yields a
+           curved border band that follows the tumour contour shape. The band is
+           then restricted to the arc section via a zone dilation of the arc pixels.
         4. The band is masked to the background only (pixels outside the tumour)
            so the tumour interior is never darkened.
         5. The red (channel 2) and green (channel 1) pixel values in the shadow
-           band are multiplied by ``(1 - decrease / 100)``. The blue channel
-           (channel 0, which carries depth in RGD images) is left untouched.
+           band are multiplied by ``(1 - decrease / 100)``. If
+           ``options['model_type']`` is ``'rgd'``, the blue channel (channel 0,
+           depth) is also darkened by the same factor; otherwise it is left
+           untouched.
 
         Side effects:
             Modifies ``self.image`` in-place.
@@ -235,12 +242,26 @@ class ShadowMixin:
                 if 0 <= py < h and 0 <= px < w:
                     arc_mask[py, px] = 255
 
-            # Dilate outward by offset pixels using a circular kernel
-            kernel_size = 2 * offset + 1
-            kernel = cv2.getStructuringElement(
-                cv2.MORPH_ELLIPSE, (kernel_size, kernel_size)
+            # Dilate the full tumour mask outward by offset pixels (circular kernel)
+            border_kernel_size = 2 * offset + 1
+            border_kernel = cv2.getStructuringElement(
+                cv2.MORPH_ELLIPSE, (border_kernel_size, border_kernel_size)
             )
-            dilated = cv2.dilate(arc_mask, kernel)
+            dilated_tumor = cv2.dilate(self.mask, border_kernel)
+
+            # Border band = dilated tumour minus original tumour
+            # Produces a curved band that follows the contour shape
+            border_band = cv2.subtract(dilated_tumor, self.mask)
+
+            # Restrict to the arc section: dilate arc pixels with a generous zone
+            # kernel so the shadow covers only the vicinity of the selected arc
+            zone_size = 2 * (offset + length) + 1
+            zone_kernel = cv2.getStructuringElement(
+                cv2.MORPH_ELLIPSE, (zone_size, zone_size)
+            )
+            arc_zone = cv2.dilate(arc_mask, zone_kernel)
+
+            dilated = cv2.bitwise_and(border_band, arc_zone)
 
             # Intersect with background (outside the tumour) so that the tumour
             # interior is never darkened
@@ -249,13 +270,19 @@ class ShadowMixin:
 
             region_pixels = shadow_band > 0
 
-            # Apply decrease to R and G channels only (B channel = depth, never modified)
+            # Apply decrease to R and G channels
             image_float[:, :, 1][region_pixels] = np.clip(
                 image_float[:, :, 1][region_pixels] * factor, 0, 255
             )
             image_float[:, :, 2][region_pixels] = np.clip(
                 image_float[:, :, 2][region_pixels] * factor, 0, 255
             )
+
+            # For RGD, also darken the B channel (depth); for RGB, leave it untouched
+            if self.model_type == "rgb":
+                image_float[:, :, 0][region_pixels] = np.clip(
+                    image_float[:, :, 0][region_pixels] * factor, 0, 255
+                )
 
         self.image = np.clip(image_float, 0, 255).astype(np.uint8)
 
