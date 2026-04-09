@@ -50,10 +50,10 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
     - **Shadows**: Arcs of darkened pixels (R and G channels reduced) at the
       tumour border, simulating shadow artefacts from lighting conditions.
 
-    Both augmentation types leave the blue channel untouched. In RGD images the
-    blue channel encodes depth information, so the RGD model retains its depth
-    signal and should continue to segment correctly — whereas an RGB-only model
-    may be misled by the colour changes.
+    The blue channel behaviour is controlled by ``options['model_type']``:
+    when set to ``'rgb'``, the blue channel is always preserved so the RGD model
+    retains its depth signal; when set to ``'rgd'``, shadows also darken the blue
+    channel to stress-test the RGD model under full channel degradation.
 
     The class inherits from ``RedRegionMixin`` and ``ShadowMixin``. All shared
     per-image state (``self.image``, ``self.mask``, ``self.aug_config``,
@@ -72,6 +72,10 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
         mask (numpy.ndarray, optional): Single binary mask for test-mode runs.
             Shape (H, W), dtype uint8 with values 0 or 255. Ignored when
             ``test_mode`` is False.
+        model_type (str): Modality being processed — ``'rgb'`` or ``'rgd'``.
+            Controls which channels shadow augmentation darkens: ``'rgb'``
+            darkens R and G only (B/depth preserved); ``'rgd'`` darkens all
+            three channels. Defaults to ``'rgb'``.
 
     Attributes:
         cfg: Detectron2 config node.
@@ -95,6 +99,7 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
         image=None,        # optional argument
         mask=None,         # optional argument
         dataset_name="my_dataset_test",
+        model_type="rgb",
     ):
         """Initialise FailureRecreation and all shared mixin state.
 
@@ -121,6 +126,7 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
         self.output_path = output_path
         self.yaml_config = yaml_config
         self.dataset_name = dataset_name
+        self.model_type = model_type
 
         # Extract some values from the yaml that are not determined by image size
         # (e.g. the options flags and size thresholds)

@@ -195,7 +195,7 @@ def _register_augmented_dataset(json_path, image_dir, dataset_name):
 # ---------------------------------------------------------------------------
 
 
-def _run_inferencing(cfg, model, dataset_name, val_dataset_name, output_dir):
+def _run_inferencing(cfg, model, dataset_name, val_dataset_name, output_dir, is_baseline, compiled_path):
     """Run a single model on a registered dataset and save results.
 
     1. **Runs inference** using Detectron2's ``build_detection_test_loader``
@@ -294,7 +294,42 @@ def _run_inferencing(cfg, model, dataset_name, val_dataset_name, output_dir):
     hook = AP_IOU_FinalResults(output_dir=hook_output_dir, cfg=cfg)
     hook.trainer = types.SimpleNamespace(model=model, cfg=cfg)
     hook.after_train()
+
+    _compile_json_results(
+        compiled_path=compiled_path,
+        ap_json_dir=f"{hook_output_dir}/json_{model_name}/ap_results.json",
+        iou_json_dir=f"{hook_output_dir}/json_{model_name}/iou_results.json",
+        model_name=model_name,
+        is_baseline=is_baseline,
+    )
+
     print(f"  Saved AP/IoU results → {hook_output_dir}/json_{model_name}/")
+
+def _compile_json_results(compiled_path, ap_json_dir, iou_json_dir, model_name, is_baseline):
+    """Append AP and IoU results for one run into a single compiled.json file."""
+    with open(ap_json_dir, "r") as f:
+        ap_results = json.load(f)
+
+    with open(iou_json_dir, "r") as f:
+        iou_results = json.load(f)
+
+    baseline = "baseline" if is_baseline else "augmented"
+
+    if os.path.isfile(compiled_path):
+        with open(compiled_path, "r") as f:
+            data = json.load(f)
+    else:
+        data = {}
+
+    data.setdefault(model_name, {})[baseline] = {
+        "ap_results": ap_results,
+        "iou_results": iou_results,
+    }
+
+    with open(compiled_path, "w") as f:
+        json.dump(data, f, indent=4)
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -409,6 +444,7 @@ def main():
         fr = FailureRecreation(
             cfg_temp, aug_output, yaml_config,
             dataset_name=f"my_dataset_{modality}_test",
+            model_type=modality,
         )
         fr.image_recreation()
         _register_augmented_dataset(
@@ -437,6 +473,8 @@ def main():
     # Run matched inferencing — each model against its own modality.
     # RGB and RGD: baseline + augmented. Depth: baseline only.
     # ------------------------------------------------------------------
+    compiled_path = os.path.join(output_path, "compiled.json")
+
     for variant, (cfg_v, model_v) in models.items():
         val_ds = f"my_dataset_{variant}_val"
 
@@ -447,6 +485,8 @@ def main():
             dataset_name=f"my_dataset_{variant}_test",
             val_dataset_name=val_ds,
             output_dir=os.path.join(output_path, variant, "baseline"),
+            is_baseline=True,
+            compiled_path=compiled_path,
         )
 
         # Augmented (RGB and RGD only)
@@ -457,6 +497,8 @@ def main():
                 dataset_name=f"my_dataset_{variant}_augmented_test",
                 val_dataset_name=val_ds,
                 output_dir=os.path.join(output_path, variant, "augmented"),
+                is_baseline=False,
+                compiled_path=compiled_path,
             )
 
     print("\n[main] Done. Results written to:", output_path)
