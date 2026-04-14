@@ -9,6 +9,9 @@ from detectron2.structures import BoxMode
 
 from _red import RedRegionMixin
 from _shadow import ShadowMixin
+from _specular import SpecularMixin
+from _brightness import BrightnessMixin
+from _necrotic import NecroticMixin
 
 
 @dataclass
@@ -36,9 +39,12 @@ class AugConfig:
     options: dict
     red_region: dict
     shadow: dict
+    specular: dict
+    brightness: dict
+    necrotic: dict
 
 
-class FailureRecreation(RedRegionMixin, ShadowMixin):
+class FailureRecreation(RedRegionMixin, ShadowMixin, SpecularMixin, BrightnessMixin, NecroticMixin):
     """Generates synthetic adversarial augmentations of the test dataset.
 
     The overall goal is to produce a new COCO JSON dataset whose images have
@@ -137,14 +143,50 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
         # Per-image AugConfig is built by _extract_values and stored here.
         self.aug_config = None
 
-        # Optional image / mask for single-image test mode
-        self.image = image
-        self.mask = mask
+        # Load test_mode images from config if test_mode is enabled
+        if self.options.get("test_mode") and "test_image_config" in self.options:
+            test_config = self.options["test_image_config"]
+            image_path = test_config["image_path"]
+            mask_path = test_config["mask_path"]
+            output_name = test_config["output_name"]
+
+            # Infer model_type from the image path directory structure
+            # (overrides the constructor default so test mode is self-describing)
+            self.model_type = FailureRecreation._infer_model_type(image_path)
+
+            # Validate paths exist
+            if not os.path.exists(image_path):
+                raise ValueError(f"Image path does not exist: {image_path}")
+            if not os.path.exists(mask_path):
+                raise ValueError(f"Mask path does not exist: {mask_path}")
+
+            # Load images from disk (clone them to preserve originals)
+            loaded_image = cv2.imread(image_path)
+            loaded_mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+
+            if loaded_image is None:
+                raise ValueError(f"Could not read image: {image_path}")
+            if loaded_mask is None:
+                raise ValueError(f"Could not read mask: {mask_path}")
+
+            # Store cloned images (these will be modified during augmentation)
+            self.image = loaded_image.copy()
+            self.mask = loaded_mask.copy()
+            self.current_filename = output_name
+        else:
+            # Optional image / mask for single-image test mode (backwards compatibility)
+            self.image = image
+            self.mask = mask
+            self.current_filename = None
 
         # Shared state initialised here so mixin methods can access them
         self.circle_data = {}
         self.shadow_data = {}
-        self.current_filename = None
+        self.specular_data = {}
+        self.brightness_data = {}
+        self.necrotic_data = {}
+        # Note: self.current_filename is set above (either from config in test_mode,
+        # or None for backwards compatibility mode)
 
         # Ensure the output tree exists
         os.makedirs(output_path, exist_ok=True)
@@ -154,6 +196,37 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
     # ------------------------------------------------------------------
     # Configuration extraction
     # ------------------------------------------------------------------
+
+    @staticmethod
+    def _infer_model_type(path):
+        """Infer the model modality from a file path's directory components.
+
+        Splits ``path`` on the OS separator and looks for a component that is
+        exactly ``'rgb'``, ``'rgd'``, or ``'depth'``. The check is done on
+        individual path components (not a substring search) so a filename that
+        happens to contain ``'rgb'`` does not produce a false match.
+
+        Args:
+            path (str): Any path containing the modality as a directory name,
+                e.g. ``.../processed_data/rgd/test/images/foo.jpg``.
+
+        Returns:
+            str: One of ``'rgb'``, ``'rgd'``, or ``'depth'``.
+
+        Raises:
+            ValueError: If no recognised modality directory is found in the
+                path, meaning the caller must make the modality explicit.
+        """
+        # Normalise separators so the split works on both posix and windows paths
+        components = path.replace("\\", "/").split("/")
+        for part in components:
+            if part in ("rgb", "rgd", "depth"):
+                return part
+        raise ValueError(
+            f"Cannot determine model_type from path: '{path}'.\n"
+            "The path must contain a directory component named exactly "
+            "'rgb', 'rgd', or 'depth' (e.g. .../processed_data/rgd/test/images/)."
+        )
 
     def _extract_values(self, image, mask):
         """Determine augmentation parameters for a single image–mask pair.
@@ -216,6 +289,9 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
             options=self.options,
             red_region=self.yaml_config["red_region"][tier],
             shadow=self.yaml_config["shadow"][tier],
+            specular=self.yaml_config["specular"][tier],
+            brightness=self.yaml_config["brightness"],
+            necrotic=self.yaml_config["necrotic"][tier],
         )
 
     # ------------------------------------------------------------------
@@ -291,6 +367,12 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
                 self._create_red_regions()
             if self.options["shadows"]:
                 self.generate_shadows()
+            if self.options.get("specular"):
+                self.generate_specular_highlights()
+            if self.options.get("brightness"):
+                self.apply_brightness_variation()
+            if self.options.get("necrotic"):
+                self.generate_necrotic_regions()
 
             # Save the augmented image
             out_img_path = os.path.join(
@@ -334,47 +416,157 @@ class FailureRecreation(RedRegionMixin, ShadowMixin):
         with open(json_path, "w") as f:
             json.dump(coco_output, f)
 
-    def image_recreation_test(self):
-        """Run augmentation on the single image stored in ``self.image`` and ``self.mask``.
+    def image_recreation_test(self, image_path=None, mask_path=None, output_path=None):
+        """Run augmentation on a single image.
 
-        This does the same thing as ``image_recreation`` but operates on only one
-        image — the one passed to ``__init__`` as the optional ``image`` and
-        ``mask`` arguments. This is mainly for debugging purposes: it lets you
-        visually verify the augmentation output on a known sample before running
-        the full test set.
+        When ``image_path`` and ``mask_path`` are provided, the image and mask
+        are loaded from those paths and the filename stem is derived from
+        ``image_path``. When omitted, the method falls back to ``self.image``
+        and ``self.mask`` (set during ``__init__`` from ``config.yaml`` or
+        passed directly), preserving backwards-compatible behaviour.
+
+        When ``output_path`` is provided, augmented images and YAML logs are
+        written there instead of to the instance-level ``self.output_path``.
 
         A YAML log is written for the augmented image. No COCO JSON is produced
         since there is no full dataset to annotate.
 
-        The augmented image is written to
-        ``<output_path>/images/test_<current_filename>.jpg``.
+        Args:
+            image_path (str, optional): Path to the source image to augment.
+                Must be provided together with ``mask_path``. If omitted,
+                ``self.image`` is used.
+            mask_path (str, optional): Path to the corresponding binary mask.
+                Must be provided together with ``image_path``. If omitted,
+                ``self.mask`` is used.
+            output_path (str, optional): Directory for the augmented image and
+                YAML logs. If omitted, ``self.output_path`` is used.
 
         Raises:
-            ValueError: If ``self.image`` or ``self.mask`` is ``None``.
+            ValueError: If ``image_path``/``mask_path`` point to unreadable
+                files, or if no image/mask is available (neither argument nor
+                ``self.image``/``self.mask`` are set).
         """
-        if self.image is None or self.mask is None:
-            raise ValueError(
-                "image_recreation_test requires both 'image' and 'mask' to be "
-                "set on the FailureRecreation instance. Pass them to __init__ "
-                "or assign them directly before calling this method."
-            )
+        # ------------------------------------------------------------------
+        # Resolve image, mask, and filename
+        # ------------------------------------------------------------------
+        if image_path is not None and mask_path is not None:
+            loaded_image = cv2.imread(image_path)
+            loaded_mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+            if loaded_image is None:
+                raise ValueError(f"Could not read image: {image_path}")
+            if loaded_mask is None:
+                raise ValueError(f"Could not read mask: {mask_path}")
+            image = loaded_image
+            mask = loaded_mask
+            filename = os.path.splitext(os.path.basename(image_path))[0]
+        else:
+            if self.image is None or self.mask is None:
+                raise ValueError(
+                    "image_recreation_test requires both 'image' and 'mask'. "
+                    "Pass image_path and mask_path, or set them via __init__."
+                )
+            image = self.image
+            mask = self.mask
+            filename = self.current_filename if self.current_filename is not None else "test_image"
 
-        # Derive a filename stem if not already set
-        if self.current_filename is None:
-            self.current_filename = "test_image"
+        # ------------------------------------------------------------------
+        # Resolve output path and ensure directories exist
+        # ------------------------------------------------------------------
+        effective_out = output_path if output_path is not None else self.output_path
+        os.makedirs(os.path.join(effective_out, "images"), exist_ok=True)
+        os.makedirs(os.path.join(effective_out, "logs"), exist_ok=True)
 
-        self.aug_config = self._extract_values(self.image, self.mask)
+        # ------------------------------------------------------------------
+        # Set shared per-image state used by the mixin methods
+        # ------------------------------------------------------------------
+        self.current_filename = filename
+        self.aug_config = self._extract_values(image, mask)
+        self.image = image.copy()
+        self.mask = mask
 
-        # Work on a copy so the original self.image is preserved for re-runs
-        self.image = self.image.copy()
-
-        if self.options["red_region"]:
-            self._create_red_regions()
-        if self.options["shadows"]:
-            self.generate_shadows()
+        # Temporarily redirect self.output_path so mixin YAML logs go to the
+        # correct directory, then restore it in the finally block.
+        original_output_path = self.output_path
+        self.output_path = effective_out
+        try:
+            if self.options["red_region"]:
+                self._create_red_regions()
+            if self.options["shadows"]:
+                self.generate_shadows()
+            if self.options.get("specular"):
+                self.generate_specular_highlights()
+            if self.options.get("brightness"):
+                self.apply_brightness_variation()
+            if self.options.get("necrotic"):
+                self.generate_necrotic_regions()
+        finally:
+            self.output_path = original_output_path
 
         # Save the single augmented image
-        out_img_path = os.path.join(
-            self.output_path, "images", f"{self.current_filename}.jpg"
-        )
+        out_img_path = os.path.join(effective_out, "images", f"{filename}.jpg")
         cv2.imwrite(out_img_path, self.image)
+
+    def augment_image(self, image_path, mask_path, output_path=None):
+        """Augment a single image from disk, returning it or saving to a path.
+
+        Args:
+            image_path (str): Path to the source BGR image.
+            mask_path (str): Path to the corresponding binary mask (grayscale).
+            output_path (str, optional): If provided, the augmented image and
+                YAML logs are written there (same layout as
+                ``image_recreation_test``). If omitted, no files are written
+                and the augmented image is returned as a numpy array instead.
+
+        Returns:
+            numpy.ndarray or None: The augmented BGR image (H, W, 3) uint8 if
+            ``output_path`` is ``None``; otherwise ``None``.
+
+        Raises:
+            ValueError: If ``image_path`` or ``mask_path`` cannot be read.
+        """
+        loaded_image = cv2.imread(image_path)
+        loaded_mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+        if loaded_image is None:
+            raise ValueError(f"Could not read image: {image_path}")
+        if loaded_mask is None:
+            raise ValueError(f"Could not read mask: {mask_path}")
+
+        filename = os.path.splitext(os.path.basename(image_path))[0]
+
+        # Infer model_type from the image path so each call is self-describing,
+        # regardless of what was set at construction time
+        self.model_type = FailureRecreation._infer_model_type(image_path)
+
+        self.current_filename = filename
+        self.aug_config = self._extract_values(loaded_image, loaded_mask)
+        self.image = loaded_image.copy()
+        self.mask = loaded_mask
+
+        # When saving, redirect self.output_path so mixin YAML logs go there.
+        # When returning, leave self.output_path unchanged (logs go to default).
+        original_output_path = self.output_path
+        if output_path is not None:
+            os.makedirs(os.path.join(output_path, "images"), exist_ok=True)
+            os.makedirs(os.path.join(output_path, "logs"), exist_ok=True)
+            self.output_path = output_path
+
+        try:
+            if self.options["red_region"]:
+                self._create_red_regions()
+            if self.options["shadows"]:
+                self.generate_shadows()
+            if self.options.get("specular"):
+                self.generate_specular_highlights()
+            if self.options.get("brightness"):
+                self.apply_brightness_variation()
+            if self.options.get("necrotic"):
+                self.generate_necrotic_regions()
+        finally:
+            self.output_path = original_output_path
+
+        if output_path is not None:
+            out_img_path = os.path.join(output_path, "images", f"{filename}.jpg")
+            cv2.imwrite(out_img_path, self.image)
+            return None
+
+        return self.image

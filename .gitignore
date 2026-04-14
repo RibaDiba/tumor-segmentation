@@ -14,9 +14,13 @@ src/util/failure_analysis
 src/util/failure_recreation_output
 src/util/line_graphs
 
+# cross comaprison 
+**/evaluation_output
+
 # slurm logs 
 **/logs
 
 # claude
 **/CLAUDE.models
 /.claude
+**/CLAUDE.md
