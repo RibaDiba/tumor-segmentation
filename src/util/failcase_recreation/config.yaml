@@ -1,8 +1,15 @@
 options:
   red_region: false
   shadows: true
+  specular: false
+  brightness: false
+  necrotic: false
   output_path: "/test_output"
-  test_mode: false
+  test_mode: true
+  test_image_config:
+    image_path: "/projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.jpg"
+    mask_path: "/projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/masks/Tumor/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.png"
+    output_name: "test_image"
 
 size_thresholds: # bounding box width in pixels (256x256 images)
   small: 90    # bbox_width <= 90  (~P25 of dataset, equiv_r ~25-45px)
@@ -88,3 +95,75 @@ shadow:
     offset_max: 20
     decrease_min: 40
     decrease_max: 70
+
+specular:
+  small:
+    n_highlights: 1       # random in [1, n_highlights]
+    offset_x: 10          # max +/- pixel displacement from centroid (x)
+    offset_y: 10          # max +/- pixel displacement from centroid (y)
+    sigma_min: 5          # Gaussian width lower bound (pixels)
+    sigma_max: 15         # Gaussian width upper bound (pixels)
+    intensity_min: 60     # min blend % toward white (0-100)
+    intensity_max: 90     # max blend % toward white (0-100)
+
+  medium:
+    n_highlights: 2
+    offset_x: 20
+    offset_y: 20
+    sigma_min: 10
+    sigma_max: 25
+    intensity_min: 60
+    intensity_max: 90
+
+  large:
+    n_highlights: 2
+    offset_x: 30
+    offset_y: 30
+    sigma_min: 15
+    sigma_max: 40
+    intensity_min: 60
+    intensity_max: 90
+
+brightness:                   # flat — no tiers, brightness is scene-level not tumour-size-dependent
+  factor_min: 0.5             # minimum brightness multiplier (0=black, 1=no change)
+  factor_max: 0.7             # maximum brightness multiplier
+
+necrotic:
+  small:
+    n_blobs: 1                # always 1 primary necrotic region (single central darkening)
+    offset_x: 5               # max +/- pixel jitter from centroid (x); ~15% of equiv_r_mean=35
+    offset_y: 5               # max +/- pixel jitter from centroid (y)
+    radius_min: 10            # ~30% of equiv_r_mean=35
+    radius_max: 18            # ~50% of equiv_r_mean=35
+    darken_min: 40            # % darkening applied to channels (size-independent)
+    darken_max: 70
+    sub_circles:
+      range: 2                # max sub-blobs per primary circle; random in [0, range]
+      offset_x: 5             # max offset for sub-circle center jitter
+      offset_y: 5
+
+  medium:
+    n_blobs: 1
+    offset_x: 9               # ~15% of equiv_r_mean=62
+    offset_y: 9
+    radius_min: 19            # ~30% of equiv_r_mean=62
+    radius_max: 31            # ~50% of equiv_r_mean=62
+    darken_min: 40
+    darken_max: 70
+    sub_circles:
+      range: 3
+      offset_x: 9
+      offset_y: 9
+
+  large:
+    n_blobs: 1
+    offset_x: 15              # ~15% of equiv_r_mean=100
+    offset_y: 15
+    radius_min: 30            # 30% of equiv_r_mean=100
+    radius_max: 50            # 50% of equiv_r_mean=100
+    darken_min: 40
+    darken_max: 70
+    sub_circles:
+      range: 4
+      offset_x: 15
+      offset_y: 15

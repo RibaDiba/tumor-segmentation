@@ -1,48 +1,245 @@
 {
     "model_names": {
-        "rgb": "RGB-1",
-        "depth": "DEPTH-1",
-        "rgd": "RGD-1"
+        "rgb": "RGB-2",
+        "depth": "DEPTH-5",
+        "rgd": "RGD-3"
     },
     "best_rgb": {
-        "032224 MCF7 EdPIT-iv only-1-3-02.jpg": {
-            "IOU_rgb": 0.0,
+        "032224 MCF7 EdPIT-iv only-1-38-26_aug_vr.jpg": {
+            "IOU_rgb": 0.4562,
+            "IOU_depth": 0.4546,
+            "IOU_rgd": 0.4431
+        },
+        "032224 MCF7 EdPIT-Control-1-38-18_aug_vr.jpg": {
+            "IOU_rgb": 0.4528,
             "IOU_depth": 0.0,
             "IOU_rgd": 0.0
         },
-        "032224 MCF7 EdPIT-iv only-1-43-21.jpg": {
-            "IOU_rgb": 0.3907,
-            "IOU_depth": 0.2752,
-            "IOU_rgd": 0.0
-        },
-        "032224 MCF7 EdPIT-iv only-1-8-02.jpg": {
-            "IOU_rgb": 0.0,
+        "032224 MCF7 EdPIT-iv only-1-49-02_aug_vr.jpg": {
+            "IOU_rgb": 0.4332,
             "IOU_depth": 0.0,
             "IOU_rgd": 0.0
         },
-        "032224 MCF7 EdPIT-EdPIT-1-55-29.jpg": {
-            "IOU_rgb": 0.4702,
+        "013023 4T1 EpP + aPD1-Control-1-7-213-2_aug_hr.jpg": {
+            "IOU_rgb": 0.4703,
+            "IOU_depth": 0.4507,
+            "IOU_rgd": 0.4341
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-36-08_aug_vr.jpg": {
+            "IOU_rgb": 0.477,
+            "IOU_depth": 0.4345,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-iv only-1-49-02_aug_hvr.jpg": {
+            "IOU_rgb": 0.4481,
+            "IOU_depth": 0.446,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-38-17_aug_hvr.jpg": {
+            "IOU_rgb": 0.491,
+            "IOU_depth": 0.4609,
+            "IOU_rgd": 0.4695
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-22-14_aug_vr.jpg": {
+            "IOU_rgb": 0.4794,
+            "IOU_depth": 0.0,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-3-22_aug_v.jpg": {
+            "IOU_rgb": 0.0509,
             "IOU_depth": 0.0,
             "IOU_rgd": 0.0
         }
     },
     "best_depth": {
-        "032224 MCF7 EdPIT-iv only-1-41-21.jpg": {
+        "032224 MCF7 EdPIT-Control-1-55-28_aug_hr.jpg": {
+            "IOU_rgb": 0.357,
+            "IOU_depth": 0.3836,
+            "IOU_rgd": 0.3696
+        },
+        "013023 4T1 EpP + aPD1-Control-1-2-212-5_aug_vr.jpg": {
             "IOU_rgb": 0.0,
-            "IOU_depth": 0.2545,
+            "IOU_depth": 0.4068,
             "IOU_rgd": 0.0
         },
-        "032224 MCF7 EdPIT-EdPIT-1-45-20.jpg": {
+        "032224 MCF7 EdPIT-Control-1-41-12_aug_hvr.jpg": {
+            "IOU_rgb": 0.319,
+            "IOU_depth": 0.3506,
+            "IOU_rgd": 0.3302
+        },
+        "013023 4T1 EpP + aPD1-aPD1 + EpP-1-4-218-3_aug_hvr.jpg": {
             "IOU_rgb": 0.0,
-            "IOU_depth": 0.4581,
+            "IOU_depth": 0.4495,
             "IOU_rgd": 0.0
         },
-        "032224 MCF7 EdPIT-iv only-1-45-21.jpg": {
+        "013023 4T1 EpP + aPD1-Control-1-3-212-1_aug_r.jpg": {
+            "IOU_rgb": 0.2331,
+            "IOU_depth": 0.4688,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-iv only-1-43-23_aug_hvr.jpg": {
+            "IOU_rgb": 0.4517,
+            "IOU_depth": 0.4913,
+            "IOU_rgd": 0.3922
+        },
+        "013023 4T1 EpP + aPD1-EpPIT-1-7-217-1_aug_vr.jpg": {
             "IOU_rgb": 0.0,
-            "IOU_depth": 0.358,
+            "IOU_depth": 0.4423,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-Control-1-34-28_aug_hvr.jpg": {
+            "IOU_rgb": 0.4337,
+            "IOU_depth": 0.4553,
+            "IOU_rgd": 0.4501
+        },
+        "013023 4T1 EpP + aPD1-EpPIT-1-7-217-3_aug_vr.jpg": {
+            "IOU_rgb": 0.438,
+            "IOU_depth": 0.4663,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-iv only-1-45-21_aug_h.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.4124,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-45-20_aug_hvr.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.4847,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-15-14_aug_vr.jpg": {
+            "IOU_rgb": 0.4336,
+            "IOU_depth": 0.4532,
+            "IOU_rgd": 0.0
+        },
+        "013023 4T1 EpP + aPD1-aPD1-1-4-215-5_aug_r.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.4735,
+            "IOU_rgd": 0.0
+        },
+        "032224 MCF7 EdPIT-Control-1-38-28_aug_hr.jpg": {
+            "IOU_rgb": 0.4447,
+            "IOU_depth": 0.4582,
+            "IOU_rgd": 0.4574
+        },
+        "032224 MCF7 EdPIT-Control-1-43-25_aug_r.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.4496,
             "IOU_rgd": 0.0
         }
     },
-    "best_rgd": {},
-    "failed_all": {}
+    "best_rgd": {
+        "013023 4T1 EpP + aPD1-Control-1-1-212-3_aug_r.jpg": {
+            "IOU_rgb": 0.4481,
+            "IOU_depth": 0.4461,
+            "IOU_rgd": 0.459
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-52-29_aug_hvr.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.461,
+            "IOU_rgd": 0.4926
+        },
+        "032224 MCF7 EdPIT-iv only-1-43-02_aug_vr.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.0,
+            "IOU_rgd": 0.4456
+        },
+        "013023 4T1 EpP + aPD1-Control-1-4-212-4_aug_vr.jpg": {
+            "IOU_rgb": 0.2652,
+            "IOU_depth": 0.3084,
+            "IOU_rgd": 0.4125
+        },
+        "032224 MCF7 EdPIT-iv only-1-41-16_aug_r.jpg": {
+            "IOU_rgb": 0.4132,
+            "IOU_depth": 0.4138,
+            "IOU_rgd": 0.4323
+        },
+        "013023 4T1 EpP + aPD1-aPD1-1-4-214-3_aug_hvr.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.433,
+            "IOU_rgd": 0.4909
+        },
+        "013023 4T1 EpP + aPD1-aPD1 + EpP-1-4-218-3_aug_vr.jpg": {
+            "IOU_rgb": 0.0,
+            "IOU_depth": 0.0,
+            "IOU_rgd": 0.4529
+        },
+        "032224 MCF7 EdPIT-iv only-1-34-21_aug_r.jpg": {
+            "IOU_rgb": 0.4632,
+            "IOU_depth": 0.449,
+            "IOU_rgd": 0.4694
+        },
+        "032224 MCF7 EdPIT-iv only-1-45-02_aug_vr.jpg": {
+            "IOU_rgb": 0.4529,
+            "IOU_depth": 0.4409,
+            "IOU_rgd": 0.4658
+        }
+    },
+    "failed_all": {
+        "013023 4T1 EpP + aPD1-Control-1-1-212-3_aug_r.jpg": {
+            "IOU_rgb": 0.4481,
+            "IOU_depth": 0.4461,
+            "IOU_rgd": 0.459
+        },
+        "032224 MCF7 EdPIT-Control-1-55-28_aug_hr.jpg": {
+            "IOU_rgb": 0.357,
+            "IOU_depth": 0.3836,
+            "IOU_rgd": 0.3696
+        },
+        "032224 MCF7 EdPIT-Control-1-41-12_aug_hvr.jpg": {
+            "IOU_rgb": 0.319,
+            "IOU_depth": 0.3506,
+            "IOU_rgd": 0.3302
+        },
+        "032224 MCF7 EdPIT-iv only-1-38-26_aug_vr.jpg": {
+            "IOU_rgb": 0.4562,
+            "IOU_depth": 0.4546,
+            "IOU_rgd": 0.4431
+        },
+        "013023 4T1 EpP + aPD1-Control-1-4-212-4_aug_vr.jpg": {
+            "IOU_rgb": 0.2652,
+            "IOU_depth": 0.3084,
+            "IOU_rgd": 0.4125
+        },
+        "032224 MCF7 EdPIT-iv only-1-43-23_aug_hvr.jpg": {
+            "IOU_rgb": 0.4517,
+            "IOU_depth": 0.4913,
+            "IOU_rgd": 0.3922
+        },
+        "032224 MCF7 EdPIT-iv only-1-41-16_aug_r.jpg": {
+            "IOU_rgb": 0.4132,
+            "IOU_depth": 0.4138,
+            "IOU_rgd": 0.4323
+        },
+        "032224 MCF7 EdPIT-Control-1-34-28_aug_hvr.jpg": {
+            "IOU_rgb": 0.4337,
+            "IOU_depth": 0.4553,
+            "IOU_rgd": 0.4501
+        },
+        "013023 4T1 EpP + aPD1-Control-1-7-213-2_aug_hr.jpg": {
+            "IOU_rgb": 0.4703,
+            "IOU_depth": 0.4507,
+            "IOU_rgd": 0.4341
+        },
+        "032224 MCF7 EdPIT-iv only-1-34-21_aug_r.jpg": {
+            "IOU_rgb": 0.4632,
+            "IOU_depth": 0.449,
+            "IOU_rgd": 0.4694
+        },
+        "032224 MCF7 EdPIT-iv only-1-45-02_aug_vr.jpg": {
+            "IOU_rgb": 0.4529,
+            "IOU_depth": 0.4409,
+            "IOU_rgd": 0.4658
+        },
+        "032224 MCF7 EdPIT-EdPIT-1-38-17_aug_hvr.jpg": {
+            "IOU_rgb": 0.491,
+            "IOU_depth": 0.4609,
+            "IOU_rgd": 0.4695
+        },
+        "032224 MCF7 EdPIT-Control-1-38-28_aug_hr.jpg": {
+            "IOU_rgb": 0.4447,
+            "IOU_depth": 0.4582,
+            "IOU_rgd": 0.4574
+        }
+    }
 }

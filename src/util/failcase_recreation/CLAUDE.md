@@ -42,8 +42,11 @@ Size tier breakdown used by this module:
 
 ```
 FailureRecreation (FailureRecreation.py)
-├── inherits RedRegionMixin  (_red.py)
-└── inherits ShadowMixin     (_shadow.py)
+├── inherits RedRegionMixin   (_red.py)
+├── inherits ShadowMixin      (_shadow.py)
+├── inherits SpecularMixin    (_specular.py)
+├── inherits BrightnessMixin  (_brightness.py)
+└── inherits NecroticMixin    (_necrotic.py)
 ```
 
 **FailureRecreation** is the entry point. It:
@@ -94,6 +97,16 @@ Thresholds are **bounding box width** values in pixels (for 256×256 images).
 | `decrease_min/max` | % decrease applied to the R and G channels within the shadow region. The B channel (depth) is never modified. |
 
 Note: shadow border segments must not overlap (validated internally).
+
+### `necrotic.<tier>`
+| Field | Description |
+|-------|-------------|
+| `n_blobs` | Number of primary necrotic circles (always 1 — necrotic is a single central lesion) |
+| `offset_x/y` | Max random ±pixel displacement of the circle centre from the tumour centroid |
+| `radius_min/max` | Radius range for the primary circle (pixels); calibrated to 30–50% of tier `equiv_r_mean` |
+| `darken_min/max` | % darkening applied to R and G channels (`pixel' = pixel * (1 - darken/100)`). B is also darkened for `rgb`, preserved for `rgd` |
+| `sub_circles.range` | Max number of sub-circles per primary circle (random in [0, range]); grows with tier |
+| `sub_circles.offset_x/y` | Max random offset for sub-circle center jitter within the parent disk |
 
 ---
 
@@ -155,7 +168,19 @@ Use these scaling rules (all values in pixels, for current 256×256 images):
 | `number_regions` | small=5, medium=7, large=9 (fixed) |
 | `decrease_min/max` | keep at 40/70 — color intensity is size-independent |
 
-**Step 6 — If image resolution changes.**
+**Step 6 — Scale necrotic parameters.**
+
+| Parameter | Formula |
+|-----------|---------|
+| `radius_min` | `round(0.30 * equiv_r_mean)` |
+| `radius_max` | `round(0.50 * equiv_r_mean)` |
+| `offset_x/y` | `round(0.15 * equiv_r_mean)` |
+| `sub_circles.offset_x/y` | same as `offset_x/y` |
+| `n_blobs` | fixed at 1 (always single necrotic core) |
+| `sub_circles.range` | small=2, medium=3, large=4 (fixed) |
+| `darken_min/max` | keep at 40/70 — darkening intensity is size-independent |
+
+**Step 7 — If image resolution changes.**
 All pixel values above scale linearly with image resolution. Multiply by `new_dim / 256` when moving to a different resolution.
 
 ---
