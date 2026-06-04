@@ -7,7 +7,7 @@ DIR=""
 INIT_RUN=false
 
 # vars 
-TEST_DIR="../../src/Detectron2/training_scripts/test"
+TEST_DIR="../../src/pipeline/training_scripts/test"
 HF_REPO_PATH="../../data/huggingface-repo"
 
 # get args 

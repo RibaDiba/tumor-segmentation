@@ -1,19 +1,38 @@
+import argparse
 import json
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+_util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _util_dir not in sys.path:
+    sys.path.insert(0, _util_dir)
+from paths import TESTING_SHADOWS_ONLY_DIR
+
 TITLE      = "BW RGD Shadows (No Depth)"  # used for graph title and output filename
 SHOW_DEPTH = False  # set to False to hide the DEPTH model
 SHOW_DIFF  = True  # set to True to plot per-image IoU difference vs RGB
-    
-INPUTS = {
-    "RGB":   Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/testing_shadows_only/rgb/augmented/RGB-2/json_RGB-2/iou_results.json"),
-    "DEPTH": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/testing_shadows_only/depth/baseline/DEPTH-5/json_DEPTH-5/iou_results.json"),
-    "RGD":   Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/testing_shadows_only/rgd/augmented/RGD-4/json_RGD-4/iou_results.json"),
-}
 
 COLORS = {"RGB": "#4E79A7", "DEPTH": "#F28E2B", "RGD": "#B07AA1"}
+
+
+def _iou_results_path(base: Path, mode: str, variant: str, run: str) -> Path:
+    return base / mode / variant / run / f"json_{run}" / "iou_results.json"
+
+
+def parse_args():
+    p = argparse.ArgumentParser(description="Generate per-image IoU line plot")
+    p.add_argument("--base-dir", type=Path, default=TESTING_SHADOWS_ONLY_DIR,
+                   help=f"Base dir holding <mode>/<variant>/<run>/json_<run>/iou_results.json (default: {TESTING_SHADOWS_ONLY_DIR})")
+    p.add_argument("--rgb-run", default="RGB-2", help="RGB run name (default: RGB-2)")
+    p.add_argument("--rgb-variant", default="augmented", help="RGB variant subdir (default: augmented)")
+    p.add_argument("--depth-run", default="DEPTH-5", help="DEPTH run name (default: DEPTH-5)")
+    p.add_argument("--depth-variant", default="baseline", help="DEPTH variant subdir (default: baseline)")
+    p.add_argument("--rgd-run", default="RGD-4", help="RGD run name (default: RGD-4)")
+    p.add_argument("--rgd-variant", default="augmented", help="RGD variant subdir (default: augmented)")
+    return p.parse_args()
 
 
 def load_iou(path: Path):
@@ -22,6 +41,13 @@ def load_iou(path: Path):
     # keyed by image_id -> mean_iou
     return {v["id"]: v["mean_iou"] for v in data["per_image_iou"].values()}
 
+
+args = parse_args()
+INPUTS = {
+    "RGB":   _iou_results_path(args.base_dir, "rgb", args.rgb_variant, args.rgb_run),
+    "DEPTH": _iou_results_path(args.base_dir, "depth", args.depth_variant, args.depth_run),
+    "RGD":   _iou_results_path(args.base_dir, "rgd", args.rgd_variant, args.rgd_run),
+}
 
 # Load all models as {image_id: iou}
 data = {label: load_iou(path) for label, path in INPUTS.items() if label != "DEPTH" or SHOW_DEPTH}

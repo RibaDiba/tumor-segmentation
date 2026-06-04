@@ -1,14 +1,37 @@
+# CI requirements: CPU-only PyTorch for fast installs on GitHub Actions runners.
+# Mirrors requirements.txt but uses the CPU wheel index and omits GPU-only deps.
+
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch
-torchvision
-opencv-python
-matplotlib
-numpy
-scipy
-tqdm
-pillow
-datasets
-ipykernel
-pytest
-huggingface-hub
-black 
+
+# --- PyTorch (CPU wheel) ---
+torch==2.1.2+cpu
+torchvision==0.16.2+cpu
+
+# --- Computer vision / image processing ---
+opencv-python==4.9.0.80
+pillow==10.3.0
+albumentations==1.4.4
+
+# --- Scientific computing ---
+numpy==1.26.4
+scipy==1.13.0
+
+# --- HuggingFace ecosystem ---
+transformers==4.40.2
+huggingface-hub==0.23.1
+datasets==2.19.1
+
+# --- COCO tooling ---
+pycocotools==2.0.7
+
+# --- Visualisation ---
+matplotlib==3.9.0
+
+# --- Utilities ---
+tqdm==4.66.4
+pyyaml==6.0.1
+
+# --- Dev / CI ---
+pytest==8.2.1
+black==24.4.2
+ipykernel==6.29.4

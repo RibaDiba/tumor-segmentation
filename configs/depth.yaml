@@ -1,0 +1,6 @@
+_BASE_: "base.yaml"
+
+# Per-modality overrides for Depth.
+# Depth images are saved as 3-channel grayscale PNGs (matplotlib Grays cmap),
+# so they pass through the default BGR pipeline. Override here if a
+# depth-specific LR, augmentation policy, or normalization is needed.

@@ -1,0 +1,9 @@
+_BASE_: "base.yaml"
+
+# Per-modality overrides for RGB.
+# Examples:
+# SOLVER:
+#   BASE_LR: 0.0005
+# INPUT:
+#   PIXEL_MEAN: [103.530, 116.280, 123.675]
+#   PIXEL_STD: [57.375, 57.120, 58.395]

@@ -51,7 +51,7 @@ class PreprocessingMixin:
             self.masks_clone_depth = self.crop_masks(self.masks_clone_depth)
             self.images_depth_maps = self.read_contours_array_depth(self.depth_info)
             self.images_depth_maps = self.crop_raw_images(self.images_depth_maps)
-            # copies because the masks should be the same accross all data
+            # copies because the masks should be the same across all data
             self.images_depth_maps, self.masks_clone_depth = self.add_padding(
                 self.images_depth_maps, self.masks_clone_depth
             )

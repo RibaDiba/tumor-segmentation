@@ -6,7 +6,7 @@ import numpy as np
 
 class CachingMixin:
 
-    # this will load data from the cashe
+    # this will load data from the cache
     # returns train_images for each type (rgb, depth, rgd) and shared masks
     def load_data(
         self,
@@ -39,7 +39,7 @@ class CachingMixin:
         return self.images_rgb, self.masks
 
     # this will save our data into directories for each image type, with shared masks
-    def cashe_data(self) -> None:
+    def cache_data(self) -> None:
         project_root = os.path.abspath(
             os.path.join(os.path.dirname(__file__), "../../../..")
         )

@@ -1,23 +1,36 @@
+import argparse
 import json
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
+_util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _util_dir not in sys.path:
+    sys.path.insert(0, _util_dir)
+from paths import FAILURE_RECREATION_OUTPUT_DIR
+
 TITLE = "Model Robustness: Baseline vs Augmented"  # used for graph title and output filename
 METRIC = "mean_iou"  # "mean_iou" or "failure_rate"
 
-INPUTS = {
-    "RGB": {
-        "baseline": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgb/baseline/RGB-2/json_RGB-2/iou_results.json"),
-        "augmented": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgb/augmented/RGB-2/json_RGB-2/iou_results.json"),
-    },
-    "RGD": {
-        "baseline": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgd/baseline/RGD-4/json_RGD-4/iou_results.json"),
-        "augmented": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgd/augmented/RGD-4/json_RGD-4/iou_results.json"),
-    }
-}
-
 COLORS = {"RGB": "#4E79A7", "RGD": "#B07AA1"}
+
+
+def _iou_results_path(base: Path, mode: str, variant: str, run: str) -> Path:
+    return base / mode / variant / run / f"json_{run}" / "iou_results.json"
+
+
+def parse_args():
+    default_base = FAILURE_RECREATION_OUTPUT_DIR / "testing_output"
+    p = argparse.ArgumentParser(description="Generate model robustness correction-error plot")
+    p.add_argument("--base-dir", type=Path, default=default_base,
+                   help=f"Base dir holding <mode>/<variant>/<run>/json_<run>/iou_results.json (default: {default_base})")
+    p.add_argument("--rgb-baseline-run", default="RGB-2", help="RGB baseline run name (default: RGB-2)")
+    p.add_argument("--rgb-augmented-run", default="RGB-2", help="RGB augmented run name (default: RGB-2)")
+    p.add_argument("--rgd-baseline-run", default="RGD-4", help="RGD baseline run name (default: RGD-4)")
+    p.add_argument("--rgd-augmented-run", default="RGD-4", help="RGD augmented run name (default: RGD-4)")
+    return p.parse_args()
 
 
 def load_json_metrics(path: Path) -> dict:
@@ -88,83 +101,93 @@ def calculate_correction_error(baseline_metrics: dict, augmented_metrics: dict, 
     return correction_error, baseline_error, augmented_error
 
 
-# Load all metrics
-data = {}
-for model_name, paths in INPUTS.items():
-    baseline_metrics = load_json_metrics(paths["baseline"])
-    augmented_metrics = load_json_metrics(paths["augmented"])
-
-    correction_error, baseline_error, augmented_error = calculate_correction_error(
-        baseline_metrics, augmented_metrics, metric=METRIC
-    )
-
-    data[model_name] = {
-        "baseline_error": baseline_error,
-        "augmented_error": augmented_error,
-        "correction_error": correction_error,
-        "baseline_metrics": baseline_metrics,
-        "augmented_metrics": augmented_metrics,
+def main():
+    args = parse_args()
+    inputs = {
+        "RGB": {
+            "baseline": _iou_results_path(args.base_dir, "rgb", "baseline", args.rgb_baseline_run),
+            "augmented": _iou_results_path(args.base_dir, "rgb", "augmented", args.rgb_augmented_run),
+        },
+        "RGD": {
+            "baseline": _iou_results_path(args.base_dir, "rgd", "baseline", args.rgd_baseline_run),
+            "augmented": _iou_results_path(args.base_dir, "rgd", "augmented", args.rgd_augmented_run),
+        },
     }
 
-    print(f"{model_name}:")
-    print(f"  Baseline ({METRIC}): {baseline_metrics[METRIC]:.4f}")
-    print(f"  Augmented ({METRIC}): {augmented_metrics[METRIC]:.4f}")
-    print(f"  Baseline Error: {baseline_error:.4f}")
-    print(f"  Augmented Error: {augmented_error:.4f}")
-    print(f"  Correction Error (CE = error_aug / error_clean): {correction_error:.4f}")
-    print()
+    data = {}
+    for model_name, paths in inputs.items():
+        baseline_metrics = load_json_metrics(paths["baseline"])
+        augmented_metrics = load_json_metrics(paths["augmented"])
 
-# Create grouped bar chart
-model_names = list(data.keys())
-x_pos = np.arange(len(model_names))
-width = 0.25  # width of each bar
-
-fig, ax = plt.subplots(figsize=(10, 6))
-
-baseline_errors = [data[m]["baseline_error"] for m in model_names]
-augmented_errors = [data[m]["augmented_error"] for m in model_names]
-correction_errors = [data[m]["correction_error"] for m in model_names]
-
-# Plot grouped bars
-bars1 = ax.bar(x_pos - width, baseline_errors, width, label="Baseline Error", alpha=0.8, color="#CCCCCC")
-bars2 = ax.bar(x_pos, augmented_errors, width, label="Augmented Error", alpha=0.8, color="#888888")
-bars3_colors = [COLORS[m] for m in model_names]
-bars3 = ax.bar(x_pos + width, correction_errors, width, label="Correction Error", alpha=0.8, color=bars3_colors)
-
-# Add value labels on bars
-for bars in [bars1, bars2, bars3]:
-    for bar in bars:
-        height = bar.get_height()
-        ax.text(
-            bar.get_x() + bar.get_width() / 2,
-            height,
-            f"{height:.3f}",
-            ha="center",
-            va="bottom",
-            fontsize=8,
+        correction_error, baseline_error, augmented_error = calculate_correction_error(
+            baseline_metrics, augmented_metrics, metric=METRIC
         )
 
-# Styling
-ax.set_xlabel("Model", fontsize=11)
-ax.set_ylabel("Error Ratio", fontsize=11)
-ax.set_title(f"{TITLE} — CE = (1 - IoU_edge) / (1 - IoU_clean)", fontsize=13, pad=10)
-ax.set_xticks(x_pos)
-ax.set_xticklabels(model_names)
-ax.legend(fontsize=10, framealpha=0.9)
-ax.grid(axis="y", alpha=0.3, linestyle="--")
-ax.spines["top"].set_visible(False)
-ax.spines["right"].set_visible(False)
+        data[model_name] = {
+            "baseline_error": baseline_error,
+            "augmented_error": augmented_error,
+            "correction_error": correction_error,
+            "baseline_metrics": baseline_metrics,
+            "augmented_metrics": augmented_metrics,
+        }
 
-# Add horizontal line at y=1 for reference (CE=1 means no degradation)
-ax.axhline(1, color="black", linewidth=0.8, linestyle="--", alpha=0.5, label="No degradation (CE=1)")
+        print(f"{model_name}:")
+        print(f"  Baseline ({METRIC}): {baseline_metrics[METRIC]:.4f}")
+        print(f"  Augmented ({METRIC}): {augmented_metrics[METRIC]:.4f}")
+        print(f"  Baseline Error: {baseline_error:.4f}")
+        print(f"  Augmented Error: {augmented_error:.4f}")
+        print(f"  Correction Error (CE = error_aug / error_clean): {correction_error:.4f}")
+        print()
 
-fig.tight_layout()
+    model_names = list(data.keys())
+    x_pos = np.arange(len(model_names))
+    width = 0.25
 
-# Save output
-out_dir = Path(__file__).parent / "correction_error_charts"
-out_dir.mkdir(exist_ok=True)
-safe_title = TITLE.replace(" ", "_").replace("/", "-")
-out = out_dir / f"{safe_title}_{METRIC}.png"
-fig.savefig(out, dpi=150, bbox_inches="tight")
-print(f"Saved → {out}")
-plt.show()
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    baseline_errors = [data[m]["baseline_error"] for m in model_names]
+    augmented_errors = [data[m]["augmented_error"] for m in model_names]
+    correction_errors = [data[m]["correction_error"] for m in model_names]
+
+    bars1 = ax.bar(x_pos - width, baseline_errors, width, label="Baseline Error", alpha=0.8, color="#CCCCCC")
+    bars2 = ax.bar(x_pos, augmented_errors, width, label="Augmented Error", alpha=0.8, color="#888888")
+    bars3_colors = [COLORS[m] for m in model_names]
+    bars3 = ax.bar(x_pos + width, correction_errors, width, label="Correction Error", alpha=0.8, color=bars3_colors)
+
+    for bars in [bars1, bars2, bars3]:
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(
+                bar.get_x() + bar.get_width() / 2,
+                height,
+                f"{height:.3f}",
+                ha="center",
+                va="bottom",
+                fontsize=8,
+            )
+
+    ax.set_xlabel("Model", fontsize=11)
+    ax.set_ylabel("Error Ratio", fontsize=11)
+    ax.set_title(f"{TITLE} — CE = (1 - IoU_edge) / (1 - IoU_clean)", fontsize=13, pad=10)
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(model_names)
+    ax.legend(fontsize=10, framealpha=0.9)
+    ax.grid(axis="y", alpha=0.3, linestyle="--")
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.axhline(1, color="black", linewidth=0.8, linestyle="--", alpha=0.5, label="No degradation (CE=1)")
+
+    fig.tight_layout()
+
+    out_dir = Path(__file__).parent / "correction_error_charts"
+    out_dir.mkdir(exist_ok=True)
+    safe_title = TITLE.replace(" ", "_").replace("/", "-")
+    out = out_dir / f"{safe_title}_{METRIC}.png"
+    fig.savefig(out, dpi=150, bbox_inches="tight")
+    print(f"Saved → {out}")
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
