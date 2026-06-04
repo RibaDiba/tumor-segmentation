@@ -7,8 +7,9 @@ options:
   output_path: "/test_output"
   test_mode: true
   test_image_config:
-    image_path: "/projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/images/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.jpg"
-    mask_path: "/projects/PUCHALLA/LLP2024/tumor-segmentation/data/processed_data/rgb/test/masks/Tumor/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.png"
+    # Paths are relative to data/processed_data/ — resolved at load time in FailureRecreation.py
+    image_path: "rgb/test/images/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.jpg"
+    mask_path: "rgb/test/masks/Tumor/013023 4T1 EpP + aPD1-aPD1 + EpP-1-1-218-1_aug_hvr.png"
     output_name: "test_image"
 
 size_thresholds: # bounding box width in pixels (256x256 images)
