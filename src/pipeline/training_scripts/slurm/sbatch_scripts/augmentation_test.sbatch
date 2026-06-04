@@ -22,4 +22,4 @@ mkdir logs/${NAME}
 
 
 
-../../train.sh --name ${NAME} --iter ${ITER}  --root-path ../../ --rgb true --split-cache false --skip-tests true
+../../train.sh --name ${NAME} --iter ${ITER} --root-path ../../ --modality rgb --split-cache false --skip-tests true
