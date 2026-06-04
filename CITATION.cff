@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Mouse Tumor Segmentation with Detectron2"
+abstract: >-
+  Automated instance segmentation of subcutaneous mouse tumors using
+  Detectron2 (Mask R-CNN). Trains RGB, Depth, and RGD (Red-Green-Depth)
+  model variants on data from Biopticon's TI-2 structured-light scanner.
+type: software
+authors:
+  - family-names: Modak
+    given-names: Abir
+    email: amodak@terpmail.umd.edu
+repository-code: "https://github.com/RibaDiba/tumor-segmentation"
+license: MIT
+keywords:
+  - instance-segmentation
+  - detectron2
+  - mask-rcnn
+  - medical-imaging
+  - mouse-tumor
+  - structured-light
+  - depth-imaging

@@ -1,26 +1,85 @@
-# this file contains processed data. should not be uploaded to github
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---- Distribution / packaging ----
+build/
+dist/
+sdist/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+.installer/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# ---- Testing / type-checking caches ----
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.pytype/
+
+# ---- Jupyter / IPython ----
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+.ipython/
+profile_default/
+ipython_config.py
+
+# ---- OS / editor cruft ----
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# ---- Logs / temp ----
+*.log
+*.tmp
+*.bak
+
+# ---- Project: processed data ----
 data/processed_data/
-# models should not be uploaded to github 
+
+# ---- Project: models ----
 models/
 
-# line graphs
+# ---- Project: training / evaluation outputs ----
 src/Detectron2/evaluation/graphs/
-
-# model output 
 src/Detectron2/slurm_output
 src/util/failure_analysis
-
-# for failure analysis 
 src/util/failure_recreation_output
 src/util/line_graphs
-
-# cross comaprison 
 **/evaluation_output
 
-# slurm logs 
+# ---- Project: SLURM logs ----
 **/logs
 
-# claude
+# ---- Project: Claude scratch ----
 **/CLAUDE.models
 /.claude
 **/CLAUDE.md
