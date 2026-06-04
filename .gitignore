@@ -83,3 +83,6 @@ src/util/line_graphs
 **/CLAUDE.models
 /.claude
 **/CLAUDE.md
+
+# Claude AI settings
+.claude/
