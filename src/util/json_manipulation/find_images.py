@@ -311,19 +311,24 @@ def get_threshold(
 
 
 def main():
-    base = "/projects/PUCHALLA/LLP2024/tumor-segmentation"
+    import sys
+    _util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    if _util_dir not in sys.path:
+        sys.path.insert(0, _util_dir)
+    from paths import PROJECT_ROOT
+    base = PROJECT_ROOT
     get_threshold(
-        rgb_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/RGB-1/IoU_AP_Final/json_RGB-1/iou_results.json",
-        depth_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/DEPTH-1/IoU_AP_Final/json_DEPTH-1/iou_results.json",
-        rgd_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/RGD-1/IoU_AP_Final/json_RGD-1/iou_results.json",
-        rgb_outputs_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/RGB-1/outputs/RGB-1_inference_outputs.json",
-        depth_outputs_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/DEPTH-1/outputs/DEPTH-1_inference_outputs.json",
-        rgd_outputs_json=f"{base}/src/Detectron2/slurm_output/AUG_1000/RGD-1/outputs/RGD-1_inference_outputs.json",
+        rgb_json=str(base / "src/pipeline/slurm_output/AUG_1000/RGB-1/IoU_AP_Final/json_RGB-1/iou_results.json"),
+        depth_json=str(base / "src/pipeline/slurm_output/AUG_1000/DEPTH-1/IoU_AP_Final/json_DEPTH-1/iou_results.json"),
+        rgd_json=str(base / "src/pipeline/slurm_output/AUG_1000/RGD-1/IoU_AP_Final/json_RGD-1/iou_results.json"),
+        rgb_outputs_json=str(base / "src/pipeline/slurm_output/AUG_1000/RGB-1/outputs/RGB-1_inference_outputs.json"),
+        depth_outputs_json=str(base / "src/pipeline/slurm_output/AUG_1000/DEPTH-1/outputs/DEPTH-1_inference_outputs.json"),
+        rgd_outputs_json=str(base / "src/pipeline/slurm_output/AUG_1000/RGD-1/outputs/RGD-1_inference_outputs.json"),
         threshold=0.75,
-        output_dir=f"{base}/src/util/failure_analysis",
+        output_dir=str(base / "src/util/failure_analysis"),
         coco_json_paths=[
-            f"{base}/data/processed_data/rgb/test/images/test.json",
-            f"{base}/data/processed_data/rgb/val/images/val.json",
+            str(base / "data/processed_data/rgb/test/images/test.json"),
+            str(base / "data/processed_data/rgb/val/images/val.json"),
         ],
     )
 

@@ -18,7 +18,10 @@ Usage:
     Edit the CONFIG block below.
 """
 
+import argparse
 import json
+import os
+import sys
 import warnings
 from pathlib import Path
 
@@ -27,6 +30,11 @@ import matplotlib.ticker as ticker
 import matplotlib.lines as mlines
 import numpy as np
 from scipy.stats import wilcoxon, gaussian_kde
+
+_util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if _util_dir not in sys.path:
+    sys.path.insert(0, _util_dir)
+from paths import FAILURE_RECREATION_OUTPUT_DIR
 
 # ──────────────────────────────────────────────────────────────────────────────
 # CONFIG — edit these before running
@@ -38,10 +46,28 @@ SHOW_DEPTH = True   # False → hide DEPTH model from all panels
 SHOW_DIFF  = False  # True  → plot ΔIoU vs RGB  (DEPTH−RGB, RGD−RGB)
                     #         instead of raw IoU values
 
+
+def _iou_results_path(base: Path, mode: str, variant: str, run: str) -> Path:
+    return base / mode / variant / run / f"json_{run}" / "iou_results.json"
+
+
+def parse_args():
+    default_base = FAILURE_RECREATION_OUTPUT_DIR / "testing_output"
+    p = argparse.ArgumentParser(description="Generate IoU distribution histogram by RGB quartile")
+    p.add_argument("--base-dir", type=Path, default=default_base,
+                   help=f"Base dir holding <mode>/<variant>/<run>/json_<run>/iou_results.json (default: {default_base})")
+    p.add_argument("--variant", default="baseline", help="Variant subdir for all models (default: baseline)")
+    p.add_argument("--rgb-run", default="RGB-2", help="RGB run name (default: RGB-2)")
+    p.add_argument("--depth-run", default="DEPTH-5", help="DEPTH run name (default: DEPTH-5)")
+    p.add_argument("--rgd-run", default="RGD-4", help="RGD run name (default: RGD-4)")
+    return p.parse_args()
+
+
+_args = parse_args()
 INPUTS = {
-    "RGB":   Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgb/baseline/RGB-2/json_RGB-2/iou_results.json"),
-    "DEPTH": Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/depth/baseline/DEPTH-5/json_DEPTH-5/iou_results.json"),
-    "RGD":   Path("/projects/PUCHALLA/LLP2024/tumor-segmentation/src/util/failure_recreation_output/testing_output/rgd/baseline/RGD-4/json_RGD-4/iou_results.json"),
+    "RGB":   _iou_results_path(_args.base_dir, "rgb", _args.variant, _args.rgb_run),
+    "DEPTH": _iou_results_path(_args.base_dir, "depth", _args.variant, _args.depth_run),
+    "RGD":   _iou_results_path(_args.base_dir, "rgd", _args.variant, _args.rgd_run),
 }
 
 # ──────────────────────────────────────────────────────────────────────────────
