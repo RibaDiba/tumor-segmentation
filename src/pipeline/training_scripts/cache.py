@@ -17,40 +17,22 @@ if src_dir not in sys.path:
     sys.path.insert(0, src_dir)
 
 from preprocessing.TumorDataset.tumor_dataset import Dataset
-from pipeline.trainer.trainer import Trainer
-
-# helper function for parsing - might add to another module later
-def str2bool(v):
-    if isinstance(v, bool):
-        return v
-    elif v.lower() in ("true", "True"):
-        return True
-    elif v.lower() in ("false", "False"):
-        return False
-    else:
-        raise argparse.ArgumentError("Boolean value expected")
 
 parser = argparse.ArgumentParser(description="Arguments for caching data")
 
 # test arguments
-parser.add_argument("--skip-tests", type=str2bool, default=False, help="Skip pytest before caching")
+parser.add_argument("--skip-tests", action="store_true", help="Skip pytest before caching")
 
 # augmentation arguments
-parser.add_argument("--augmentations", type=str2bool, default=False, help="Setting for doing augmentations")
-parser.add_argument("--rotate_degrees", type=int, help="-/+ range for how much to rotate an image")
+parser.add_argument("--augmentations", action="store_true", help="Enable augmentation pipeline")
+parser.add_argument("--rotate_degrees", type=int, default=0, help="-/+ range for how much to rotate an image")
 args = parser.parse_args()
-
-# collect augmentation arguments 
-is_augment = args.augmentations 
-rotate_degrees = args.rotate_degrees
 
 d = Dataset(data_path=os.path.join(project_root, "data/huggingface-repo/useable_data"))
 
-if is_augment == True:
-    d.preprocess_augs(rotate_degrees=rotate_degrees,)
-else: 
+if args.augmentations:
+    d.preprocess_augs(rotate_degrees=args.rotate_degrees)
+else:
     d.preprocess_images()
 d.split_train_val_test(70, 10, 20)
 d.cache_data()
-
-

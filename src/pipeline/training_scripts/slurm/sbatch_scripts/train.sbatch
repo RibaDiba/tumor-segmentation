@@ -23,4 +23,4 @@ mkdir logs/${NAME}
 
 
 
-../../train.sh --name ${NAME} --model_type ${MODELTYPE} --iter ${ITER}  --root-path ../../ --rgd true --split-cache false --skip-tests true
+../../train.sh --name ${NAME} --model_type ${MODELTYPE} --iter ${ITER} --root-path ../../ --modality rgd --split-cache false --skip-tests true
