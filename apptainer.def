@@ -1,0 +1,55 @@
+# Apptainer (Singularity) definition for HPC clusters (e.g. Princeton Della).
+#
+# Build (on a machine where you have root or fakeroot):
+#   apptainer build tumor-seg.sif apptainer.def
+#
+# Run with the project bind-mounted (no GPU passthrough needed at build time):
+#   apptainer exec --nv -B $PWD:/workspace tumor-seg.sif \
+#       bash -c "cd /workspace/src/pipeline/training_scripts && ./train.sh ..."
+#
+# Mirrors the Dockerfile so the two stay in sync.
+
+Bootstrap: docker
+From: pytorch/pytorch:2.1.2-cuda11.8-cudnn8-devel
+
+%files
+    requirements.txt /tmp/requirements.txt
+
+%environment
+    export PYTHONDONTWRITEBYTECODE=1
+    export PYTHONUNBUFFERED=1
+    export PIP_NO_CACHE_DIR=1
+    export TORCH_CUDA_ARCH_LIST="8.0;8.6;9.0"
+    export LC_ALL=C.UTF-8
+    export LANG=C.UTF-8
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    export TORCH_CUDA_ARCH_LIST="8.0;8.6;9.0"
+    export FORCE_CUDA=1
+
+    apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        git-lfs \
+        build-essential \
+        ca-certificates \
+        libgl1 \
+        libglib2.0-0
+    git lfs install --system
+    rm -rf /var/lib/apt/lists/*
+
+    python -m pip install --upgrade pip
+    # torch/torchvision come from the base image; stripping them prevents pip
+    # from pulling a CUDA-mismatched wheel and breaking the Detectron2 build.
+    grep -vE '^[[:space:]]*(torch|torchvision)([[:space:]]|$)' /tmp/requirements.txt > /tmp/req-no-torch.txt
+    pip install --no-cache-dir -r /tmp/req-no-torch.txt
+
+    mkdir -p /workspace
+
+%runscript
+    exec /bin/bash "$@"
+
+%labels
+    Description "Detectron2 Mask R-CNN training environment for mouse tumor segmentation"
+    CUDA 11.8
+    PyTorch 2.1.2

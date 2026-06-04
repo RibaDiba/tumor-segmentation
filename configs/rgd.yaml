@@ -1,0 +1,7 @@
+_BASE_: "base.yaml"
+
+# Per-modality overrides for RGD.
+# Depth is infused into the blue channel of the RGB image — still 3 channels
+# at the dataloader. If a separate 4-channel pathway is added later, set
+# MODEL.PIXEL_MEAN / MODEL.PIXEL_STD with 4 entries and adjust the backbone
+# stem conv accordingly.
