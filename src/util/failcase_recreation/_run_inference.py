@@ -60,8 +60,8 @@ setup_logger()
 # Project imports
 # ---------------------------------------------------------------------------
 from preprocessing.TumorDataset.tumor_dataset import Dataset
-from Detectron2.hooks.APFinalHook import AP_IOU_FinalResults
-from FailureRecreation import FailureRecreation
+from pipeline.hooks.ap_final_hook import AP_IOU_FinalResults
+from failure_recreation import FailureRecreation
 
 # ---------------------------------------------------------------------------
 # Helper functions
