@@ -16,7 +16,7 @@ preprocessing/
 │   ├── _coco.py                # CocoMixin — COCO JSON + Detectron2 registration
 │   ├── _subset.py              # SubsetMixin — filter dataset by index
 │   └── _utils.py               # UtilsMixin — sanity checks
-├── PreprocessingFunctions/     # Unbound image processing functions
+├── preprocessing_functions/    # Unbound image processing functions
 │   ├── _io.py                  # File I/O: read raw images, .bin files, folders
 │   ├── _transforms.py          # Crop, pad, zoom, translate
 │   ├── _masks.py               # Binary mask creation and hole-filling
@@ -125,7 +125,7 @@ Creates separate lists for each split and modality:
 ### Step 5 — Cache to Disk
 
 ```python
-d.cashe_data()
+d.cache_data()
 ```
 
 Saves preprocessed splits to `data/processed_data/`:
@@ -188,7 +188,7 @@ All mixins are combined in `TumorDataset/tumor_dataset.py` via multiple inherita
 
 ---
 
-## PreprocessingFunctions Modules
+## preprocessing_functions Modules
 
 These are **unbound functions** — they take `self` as their first argument and are assigned as class methods on `Dataset` in `tumor_dataset.py`. They can also be called as standalone utilities.
 
@@ -228,5 +228,4 @@ The class holds a reference to the `Dataset` instance and reads/writes its image
 
 - **`read_neg_images()`** (`_io.py`): `os.listdir` is called without its argument, causing a runtime error when negative images are used.
 - **`correct_binary_masks()`** (`_masks.py`): uses `cv2.COLOR_BAYER_BG2GRAY` instead of `cv2.COLOR_BGR2GRAY`, producing incorrect grayscale conversion.
-- **`subet_automation()`** (`_subset.py`): function name is a typo ("subet" instead of "subset").
 - **`create_neg_masks()`** (`_masks.py`): hardcodes mask dimensions to 495×492; not used in the current pipeline.

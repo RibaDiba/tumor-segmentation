@@ -8,7 +8,7 @@ _util_dir = os.path.abspath(os.path.join(_this_dir, "../.."))
 if _util_dir not in sys.path:
     sys.path.insert(0, _util_dir)
 
-from preprocessing.PreprocessingFunctions import *
+from preprocessing.preprocessing_functions import *
 from preprocessing.process_coco_json import *
 from detectron2.data import MetadataCatalog
 from detectron2.data.datasets import register_coco_instances
@@ -120,4 +120,3 @@ class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, Subse
     remove_files_in_dir = remove_files_in_dir
     save_subset_array = save_subset_array
     subset_automation = subset_automation
-    subet_automation = subset_automation
