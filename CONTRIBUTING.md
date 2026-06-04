@@ -23,7 +23,7 @@ Thanks for your interest in contributing to this project. This repo backs an act
 Before opening a PR:
 
 - Run `pytest data/testing` and confirm it passes.
-- If you changed preprocessing or dataset code, re-run the cache step (`--split-cashe true`) to confirm it still produces valid COCO output.
+- If you changed preprocessing or dataset code, re-run the cache step (`--split-cache`) to confirm it still produces valid COCO output.
 - Describe what changed and why. If the change affects training results, include before/after numbers.
 
 ## Code style
