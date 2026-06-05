@@ -1,5 +1,5 @@
 MODEL:
-  WEIGHTS: "models/BACKBONES/model_final_a3ec72.pkl"
+  WEIGHTS: "/projects/PUCHALLA/LLP2024/tumor-refactor/models/BACKBONES/model_final_a3ec72.pkl"
   ROI_HEADS:
     NUM_CLASSES: 1
     BATCH_SIZE_PER_IMAGE: 512
