@@ -22,4 +22,4 @@ python3 run_evaluator.py \
     --depth-model "DEPTH-5" \
     --rgd-model "RGD-3" \
     --model-type "AUG_5000" \
-    --slurm-output-dir "/projects/PUCHALLA/LLP2024/tumor-segmentation/src/pipeline/slurm_output"
+    --models-dir "/projects/PUCHALLA/LLP2024/tumor-refactor/models"

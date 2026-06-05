@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from scripts import TumorEvaluator
 
-def main(rgb_model, depth_model, rgd_model, model_type, slurm_output_dir, output_dir):
+def main(rgb_model, depth_model, rgd_model, model_type, models_dir, output_dir):
 
     # init the tumor eval
     evaluator = TumorEvaluator(
@@ -18,7 +18,7 @@ def main(rgb_model, depth_model, rgd_model, model_type, slurm_output_dir, output
             "rgd": rgd_model
         },
         model_type=model_type,
-        slurm_output_dir=slurm_output_dir,
+        models_dir=models_dir,
     )
 
     comparison = evaluator.process_results()
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     parser.add_argument("--rgb-model", type=str, help="Model name for RGB")
     parser.add_argument("--depth-model", type=str, help="Model name for depth")
     parser.add_argument("--rgd-model", type=str, help="Model name for rgd")
-    parser.add_argument("--model-type", type=str, help="Model type (subdirectory in slurm output, e.g. '7030_SPLIT')")
-    parser.add_argument("--slurm-output-dir", type=str, help="Root slurm output directory containing pre-saved inference outputs")
+    parser.add_argument("--model-type", type=str, help="Model type (subdirectory under models/, e.g. '7030_SPLIT')")
+    parser.add_argument("--models-dir", type=str, default=None, help="Root models directory containing per-run outputs (defaults to the repo's models/)")
 
     args = parser.parse_args()
 
@@ -46,6 +46,6 @@ if __name__ == "__main__":
     rgd_model_name = args.rgd_model
     output_dir = args.output
     model_type = args.model_type
-    slurm_output_dir = args.slurm_output_dir
+    models_dir = args.models_dir
 
-    main(rgb_model_name, depth_model_name, rgd_model_name, model_type, slurm_output_dir, output_dir)
+    main(rgb_model_name, depth_model_name, rgd_model_name, model_type, models_dir, output_dir)
