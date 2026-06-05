@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=new-augmentations-3
+#SBATCH --job-name=testing-caching
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,8 +10,8 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=../logs/new-augmentations-3/%x.%j.out   # STDOUT → ../logs/new-augmentations-3/<jobid>.out
-#SBATCH --error=../logs/new-augmentations-3/%x.%j.err    # STDERR → ../logs/new-augmentations-3/<jobid>.err
+#SBATCH --output=../logs/testing-caching/%x.%j.out   # STDOUT → ../logs/testing-caching/<jobid>.out
+#SBATCH --error=../logs/testing-caching/%x.%j.err    # STDERR → ../logs/testing-caching/<jobid>.err
 
 
 # config:

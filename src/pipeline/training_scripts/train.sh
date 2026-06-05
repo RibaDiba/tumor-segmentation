@@ -14,10 +14,7 @@ SKIP_TEST=false
 
 # augmentation params
 AUGMENTATION=false
-FLIP_PROB=0
-ROTATE_PROB=0
 ROTATE_DEGREES=0
-TARGET=0
 
 # Extra config overrides (everything after `--`).
 EXTRA_OPTS=()
@@ -34,11 +31,8 @@ Required:
 
 Optional:
   --split-cache            Preprocess, split, and cache data (first run only)
-  --augmentations          Enable augmentation pipeline
-  --flip_prob N            Flip probability
-  --rotate-prob N          Rotation probability
+  --augmentations          Enable augmentation pipeline (h/v flips + rotation)
   --rotate-degrees N       Max +/- rotation in degrees
-  --target N               Target image count post-augmentation
   --root-path PATH         Path prefix for train.py and tests (default: ./)
   --skip-tests             Skip the pytest data validation suite
   -h, --help               Show this message
@@ -57,10 +51,7 @@ while [[ "$#" -gt 0 ]]; do
         --iter) ITER="$2"; shift ;;
         --modality) MODALITY="$2"; shift ;;
         --augmentations) AUGMENTATION=true ;;
-        --flip_prob) FLIP_PROB="$2"; shift ;;
-        --rotate-prob) ROTATE_PROB="$2"; shift ;;
         --rotate-degrees) ROTATE_DEGREES="$2"; shift ;;
-        --target) TARGET="$2"; shift ;;
         --split-cache) SPLIT_CACHE=true ;;
         --root-path) ROOT_PATH="$2"; shift ;;
         --skip-tests) SKIP_TEST=true ;;
@@ -108,11 +99,7 @@ if [ "$SPLIT_CACHE" = true ]; then
 fi
 
 if [ "$AUGMENTATION" = true ]; then
-    TRAIN_ARGS+=(--augmentations \
-        --flip_prob "$FLIP_PROB" \
-        --rotate_prob "$ROTATE_PROB" \
-        --rotate_degrees "$ROTATE_DEGREES" \
-        --target "$TARGET")
+    TRAIN_ARGS+=(--augmentations --rotate_degrees "$ROTATE_DEGREES")
 fi
 
 # Pass --iter through as a config override so SOLVER.MAX_ITER stays the single

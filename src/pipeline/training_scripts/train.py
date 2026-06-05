@@ -6,7 +6,17 @@ there are separate tests created specifically for this workflow in tests
 
 import argparse
 import datetime
+import os
+import sys
 from pathlib import Path
+
+# Make project imports resolvable regardless of CWD / PYTHONPATH:
+# preprocessing + paths live under src/util, pipeline lives under src.
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_project_root = os.path.abspath(os.path.join(_current_dir, "../../.."))
+for _p in (os.path.join(_project_root, "src", "util"), os.path.join(_project_root, "src")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from detectron2 import model_zoo
 from detectron2.config import CfgNode, get_cfg
@@ -33,11 +43,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--split-cache", dest="split_cache", action="store_true",
                    help="Preprocess, split, and cache data (first run only)")
     p.add_argument("--augmentations", action="store_true",
-                   help="Enable augmentation pipeline during preprocessing")
-    p.add_argument("--flip_prob", type=int, default=0, help="probability for flipping")
-    p.add_argument("--rotate_prob", type=int, default=0, help="probability for rotating")
+                   help="Enable augmentation pipeline during preprocessing (h/v flips + rotation)")
     p.add_argument("--rotate_degrees", type=int, default=0, help="rotation degree range")
-    p.add_argument("--target", type=int, default=0, help="target image count post-aug")
     p.add_argument(
         "opts",
         nargs=argparse.REMAINDER,
@@ -89,7 +96,7 @@ def main(argv: list[str] | None = None) -> None:
     d = Dataset(data_path=str(PROJECT_ROOT / "data/huggingface-repo/useable_data"))
     if args.split_cache:
         if args.augmentations:
-            d.preprocess_augs(target_size=args.target)
+            d.preprocess_augs(rotate_degrees=args.rotate_degrees)
         else:
             d.preprocess_images()
         d.split_train_val_test(70, 10, 20)

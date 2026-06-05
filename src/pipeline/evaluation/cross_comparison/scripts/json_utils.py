@@ -6,7 +6,7 @@ from typing import List, Dict, Optional
 _util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../util"))
 if _util_dir not in sys.path:
     sys.path.insert(0, _util_dir)
-from paths import SLURM_OUTPUT_DIR
+from paths import MODELS_DIR
 
 
 class JSONHandler:
@@ -20,10 +20,10 @@ class JSONHandler:
         Initialize JSON handler
 
         :param json_root: Root directory containing JSON IoU result files.
-            Defaults to the repo's SLURM_OUTPUT_DIR.
+            Defaults to the repo's MODELS_DIR.
         :type json_root: str or None
         """
-        self.json_root = json_root if json_root is not None else str(SLURM_OUTPUT_DIR)
+        self.json_root = json_root if json_root is not None else str(MODELS_DIR)
         self._json_cache = {}
 
     def load_json_file(self, model_name: str) -> dict:
@@ -38,7 +38,7 @@ class JSONHandler:
         if model_name in self._json_cache:
             return self._json_cache[model_name]
 
-        json_path = os.path.join(self.json_root, model_name, "IoU_fig", "json", f"{model_name}_json_results.json")
+        json_path = os.path.join(self.json_root, model_name, "latest", "IoU_fig", "json", f"{model_name}_json_results.json")
 
         if not os.path.exists(json_path):
             raise FileNotFoundError(f"JSON file not found: {json_path}")

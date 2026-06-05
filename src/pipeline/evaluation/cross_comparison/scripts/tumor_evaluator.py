@@ -18,7 +18,7 @@ from .output_writer import OutputWriter
 _util_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../../util"))
 if _util_dir not in sys.path:
     sys.path.insert(0, _util_dir)
-from paths import PROCESSED_DATA_DIR
+from paths import PROCESSED_DATA_DIR, MODELS_DIR
 
 """
 This class helps with taking an image and generating a graph
@@ -35,27 +35,29 @@ class TumorEvaluator:
     def __init__(
         self,
         model_names: dict,
-        slurm_output_dir: str,
         model_type: str,
+        models_dir: str = None,
     ):
         """
         Initialize TumorEvaluator
 
         :param model_names: Dictionary mapping mode to model name (e.g., {"rgb": "rgb-7030-4", ...})
         :type model_names: dict
-        :param slurm_output_dir: Root slurm output directory containing pre-saved inference outputs
-        :type slurm_output_dir: str
         :param model_type: Model type subdirectory used in output path
         :type model_type: str
+        :param models_dir: Root models directory containing per-run outputs.
+            Defaults to the repo's MODELS_DIR.
+        :type models_dir: str or None
         """
         self.model_names = model_names
         self.model_type = model_type
-        self.slurm_output_dir = slurm_output_dir
+        self.models_dir = models_dir if models_dir is not None else str(MODELS_DIR)
         self.failed_comparison = None
         self.outputs = {}
 
-        # json_root is {slurm_output_dir}/{model_type}, JSONHandler appends /{model_name}/IoU_fig/json/
-        json_root = os.path.join(slurm_output_dir, model_type)
+        # json_root is {models_dir}/{model_type}; JSONHandler appends
+        # /{model_name}/latest/IoU_fig/json/
+        json_root = os.path.join(self.models_dir, model_type)
 
         # Initialize modular components
         self.json_handler = JSONHandler(json_root)
@@ -74,9 +76,10 @@ class TumorEvaluator:
         """
         for mode, model_name in self.model_names.items():
             outputs_path = os.path.join(
-                self.slurm_output_dir,
+                self.models_dir,
                 self.model_type,
                 model_name,
+                "latest",
                 "outputs",
                 f"{model_name}_inference_outputs.json",
             )
