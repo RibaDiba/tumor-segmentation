@@ -9,8 +9,6 @@ from detectron2.data import (
 )
 from detectron2.evaluation import COCOEvaluator
 
-from paths import SLURM_OUTPUT_DIR
-
 from ..hooks.loss_hook import TrainingLossHook
 from ..hooks.ap_hook import APVisualizationHook
 from ..hooks.iou_hook import IoUHook
@@ -48,8 +46,9 @@ class Trainer(DefaultTrainer):
             self.cfg, self.cfg.DATASETS.TEST[1], mapper=DatasetMapper(self.cfg, is_train=True)
         )
 
-        run_name = Path(self.cfg.OUTPUT_DIR).name
-        base_out = str(SLURM_OUTPUT_DIR / self.cfg.MODELTYPE / self.cfg.MODELNAME / run_name)
+        # All hook artifacts live alongside checkpoints in the run's OUTPUT_DIR
+        # (models/<TYPE>/<NAME>/run_<ts>), so everything for a run is in one place.
+        base_out = self.cfg.OUTPUT_DIR
 
         loss_hook_training = TrainingLossHook(
             output_dir=f"{base_out}/loss_plots",

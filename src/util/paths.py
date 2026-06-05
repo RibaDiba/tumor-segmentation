@@ -25,7 +25,6 @@ PROJECT_ROOT: Path = _resolve_project_root()
 DATA_DIR: Path = PROJECT_ROOT / "data"
 PROCESSED_DATA_DIR: Path = DATA_DIR / "processed_data"
 MODELS_DIR: Path = PROJECT_ROOT / "models"
-SLURM_OUTPUT_DIR: Path = PROJECT_ROOT / "src" / "pipeline" / "slurm_output"
 FAILURE_RECREATION_OUTPUT_DIR: Path = (
     PROJECT_ROOT / "src" / "util" / "failure_recreation_output"
 )
