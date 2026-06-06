@@ -32,7 +32,9 @@ CONFIGS_DIR = PROJECT_ROOT / "configs"
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Train a Detectron2 tumor segmentation model")
-    p.add_argument("--modality", choices=("rgb", "depth", "rgd"), required=True,
+    p.add_argument("--modality",
+                   choices=("rgb", "depth", "rgd", "rgbd_contour", "rgbd_rawgrid"),
+                   required=True,
                    help="Image modality to train on")
     p.add_argument("--model-name", dest="model_name", required=True,
                    help="Run identifier")

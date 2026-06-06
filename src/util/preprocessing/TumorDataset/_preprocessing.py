@@ -57,7 +57,6 @@ class PreprocessingMixin:
             )
             self.images_depth_maps = self.crop_images(self.images_depth_maps)
 
-            # RGD data - will not be using this until verified
             self.masks_clone_rgd = self.og_masks
             self.masks_clone_rgd = self.crop_masks(self.masks_clone_rgd)
             self.images_rgd = self.read_contours_array_depth(self.depth_info)
@@ -70,6 +69,12 @@ class PreprocessingMixin:
                 self.images_rgd, self.masks_clone_rgd
             )
             self.images_rgd = self.crop_images(self.images_rgd)
+
+            # now preprocess rgbd data - clone the rgb data then get the .npy files 
+            self.images_rgbd_rgb = self.images_rgb
+            self.images_rgbd_contor = self.images_depth_maps # clone from depth maps 
+            self.images_rgbd_grid = self.read_contours_with_grid(self.depth_info) 
+
 
         print("Preprocessing done!")
         print(f"Number of RGB Images: {len(self.images_rgb)}")
@@ -87,6 +92,8 @@ class PreprocessingMixin:
         (all modalities have the same annotation). augment_images() loops until
         the combined dataset reaches target_size, then shuffles all modalities
         with a single permutation to keep them in sync.
+
+        THIS NEEDS TO BE UPDATED 
         """
 
         # read information
@@ -137,6 +144,11 @@ class PreprocessingMixin:
         # set canonical shared mask (all three are identical; rgb is canonical)
         self.masks = mask_rgb
 
+        # now preprocess rgbd data - clone the rgb data then get the .npy files 
+        self.images_rgbd_rgb = self.images_rgb
+        self.images_rgbd_contor = self.images_depth_maps # clone from depth maps 
+        self.images_rgbd_grid = self.read_contours_with_grid(self.depth_info) 
+
         # now we can pass the images into the augmentation class
         self.augmentations = AugmentationClass(
             self,
@@ -152,6 +164,10 @@ class PreprocessingMixin:
             self.masks_clone_depth,
             self.images_rgd,
             self.masks_clone_rgd,
+            self.images_rgbd_rgb,
+            self.images_rgbd_contor,
+            self.images_rgbd_grid,
+            self.masks_clone_rgbd,
             self.filenames,
         ) = self.augmentations.return_augmentations()
 
@@ -159,3 +175,4 @@ class PreprocessingMixin:
         print(f"Number of RGB Images: {len(self.images_rgb)}")
         print(f"Number of Depth Map Images: {len(self.images_depth_maps)}")
         print(f"Number of RGD images: {len(self.images_rgd)}")
+        print(f"Number of RGBD image sets: {len(self.images_rgbd_grid)}")

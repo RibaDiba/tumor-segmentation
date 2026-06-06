@@ -91,6 +91,17 @@ class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, Subse
             project_root, "data/processed_data/rgd/test/images/"
         )
 
+        # rgbd_contour / rgbd_rawgrid image dirs (used by register_instances)
+        for _variant in ("rgbd_contour", "rgbd_rawgrid"):
+            for _split in ("train", "val", "test"):
+                setattr(
+                    self,
+                    f"{_variant}_{_split}_dir",
+                    os.path.join(
+                        project_root, f"data/processed_data/{_variant}/{_split}/images/"
+                    ),
+                )
+
     # image processing functions
     read_images_to_array = read_images_to_array
     crop_raw_images = crop_raw_images
@@ -107,6 +118,7 @@ class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, Subse
         infuse_depth_into_blue_channel  # TODO: still has to be worked on
     )
     read_contours_array_depth = read_contours_array_depth
+    read_contours_with_grid = read_contours_with_grid
     read_to_array_post = read_to_array_post
     read_folder_to_array = read_folder_to_array
     correct_binary_masks = correct_binary_masks

@@ -1,5 +1,5 @@
 """
-creating custom augmentations 
+creating custom augmentations
 """
 
 import os, cv2
@@ -8,12 +8,17 @@ from typing import List, Tuple
 import numpy as np
 import albumentations as A
 
-class AugmentationClass: 
+class AugmentationClass:
+
+    # canonical order of the image sets carried through every transform; the three
+    # rgbd_* sets must stay in sync with each other (and the mask) so the 4-channel
+    # stack built downstream remains valid
+    #   [rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid]
 
     def __init__(
-            self, 
-            tumor_dataset, 
-            rotate_degrees: int, 
+            self,
+            tumor_dataset,
+            rotate_degrees: int,
             test_only: bool = False # TODO: implement this feature
     ):
         """
@@ -29,71 +34,79 @@ class AugmentationClass:
         self.dataset = tumor_dataset
         self.test_only = test_only
         self.rotate_degrees = rotate_degrees
-        
-        # some defined constants 
+
+        # some defined constants
         self.dataset_size = len(self.dataset.images_rgb)
 
     def augment_images(self) -> None:
 
         """
-        we apply the following transformations to the dataset. Note that each transformation 
-        is applied and all possible combinations are applied to produce the most amount of 
-        unqiue images 
+        we apply the following transformations to the dataset. Note that each transformation
+        is applied and all possible combinations are applied to produce the most amount of
+        unqiue images
 
-        Vertical Flips 
-        Horizontal Flips 
-        Randomized Rotation 
+        Vertical Flips
+        Horizontal Flips
+        Randomized Rotation
 
         """
 
         self.new_rgb, self.new_depth, self.new_rgd = [], [], []
+        self.new_rgbd_rgb, self.new_rgbd_contor, self.new_rgbd_grid = [], [], []
         self.new_masks = []
         self.new_filenames = []
 
         for idx in range(self.dataset_size):
-            image_rgb   = self.dataset.images_rgb[idx].copy()
-            image_depth = self.dataset.images_depth_maps[idx].copy()
-            image_rgd   = self.dataset.images_rgd[idx].copy()
+            # canonical order: rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid
+            images = [
+                self.dataset.images_rgb[idx].copy(),
+                self.dataset.images_depth_maps[idx].copy(),
+                self.dataset.images_rgd[idx].copy(),
+                self.dataset.images_rgbd_rgb[idx].copy(),
+                self.dataset.images_rgbd_contor[idx].copy(),
+                self.dataset.images_rgbd_grid[idx].copy(),
+            ]
             mask        = self.dataset.masks[idx].copy()
             original_name = self.dataset.filenames[idx]
             base, ext = os.path.splitext(original_name)
 
-            # populates the new arrays 
-            self._return_combinations(
-                image_rgb, 
-                image_depth, 
-                image_rgd, 
-                mask, 
-                base,
-                ext
-            )
+            # populates the new arrays
+            self._return_combinations(images, mask, base, ext)
 
         # merges all datasets togther
-        self.combined_rgb       = self.dataset.images_rgb        + self.new_rgb
-        self.combined_depth     = self.dataset.images_depth_maps + self.new_depth
-        self.combined_rgd       = self.dataset.images_rgd        + self.new_rgd
-        self.combined_masks     = self.dataset.masks              + self.new_masks
-        self.combined_filenames = self.dataset.filenames          + self.new_filenames
+        self.combined_rgb         = self.dataset.images_rgb         + self.new_rgb
+        self.combined_depth       = self.dataset.images_depth_maps  + self.new_depth
+        self.combined_rgd         = self.dataset.images_rgd         + self.new_rgd
+        self.combined_rgbd_rgb    = self.dataset.images_rgbd_rgb    + self.new_rgbd_rgb
+        self.combined_rgbd_contor = self.dataset.images_rgbd_contor + self.new_rgbd_contor
+        self.combined_rgbd_grid   = self.dataset.images_rgbd_grid   + self.new_rgbd_grid
+        self.combined_masks       = self.dataset.masks              + self.new_masks
+        self.combined_filenames   = self.dataset.filenames          + self.new_filenames
 
         # shuffle all parallel arrays with a single permutation to guarantee sync
         perm = np.random.permutation(len(self.combined_rgb))
-        self.combined_rgb       = [self.combined_rgb[p]       for p in perm]
-        self.combined_depth     = [self.combined_depth[p]     for p in perm]
-        self.combined_rgd       = [self.combined_rgd[p]       for p in perm]
-        self.combined_masks     = [self.combined_masks[p]     for p in perm]
-        self.combined_filenames = [self.combined_filenames[p] for p in perm]
+        self.combined_rgb         = [self.combined_rgb[p]         for p in perm]
+        self.combined_depth       = [self.combined_depth[p]       for p in perm]
+        self.combined_rgd         = [self.combined_rgd[p]         for p in perm]
+        self.combined_rgbd_rgb    = [self.combined_rgbd_rgb[p]    for p in perm]
+        self.combined_rgbd_contor = [self.combined_rgbd_contor[p] for p in perm]
+        self.combined_rgbd_grid   = [self.combined_rgbd_grid[p]   for p in perm]
+        self.combined_masks       = [self.combined_masks[p]       for p in perm]
+        self.combined_filenames   = [self.combined_filenames[p]   for p in perm]
 
     def _return_combinations(
-        self, 
-        image_rgb, 
-        image_depth, 
-        image_rgd, 
+        self,
+        images,
         mask,
         base,
         ext
-    ): 
+    ):
         """
-        returns images/masks that have gone under all possible augmentations
+        returns images/masks that have gone under all possible augmentations.
+
+        `images` is a list in the canonical order
+        [rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid]; every transform is applied
+        to the whole list at once so all sets stay spatially aligned with the mask.
         """
 
         transforms = [
@@ -103,59 +116,57 @@ class AugmentationClass:
         ]
 
         """
-        essentially this piece of code applies every combination of transformation 
-        using the itertool. This ensures the maximum amount of images generated for 
-        the dataset 
+        essentially this piece of code applies every combination of transformation
+        using the itertool. This ensures the maximum amount of images generated for
+        the dataset
         """
         for combo in product([False, True], repeat=len(transforms)):
             if not any(combo):
                 continue  # skip identity (no transform applied)
 
-            r, d, g, m = image_rgb.copy(), image_depth.copy(), image_rgd.copy(), mask.copy()
+            imgs = [im.copy() for im in images]
+            m = mask.copy()
             suffix = ""
 
             for apply, (fn, tag) in zip(combo, transforms):
                 if apply:
-                    r, d, g, m = fn(r, d, g, m)
+                    imgs, m = fn(imgs, m)
                     suffix += tag
 
-            self.new_rgb.append(r)
-            self.new_depth.append(d)
-            self.new_rgd.append(g)
+            self.new_rgb.append(imgs[0])
+            self.new_depth.append(imgs[1])
+            self.new_rgd.append(imgs[2])
+            self.new_rgbd_rgb.append(imgs[3])
+            self.new_rgbd_contor.append(imgs[4])
+            self.new_rgbd_grid.append(imgs[5])
             self.new_masks.append(m)
             self.new_filenames.append(f"{base}_aug_{suffix}{ext}")
 
     def _flip_vertically(
-        self, 
-        rgb_image, 
-        depth_image, 
-        rgd_image, 
+        self,
+        images,
         mask
     ):
         """
-        flips the image veritcally, since we are doing offline augmentations 
+        flips the image veritcally, since we are doing offline augmentations
         there is no probability on which image gets to be flipped or not
         """
-        rgb_image = cv2.flip(rgb_image, 0)
-        depth_image = cv2.flip(depth_image, 0)
-        rgd_image = cv2.flip(rgd_image, 0)
+        images = [cv2.flip(im, 0) for im in images]
         mask = cv2.flip(mask, 0)
 
-        return rgb_image, depth_image, rgd_image, mask
-    
-    def _elastic_transform(
-        self, 
-        rgb_image, 
-        depth_image, 
-        rgd_image, 
-        mask
-    ):   
-        """
-        uses the albumentations package to perform an elastic transform on the 
-        tumors  
+        return images, mask
 
-        TODO: chnage these constant values to variables to be passed through the 
-        pipeline 
+    def _elastic_transform(
+        self,
+        images,
+        mask
+    ):
+        """
+        uses the albumentations package to perform an elastic transform on the
+        tumors
+
+        TODO: chnage these constant values to variables to be passed through the
+        pipeline
 
         TODO: finish implmenting this function -> not worth the time right now,
         plus it might add too much noise to the images anyway
@@ -168,55 +179,59 @@ class AugmentationClass:
             p=1.0  # always apply since you're controlling this offline
         )
 
-        rgb_result = transform(image=rgb_image)
-        depth_result = transform(image=depth_image)
-        rgd_result = transform(image=rgd_image)
+        images = [transform(image=im)["image"] for im in images]
 
-        rgb_image = rgb_result['image']
-        depth_image = depth_result['image']
-        rgd_image = rgd_result['image']
-        
-        return rgb_image, depth_image, rgd_image, mask
+        return images, mask
 
 
     def _flip_horizontally(
-        self, 
-        rgb_image, 
-        depth_image, 
-        rgd_image, 
+        self,
+        images,
         mask
-    ): 
+    ):
         """
         flips hte image horizontally, since we are doing offline augmentations
-        there is no porbability on which an image gets flipped 
+        there is no porbability on which an image gets flipped
         """
-        rgb_image = cv2.flip(rgb_image, 1)
-        depth_image = cv2.flip(depth_image, 1)
-        rgd_image = cv2.flip(rgd_image, 1)
+        images = [cv2.flip(im, 1) for im in images]
         mask = cv2.flip(mask, 1)
 
-        return rgb_image, depth_image, rgd_image, mask
+        return images, mask
 
     def _rotate(
-        self, 
-        rgb_image, 
-        depth_image, 
-        rgd_image, 
+        self,
+        images,
         mask
-    ): 
-
-        h, w = rgb_image.shape[:2]
+    ):
+        # single random angle shared across every image set (and the mask) so they
+        # stay aligned; the rotation matrix is built per image because the sets do
+        # not all share the same H x W (e.g. the raw grid is 256x256)
         angle = np.random.uniform(-self.rotate_degrees, self.rotate_degrees)
-        M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
-        rgb_image = cv2.warpAffine(rgb_image, M, (w, h), borderMode=cv2.BORDER_REFLECT)
-        depth_image = cv2.warpAffine(depth_image, M, (w, h), borderMode=cv2.BORDER_REFLECT)
-        rgd_image = cv2.warpAffine(rgd_image, M, (w, h), borderMode=cv2.BORDER_REFLECT)
-        mask = cv2.warpAffine(mask, M, (w, h), borderMode=cv2.BORDER_REFLECT)
 
-        return rgb_image, depth_image, rgd_image, mask
+        def _warp(img):
+            h, w = img.shape[:2]
+            M = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
+            return cv2.warpAffine(img, M, (w, h), borderMode=cv2.BORDER_REFLECT)
+
+        images = [_warp(im) for im in images]
+        mask = _warp(mask)
+
+        return images, mask
 
     def return_augmentations(self):
         """
         returns all the directories, but now with combined augmenation
         """
-        return self.combined_rgb, self.combined_masks.copy(), self.combined_depth, self.combined_masks.copy(), self.combined_rgd, self.combined_masks.copy(), self.combined_filenames
+        return (
+            self.combined_rgb,
+            self.combined_masks.copy(),
+            self.combined_depth,
+            self.combined_masks.copy(),
+            self.combined_rgd,
+            self.combined_masks.copy(),
+            self.combined_rgbd_rgb,
+            self.combined_rgbd_contor,
+            self.combined_rgbd_grid,
+            self.combined_masks.copy(),
+            self.combined_filenames,
+        )
