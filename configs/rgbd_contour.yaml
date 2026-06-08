@@ -1,0 +1,15 @@
+_BASE_: "base.yaml"
+
+# Early-fusion 4-channel RGBD (contour depth variant).
+# The depth channel is the rendered contourf depth as a single grayscale channel,
+# stacked as the 4th input channel on top of BGR by RGBDDatasetMapper.
+#
+# The 4-entry PIXEL_MEAN is what makes build_model create a (64,4,7,7) conv1.
+# First 3 entries keep the caffe BGR convention untouched so the pretrained stem
+# stays valid; the 4th entry is the depth mean/std over the TRAIN split.
+#
+# TODO: replace the depth mean/std (4th entries) with the real train-split stats:
+#   python src/util/preprocessing/compute_depth_stats.py --variant rgbd_contour
+MODEL:
+  PIXEL_MEAN: [103.530, 116.280, 123.675, 128.0]
+  PIXEL_STD: [1.0, 1.0, 1.0, 1.0]

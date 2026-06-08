@@ -10,8 +10,10 @@ saves all outputs from the final versions of the model
 """
 
 class OutputsHook(HookBase):
-    def __init__(self, output_dir):
+    def __init__(self, output_dir, mapper=None):
         self.output_dir = output_dir
+        # custom DatasetMapper for 4-channel runs; None -> stock mapper
+        self.mapper = mapper
         os.makedirs(output_dir, exist_ok=True)
 
     def after_train(self):
@@ -30,7 +32,7 @@ class OutputsHook(HookBase):
 
     def _collect_outputs(self, dataset_name):
         cfg = self.trainer.cfg
-        loader = build_detection_test_loader(cfg, dataset_name)
+        loader = build_detection_test_loader(cfg, dataset_name, mapper=self.mapper)
 
         results = []
         self.trainer.model.eval()

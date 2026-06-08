@@ -25,7 +25,11 @@ from detectron2.utils.logger import setup_logger
 
 from preprocessing.TumorDataset.tumor_dataset import Dataset
 from pipeline.trainer.trainer import Trainer
+from pipeline.trainer.rgbd_trainer import RGBDTrainer
 from paths import PROJECT_ROOT, MODELS_DIR
+
+# modalities that use the early-fusion 4-channel RGBD trainer
+RGBD_MODALITIES = ("rgbd_contour", "rgbd_rawgrid")
 
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 
@@ -117,7 +121,8 @@ def main(argv: list[str] | None = None) -> None:
     cfg = setup_cfg(args)
     snapshot_run(cfg)
 
-    trainer = Trainer(cfg)
+    TrainerCls = RGBDTrainer if args.modality in RGBD_MODALITIES else Trainer
+    trainer = TrainerCls(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
 

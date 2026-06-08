@@ -9,12 +9,14 @@ from detectron2.utils.events import get_event_storage
 
 
 class APVisualizationHook(HookBase):
-    def __init__(self, output_dir: str, cfg, save_data: bool = True):
+    def __init__(self, output_dir: str, cfg, save_data: bool = True, mapper=None):
         super().__init__()
         self.cfg = cfg
         self.output_dir = output_dir  # not from config for now
         self.eval_period = 100
         self.save_data = save_data
+        # custom DatasetMapper for 4-channel runs; None -> stock mapper
+        self.mapper = mapper
 
         # get info from config
         # use MODEL.NAME, adjust to your config key if different
@@ -59,7 +61,9 @@ class APVisualizationHook(HookBase):
             distributed=(cfg.MODEL.DEVICE != "cpu"),
             output_dir=cfg.OUTPUT_DIR,
         )
-        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[1])
+        val_loader = build_detection_test_loader(
+            cfg, cfg.DATASETS.TEST[1], mapper=self.mapper
+        )
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 
         # pull out just the mAP@[.50:.95]:

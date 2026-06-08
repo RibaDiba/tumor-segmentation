@@ -17,11 +17,13 @@ for the validation set only
 
 class IoUHook(HookBase):
     def __init__(
-        self, output_dir=None, save_json: bool = False, eval_period: int = 100
+        self, output_dir=None, save_json: bool = False, eval_period: int = 100, mapper=None
     ):
         self.eval_period = eval_period
         self.output_dir = output_dir
         self.save_json = save_json
+        # custom DatasetMapper for 4-channel runs; None -> stock mapper
+        self.mapper = mapper
 
         self.training_data = {}
 
@@ -58,7 +60,9 @@ class IoUHook(HookBase):
     def _get_IoU(self):
         cfg = self.trainer.cfg
         evaluator = PerImageIoUEvaluator(cfg.DATASETS.TEST[1])
-        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[1])
+        val_loader = build_detection_test_loader(
+            cfg, cfg.DATASETS.TEST[1], mapper=self.mapper
+        )
 
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 

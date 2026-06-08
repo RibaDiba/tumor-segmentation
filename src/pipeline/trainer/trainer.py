@@ -37,14 +37,27 @@ class Trainer(DefaultTrainer):
     def build_evaluator(cls, cfg, dataset_name):
         return COCOEvaluator(dataset_name, cfg, False, output_dir=cfg.OUTPUT_DIR)
 
+    def _eval_mapper(self, is_train=False):
+        """Mapper handed to the evaluation hooks. ``None`` means "use the stock
+        DatasetMapper" (the default). Subclasses (e.g. RGBDTrainer) override this
+        to inject a custom mapper without any modality branching here."""
+        return None
+
+    def _hook_mapper(self, is_train=False):
+        mapper = self._eval_mapper(is_train=is_train)
+        return mapper if mapper is not None else DatasetMapper(self.cfg, is_train=is_train)
+
     def build_hooks(self):
         hooks = super().build_hooks()  # get all hooks
 
         test_loader = self.build_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
 
         val_loss_loader = build_detection_test_loader(
-            self.cfg, self.cfg.DATASETS.TEST[1], mapper=DatasetMapper(self.cfg, is_train=True)
+            self.cfg, self.cfg.DATASETS.TEST[1], mapper=self._hook_mapper(is_train=True)
         )
+
+        # mapper forwarded to the eval hooks (None -> they fall back to stock)
+        eval_mapper = self._eval_mapper(is_train=False)
 
         # All hook artifacts live alongside checkpoints in the run's OUTPUT_DIR
         # (models/<TYPE>/<NAME>/run_<ts>), so everything for a run is in one place.
@@ -62,20 +75,23 @@ class Trainer(DefaultTrainer):
 
         # now we append all the hooks onto this
         ap_hook = APVisualizationHook(
-            output_dir=f"{base_out}/AP_Fig", cfg=self.cfg
+            output_dir=f"{base_out}/AP_Fig", cfg=self.cfg, mapper=eval_mapper
         )
         hooks.append(ap_hook)
 
-        iou_hook = IoUHook(output_dir=f"{base_out}/IoU_fig", save_json=True)
+        iou_hook = IoUHook(
+            output_dir=f"{base_out}/IoU_fig", save_json=True, mapper=eval_mapper
+        )
         hooks.append(iou_hook)
 
-        outputs_hook = OutputsHook(output_dir=f"{base_out}/outputs")
+        outputs_hook = OutputsHook(output_dir=f"{base_out}/outputs", mapper=eval_mapper)
         hooks.append(outputs_hook)
 
         # final AP Hook to get scores from the best model
         IoU_AP_Final = AP_IOU_FinalResults(
             output_dir=f"{base_out}/IoU_AP_Final",
-            cfg=self.cfg
+            cfg=self.cfg,
+            mapper=eval_mapper,
         )
         hooks.append(IoU_AP_Final)
 
