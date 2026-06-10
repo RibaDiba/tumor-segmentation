@@ -75,10 +75,10 @@ class CocoMixin:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
-        # rgbd_contour / rgbd_rawgrid (only present if cached). file_name in the
-        # generated json is <stem>.jpg, matching the cached RGB image; the depth
-        # .npy sits alongside for the 4-channel mapper.
-        for variant in ("rgbd_contour", "rgbd_rawgrid"):
+        # rgbd_early (only present if cached). file_name in the generated json is
+        # <stem>.jpg, matching the cached RGB image; the depth .npy sits alongside
+        # for the 4-channel mapper.
+        for variant in ("rgbd_early",):
             for split in ("train", "val", "test"):
                 mask_dir = os.path.join(
                     project_root, f"data/processed_data/{variant}/{split}/masks"
@@ -101,8 +101,7 @@ class CocoMixin:
         rgb: bool = False,
         depth: bool = False,
         rgd: bool = False,
-        rgbd_contour: bool = False,
-        rgbd_rawgrid: bool = False,
+        rgbd_early: bool = False,
     ) -> None:
         if rgb:
             register_coco_instances(
@@ -161,41 +160,22 @@ class CocoMixin:
                 os.path.join(self.rgd_test_dir, "test.json"),
                 self.rgd_test_dir,
             )
-        elif rgbd_contour:
+        elif rgbd_early:
             register_coco_instances(
                 "my_dataset_train",
                 {},
-                os.path.join(self.rgbd_contour_train_dir, "train.json"),
-                self.rgbd_contour_train_dir,
+                os.path.join(self.rgbd_early_train_dir, "train.json"),
+                self.rgbd_early_train_dir,
             )
             register_coco_instances(
                 "my_dataset_val",
                 {},
-                os.path.join(self.rgbd_contour_val_dir, "val.json"),
-                self.rgbd_contour_val_dir,
+                os.path.join(self.rgbd_early_val_dir, "val.json"),
+                self.rgbd_early_val_dir,
             )
             register_coco_instances(
                 "my_dataset_test",
                 {},
-                os.path.join(self.rgbd_contour_test_dir, "test.json"),
-                self.rgbd_contour_test_dir,
-            )
-        elif rgbd_rawgrid:
-            register_coco_instances(
-                "my_dataset_train",
-                {},
-                os.path.join(self.rgbd_rawgrid_train_dir, "train.json"),
-                self.rgbd_rawgrid_train_dir,
-            )
-            register_coco_instances(
-                "my_dataset_val",
-                {},
-                os.path.join(self.rgbd_rawgrid_val_dir, "val.json"),
-                self.rgbd_rawgrid_val_dir,
-            )
-            register_coco_instances(
-                "my_dataset_test",
-                {},
-                os.path.join(self.rgbd_rawgrid_test_dir, "test.json"),
-                self.rgbd_rawgrid_test_dir,
+                os.path.join(self.rgbd_early_test_dir, "test.json"),
+                self.rgbd_early_test_dir,
             )

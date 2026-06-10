@@ -1,6 +1,5 @@
 """
-Trainer for the early-fusion 4-channel RGBD modalities (rgbd_contour,
-rgbd_rawgrid).
+Trainer for the early-fusion 4-channel RGBD modality (rgbd_early).
 
 Subclasses the standard ``Trainer`` and overrides only the 4-channel-specific
 pieces: the data loaders use ``RGBDDatasetMapper``, ``build_model`` inflates the
@@ -9,7 +8,8 @@ stem conv1 from 3 to 4 input channels, and ``_eval_mapper`` hands the same
 writers) is inherited unchanged.
 
 ``train.py`` selects this class based on ``--modality``; the base ``Trainer``
-stays behaviourally identical for rgb/depth/rgd.
+stays behaviourally identical for rgb/depth/rgd. (rgbd_late currently shares this
+trainer until its dedicated late-fusion implementation lands.)
 """
 
 from detectron2.data import (

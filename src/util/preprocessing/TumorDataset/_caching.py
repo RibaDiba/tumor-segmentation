@@ -249,53 +249,27 @@ class CachingMixin:
             clean_name = os.path.splitext(name)[0] + ".png"
             cv2.imwrite(os.path.join(test_mask_dir_rgd, clean_name), mask)
 
-        # ---- RGBD variants (paired RGB .jpg + depth .npy) ----
-        # rgbd_contour: depth = inverted-normalized grayscale of the contour render
-        if hasattr(self, "train_images_rgbd_contor") and self.train_images_rgbd_contor:
+        # ---- RGBD early-fusion variant (paired RGB .jpg + depth .npy) ----
+        # rgbd_early: depth = inverted-normalized grayscale of the contour render
+        if hasattr(self, "train_images_rgbd_early") and self.train_images_rgbd_early:
             self._cache_rgbd_variant(
-                "rgbd_contour",
+                "rgbd_early",
                 {
                     "train": (
                         self.train_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.train_images_rgbd_contor],
+                        [self._contour_to_depth_channel(d) for d in self.train_images_rgbd_early],
                         self.train_masks,
                         self.train_filenames,
                     ),
                     "val": (
                         self.val_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.val_images_rgbd_contor],
+                        [self._contour_to_depth_channel(d) for d in self.val_images_rgbd_early],
                         self.val_masks,
                         self.val_filenames,
                     ),
                     "test": (
                         self.test_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.test_images_rgbd_contor],
-                        self.test_masks,
-                        self.test_filenames,
-                    ),
-                },
-            )
-
-        # rgbd_rawgrid: depth = native grid (already 255-normalize float32)
-        if hasattr(self, "train_images_rgbd_grid") and self.train_images_rgbd_grid:
-            self._cache_rgbd_variant(
-                "rgbd_rawgrid",
-                {
-                    "train": (
-                        self.train_images_rgbd_rgb,
-                        self.train_images_rgbd_grid,
-                        self.train_masks,
-                        self.train_filenames,
-                    ),
-                    "val": (
-                        self.val_images_rgbd_rgb,
-                        self.val_images_rgbd_grid,
-                        self.val_masks,
-                        self.val_filenames,
-                    ),
-                    "test": (
-                        self.test_images_rgbd_rgb,
-                        self.test_images_rgbd_grid,
+                        [self._contour_to_depth_channel(d) for d in self.test_images_rgbd_early],
                         self.test_masks,
                         self.test_filenames,
                     ),

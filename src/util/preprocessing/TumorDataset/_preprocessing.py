@@ -70,10 +70,10 @@ class PreprocessingMixin:
             )
             self.images_rgd = self.crop_images(self.images_rgd)
 
-            # now preprocess rgbd data - clone the rgb data then get the .npy files 
+            # now preprocess rgbd data - clone the rgb data; depth channel is the
+            # contour-render depth (same source/convention as depth/rgd)
             self.images_rgbd_rgb = self.images_rgb
-            self.images_rgbd_contor = self.images_depth_maps # clone from depth maps 
-            self.images_rgbd_grid = self.read_contours_with_grid(self.depth_info) 
+            self.images_rgbd_early = self.images_depth_maps # clone from depth maps
 
 
         print("Preprocessing done!")
@@ -144,10 +144,10 @@ class PreprocessingMixin:
         # set canonical shared mask (all three are identical; rgb is canonical)
         self.masks = mask_rgb
 
-        # now preprocess rgbd data - clone the rgb data then get the .npy files 
+        # now preprocess rgbd data - clone the rgb data; depth channel is the
+        # contour-render depth (same source/convention as depth/rgd)
         self.images_rgbd_rgb = self.images_rgb
-        self.images_rgbd_contor = self.images_depth_maps # clone from depth maps 
-        self.images_rgbd_grid = self.read_contours_with_grid(self.depth_info) 
+        self.images_rgbd_early = self.images_depth_maps # clone from depth maps
 
         # now we can pass the images into the augmentation class
         self.augmentations = AugmentationClass(
@@ -165,8 +165,7 @@ class PreprocessingMixin:
             self.images_rgd,
             self.masks_clone_rgd,
             self.images_rgbd_rgb,
-            self.images_rgbd_contor,
-            self.images_rgbd_grid,
+            self.images_rgbd_early,
             self.masks_clone_rgbd,
             self.filenames,
         ) = self.augmentations.return_augmentations()
@@ -175,4 +174,4 @@ class PreprocessingMixin:
         print(f"Number of RGB Images: {len(self.images_rgb)}")
         print(f"Number of Depth Map Images: {len(self.images_depth_maps)}")
         print(f"Number of RGD images: {len(self.images_rgd)}")
-        print(f"Number of RGBD image sets: {len(self.images_rgbd_grid)}")
+        print(f"Number of RGBD image sets: {len(self.images_rgbd_early)}")

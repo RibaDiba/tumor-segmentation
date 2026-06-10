@@ -8,8 +8,7 @@ mean/std over those raw stored values so the 4th entries of PIXEL_MEAN/PIXEL_STD
 reflect the real data.
 
 Usage:
-    python src/util/preprocessing/compute_depth_stats.py --variant rgbd_rawgrid
-    python src/util/preprocessing/compute_depth_stats.py --variant rgbd_contour
+    python src/util/preprocessing/compute_depth_stats.py --variant rgbd_early
 
 Then paste the printed depth mean/std into the 4th entry of the matching config
 (configs/<variant>.yaml).
@@ -58,7 +57,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
         "--variant",
-        choices=("rgbd_contour", "rgbd_rawgrid"),
+        choices=("rgbd_early",),
         required=True,
         help="RGBD variant whose train-split depth stats to compute",
     )

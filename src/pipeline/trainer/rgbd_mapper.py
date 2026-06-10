@@ -39,7 +39,8 @@ class RGBDDatasetMapper(DatasetMapper):
 
         h, w = rgb.shape[:2]
         if depth.shape[:2] != (h, w):
-            # rawgrid depth is 256x256; align it to the RGB it stacks onto
+            # defensive: rgbd_early depth already matches the RGB size (same crop
+            # pipeline), so this normally no-ops; resize if a variant ever differs
             depth = cv2.resize(depth, (w, h), interpolation=cv2.INTER_LINEAR)
 
         return np.dstack([rgb.astype(np.float32), depth[..., None]])

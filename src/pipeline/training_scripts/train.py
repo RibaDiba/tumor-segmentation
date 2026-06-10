@@ -28,8 +28,11 @@ from pipeline.trainer.trainer import Trainer
 from pipeline.trainer.rgbd_trainer import RGBDTrainer
 from paths import PROJECT_ROOT, MODELS_DIR
 
-# modalities that use the early-fusion 4-channel RGBD trainer
-RGBD_MODALITIES = ("rgbd_contour", "rgbd_rawgrid")
+# modalities routed through the 4-channel RGBDTrainer.
+# rgbd_late shares the early-fusion training path for now; once the dedicated
+# late-fusion trainer/mapper lands, move rgbd_late onto its own subclass and off
+# this shared tuple (see "variant behavior via subclass" convention).
+RGBD_MODALITIES = ("rgbd_early", "rgbd_late")
 
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 
@@ -37,7 +40,7 @@ CONFIGS_DIR = PROJECT_ROOT / "configs"
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Train a Detectron2 tumor segmentation model")
     p.add_argument("--modality",
-                   choices=("rgb", "depth", "rgd", "rgbd_contour", "rgbd_rawgrid"),
+                   choices=("rgb", "depth", "rgd", "rgbd_early", "rgbd_late"),
                    required=True,
                    help="Image modality to train on")
     p.add_argument("--model-name", dest="model_name", required=True,

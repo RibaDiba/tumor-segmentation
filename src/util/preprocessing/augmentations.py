@@ -10,10 +10,10 @@ import albumentations as A
 
 class AugmentationClass:
 
-    # canonical order of the image sets carried through every transform; the three
+    # canonical order of the image sets carried through every transform; the two
     # rgbd_* sets must stay in sync with each other (and the mask) so the 4-channel
     # stack built downstream remains valid
-    #   [rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid]
+    #   [rgb, depth, rgd, rgbd_rgb, rgbd_early]
 
     def __init__(
             self,
@@ -52,19 +52,18 @@ class AugmentationClass:
         """
 
         self.new_rgb, self.new_depth, self.new_rgd = [], [], []
-        self.new_rgbd_rgb, self.new_rgbd_contor, self.new_rgbd_grid = [], [], []
+        self.new_rgbd_rgb, self.new_rgbd_early = [], []
         self.new_masks = []
         self.new_filenames = []
 
         for idx in range(self.dataset_size):
-            # canonical order: rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid
+            # canonical order: rgb, depth, rgd, rgbd_rgb, rgbd_early
             images = [
                 self.dataset.images_rgb[idx].copy(),
                 self.dataset.images_depth_maps[idx].copy(),
                 self.dataset.images_rgd[idx].copy(),
                 self.dataset.images_rgbd_rgb[idx].copy(),
-                self.dataset.images_rgbd_contor[idx].copy(),
-                self.dataset.images_rgbd_grid[idx].copy(),
+                self.dataset.images_rgbd_early[idx].copy(),
             ]
             mask        = self.dataset.masks[idx].copy()
             original_name = self.dataset.filenames[idx]
@@ -78,8 +77,7 @@ class AugmentationClass:
         self.combined_depth       = self.dataset.images_depth_maps  + self.new_depth
         self.combined_rgd         = self.dataset.images_rgd         + self.new_rgd
         self.combined_rgbd_rgb    = self.dataset.images_rgbd_rgb    + self.new_rgbd_rgb
-        self.combined_rgbd_contor = self.dataset.images_rgbd_contor + self.new_rgbd_contor
-        self.combined_rgbd_grid   = self.dataset.images_rgbd_grid   + self.new_rgbd_grid
+        self.combined_rgbd_early  = self.dataset.images_rgbd_early  + self.new_rgbd_early
         self.combined_masks       = self.dataset.masks              + self.new_masks
         self.combined_filenames   = self.dataset.filenames          + self.new_filenames
 
@@ -89,8 +87,7 @@ class AugmentationClass:
         self.combined_depth       = [self.combined_depth[p]       for p in perm]
         self.combined_rgd         = [self.combined_rgd[p]         for p in perm]
         self.combined_rgbd_rgb    = [self.combined_rgbd_rgb[p]    for p in perm]
-        self.combined_rgbd_contor = [self.combined_rgbd_contor[p] for p in perm]
-        self.combined_rgbd_grid   = [self.combined_rgbd_grid[p]   for p in perm]
+        self.combined_rgbd_early  = [self.combined_rgbd_early[p]  for p in perm]
         self.combined_masks       = [self.combined_masks[p]       for p in perm]
         self.combined_filenames   = [self.combined_filenames[p]   for p in perm]
 
@@ -105,7 +102,7 @@ class AugmentationClass:
         returns images/masks that have gone under all possible augmentations.
 
         `images` is a list in the canonical order
-        [rgb, depth, rgd, rgbd_rgb, rgbd_contor, rgbd_grid]; every transform is applied
+        [rgb, depth, rgd, rgbd_rgb, rgbd_early]; every transform is applied
         to the whole list at once so all sets stay spatially aligned with the mask.
         """
 
@@ -137,8 +134,7 @@ class AugmentationClass:
             self.new_depth.append(imgs[1])
             self.new_rgd.append(imgs[2])
             self.new_rgbd_rgb.append(imgs[3])
-            self.new_rgbd_contor.append(imgs[4])
-            self.new_rgbd_grid.append(imgs[5])
+            self.new_rgbd_early.append(imgs[4])
             self.new_masks.append(m)
             self.new_filenames.append(f"{base}_aug_{suffix}{ext}")
 
@@ -204,8 +200,8 @@ class AugmentationClass:
         mask
     ):
         # single random angle shared across every image set (and the mask) so they
-        # stay aligned; the rotation matrix is built per image because the sets do
-        # not all share the same H x W (e.g. the raw grid is 256x256)
+        # stay aligned; the rotation matrix is built per image to be robust to any
+        # per-set H x W differences
         angle = np.random.uniform(-self.rotate_degrees, self.rotate_degrees)
 
         def _warp(img):
@@ -230,8 +226,7 @@ class AugmentationClass:
             self.combined_rgd,
             self.combined_masks.copy(),
             self.combined_rgbd_rgb,
-            self.combined_rgbd_contor,
-            self.combined_rgbd_grid,
+            self.combined_rgbd_early,
             self.combined_masks.copy(),
             self.combined_filenames,
         )
