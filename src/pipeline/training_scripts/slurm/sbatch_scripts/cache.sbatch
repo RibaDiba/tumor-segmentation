@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --job-name=testing-caching
+#SBATCH --job-name=rgbd-cache-2
 #SBTACH --partition=pli 
 #SBATCH --account=puchalla
 #SBATCH --nodes=1 
@@ -10,8 +10,8 @@
 #SBATCH --time=01:00:00
 #SBATCH --gres=gpu:1 
 
-#SBATCH --output=../logs/testing-caching/%x.%j.out   # STDOUT → ../logs/testing-caching/<jobid>.out
-#SBATCH --error=../logs/testing-caching/%x.%j.err    # STDERR → ../logs/testing-caching/<jobid>.err
+#SBATCH --output=../logs/rgbd-cache-2/%x.%j.out   # STDOUT → ../logs/rgbd-cache-2/<jobid>.out
+#SBATCH --error=../logs/rgbd-cache-2/%x.%j.err    # STDERR → ../logs/rgbd-cache-2/<jobid>.err
 
 
 # config:
