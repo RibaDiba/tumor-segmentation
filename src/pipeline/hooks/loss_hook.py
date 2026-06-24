@@ -30,7 +30,7 @@ class TrainingLossHook(HookBase):
     def __init__(self, output_dir, model_name, test_loader, cfg, val_loss_loader=None, save_data=True):
         self.save_data = save_data
         self.output_dir = output_dir
-        self.eval_period = 50
+        self.eval_period = 1000
         self.loss_dict_total_train = {}
         self.loss_dict_mask_train = {}
         self.loss_dict_total_val = {}

@@ -17,7 +17,7 @@ for the validation set only
 
 class IoUHook(HookBase):
     def __init__(
-        self, output_dir=None, save_json: bool = False, eval_period: int = 100, mapper=None
+        self, output_dir=None, save_json: bool = False, eval_period: int = 1000, mapper=None
     ):
         self.eval_period = eval_period
         self.output_dir = output_dir

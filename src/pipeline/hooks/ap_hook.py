@@ -13,7 +13,7 @@ class APVisualizationHook(HookBase):
         super().__init__()
         self.cfg = cfg
         self.output_dir = output_dir  # not from config for now
-        self.eval_period = 100
+        self.eval_period = 1000
         self.save_data = save_data
         # custom DatasetMapper for 4-channel runs; None -> stock mapper
         self.mapper = mapper
