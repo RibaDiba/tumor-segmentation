@@ -264,10 +264,14 @@ def fig_bar(labels, arr, pairs, res, n, metric, out):
 
 def fig_box(labels, arr, pairs, res, n, metric, out):
     set_pub_style()
-    fig, ax = plt.subplots(figsize=(6.0, 5.0))
+    fig, ax = plt.subplots(figsize=(6.4, 5.2))
     data = [arr[l] for l in labels]
     pos = np.arange(len(labels))+1
     colors = [OKABE_ITO[i % len(OKABE_ITO)] for i in range(len(labels))]
+    means = np.array([d.mean() for d in data])
+    best_idx = int(np.argmax(means))
+    best_label = labels[best_idx]
+    best_mean = means[best_idx]
     bp = ax.boxplot(data, positions=pos, widths=0.55, patch_artist=True,
                     showfliers=True,
                     flierprops=dict(marker="o", markersize=2.5,
@@ -276,23 +280,46 @@ def fig_box(labels, arr, pairs, res, n, metric, out):
                     whiskerprops=dict(color="0.3", lw=1.0),
                     capprops=dict(color="0.3", lw=1.0),
                     boxprops=dict(lw=0.9, edgecolor="black"))
-    for patch, c in zip(bp["boxes"], colors):
-        patch.set_facecolor(c); patch.set_alpha(0.55)
-    ax.set_xticks(pos); ax.set_xticklabels(labels)
+    for i, (patch, c) in enumerate(zip(bp["boxes"], colors)):
+        patch.set_facecolor(c)
+        patch.set_alpha(0.55)
+        if i == best_idx:
+            patch.set_alpha(0.78)
+            patch.set_linewidth(2.0)
+    ax.scatter(pos, means, marker="D", s=34, color="black",
+               edgecolors="white", linewidths=0.8, zorder=4)
+    xtick_labels = [f"{lab}\nμ={m:.3f}" for lab, m in zip(labels, means)]
+    ax.set_xticks(pos); ax.set_xticklabels(xtick_labels)
+    for i, tick in enumerate(ax.get_xticklabels()):
+        if i == best_idx:
+            tick.set_fontweight("bold")
     ax.set_ylabel(f"Per-image {metric}"); ax.set_xlabel("Input modality")
+    ax.grid(axis="y", color="0.88", linestyle="-", linewidth=0.8)
     ymax = max(np.percentile(d, 95) for d in data)
     ymin = min(np.percentile(d, 2) for d in data)
-    span = ymax - ymin
-    y0 = ymax + span*0.06; step = span*0.10; level = 0
-    for (a, b) in pairs:
-        if res[(a, b)]["p_adj"] >= 0.05: continue
-        x1, x2 = pos[labels.index(a)], pos[labels.index(b)]
-        bracket(ax, x1, x2, y0+level*step, step*0.3, stars(res[(a, b)]["p_adj"]))
+    span = max(ymax - ymin, 1e-6)
+    y0 = ymax + span*0.07
+    step = span*0.11
+    level = 0
+    for other in labels:
+        if other == best_label:
+            continue
+        pair = (best_label, other) if (best_label, other) in res else (other, best_label)
+        if res[pair]["p_adj"] >= 0.05:
+            continue
+        x1, x2 = pos[labels.index(best_label)], pos[labels.index(other)]
+        bracket(ax, min(x1, x2), max(x1, x2), y0+level*step, step*0.30,
+                stars(res[pair]["p_adj"]), fs=9.5)
         level += 1
-    ax.set_ylim(ymin - span*0.05, max(ymax+span*0.06, y0+level*step+span*0.05))
+    upper_from_brackets = y0 + (level * step) + span*0.08
+    upper_from_note = ymax + span*0.30
+    ax.set_ylim(ymin - span*0.06, max(upper_from_brackets, upper_from_note))
+    ax.text(0.02, 0.985, f"Best mean {metric}: {best_label} (μ={best_mean:.3f})",
+            transform=ax.transAxes, ha="left", va="top", fontsize=9.4, fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor="0.75", alpha=0.95))
     ax.set_title(f"Per-image {metric} distribution", loc="left")
-    fig.text(0.5, -0.02, f"Paired Wilcoxon, Holm-corrected, n = {n} matched "
-             "images.  *** p<.001  ** p<.01  * p<.05", ha="center",
+    fig.text(0.5, -0.02, f"Mean shown as ◆. Best modality is highlighted. "
+             f"Paired Wilcoxon (Holm), n = {n}.  *** p<.001  ** p<.01  * p<.05", ha="center",
              fontsize=7.8, color="0.35")
     fig.savefig(f"{out}_box.pdf", bbox_inches="tight")
     fig.savefig(f"{out}_box.png", bbox_inches="tight")
