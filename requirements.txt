@@ -22,6 +22,7 @@ albumentations==1.4.4        # used in src/util/preprocessing/augmentations.py
 # --- Scientific computing ---
 numpy==1.26.4
 scipy==1.13.0
+scikit-learn==1.4.2          # KFold splitting for cross-validation
 
 # --- Deep-learning utilities ---
 monai==1.3.0                 # DiceFocalLoss (archive scripts)

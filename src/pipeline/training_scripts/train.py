@@ -14,7 +14,10 @@ from pathlib import Path
 # preprocessing + paths live under src/util, pipeline lives under src.
 _current_dir = os.path.dirname(os.path.abspath(__file__))
 _project_root = os.path.abspath(os.path.join(_current_dir, "../../.."))
-for _p in (os.path.join(_project_root, "src", "util"), os.path.join(_project_root, "src")):
+for _p in (
+    os.path.join(_project_root, "src", "util"),
+    os.path.join(_project_root, "src"),
+):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
@@ -38,22 +41,45 @@ CONFIGS_DIR = PROJECT_ROOT / "configs"
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(description="Train a Detectron2 tumor segmentation model")
-    p.add_argument("--modality",
-                   choices=("rgb", "depth", "rgd", "rgbd_early", "rgbd_late"),
-                   required=True,
-                   help="Image modality to train on")
-    p.add_argument("--model-name", dest="model_name", required=True,
-                   help="Run identifier")
-    p.add_argument("--model-type", dest="model_type", required=True,
-                   help="Experiment group / subdirectory")
-    p.add_argument("--config-dir", dest="config_dir", type=Path, default=CONFIGS_DIR,
-                   help="Directory containing base.yaml and <modality>.yaml")
-    p.add_argument("--split-cache", dest="split_cache", action="store_true",
-                   help="Preprocess, split, and cache data (first run only)")
-    p.add_argument("--augmentations", action="store_true",
-                   help="Enable augmentation pipeline during preprocessing (h/v flips + rotation)")
-    p.add_argument("--rotate_degrees", type=int, default=0, help="rotation degree range")
+    p = argparse.ArgumentParser(
+        description="Train a Detectron2 tumor segmentation model"
+    )
+    p.add_argument(
+        "--modality",
+        choices=("rgb", "depth", "rgd", "rgbd_early", "rgbd_late"),
+        required=True,
+        help="Image modality to train on",
+    )
+    p.add_argument(
+        "--model-name", dest="model_name", required=True, help="Run identifier"
+    )
+    p.add_argument(
+        "--model-type",
+        dest="model_type",
+        required=True,
+        help="Experiment group / subdirectory",
+    )
+    p.add_argument(
+        "--config-dir",
+        dest="config_dir",
+        type=Path,
+        default=CONFIGS_DIR,
+        help="Directory containing base.yaml and <modality>.yaml",
+    )
+    p.add_argument(
+        "--split-cache",
+        dest="split_cache",
+        action="store_true",
+        help="Preprocess, split, and cache data (first run only)",
+    )
+    p.add_argument(
+        "--augmentations",
+        action="store_true",
+        help="Enable augmentation pipeline during preprocessing (h/v flips + rotation)",
+    )
+    p.add_argument(
+        "--rotate_degrees", type=int, default=0, help="rotation degree range"
+    )
     p.add_argument(
         "opts",
         nargs=argparse.REMAINDER,
@@ -62,14 +88,16 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def setup_cfg(args: argparse.Namespace) -> CfgNode:
+def setup_cfg(args: argparse.Namespace, fold: int | None = None) -> CfgNode:
     cfg = get_cfg()
     cfg.MODELNAME = ""
     cfg.MODELTYPE = ""
     cfg.MODALITY = ""
 
     cfg.merge_from_file(
-        model_zoo.get_config_file("COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml")
+        model_zoo.get_config_file(
+            "COCO-InstanceSegmentation/mask_rcnn_R_101_FPN_3x.yaml"
+        )
     )
     cfg.merge_from_file(str(args.config_dir / f"{args.modality}.yaml"))
 
@@ -78,7 +106,10 @@ def setup_cfg(args: argparse.Namespace) -> CfgNode:
     cfg.MODALITY = args.modality
 
     run_id = datetime.datetime.now().strftime("run_%Y%m%d-%H%M")
-    run_dir = MODELS_DIR / args.model_type / args.model_name / run_id
+    run_parent = MODELS_DIR / args.model_type / args.model_name
+    if fold is not None:
+        run_parent = run_parent / f"fold_{fold}"
+    run_dir = run_parent / run_id
     cfg.OUTPUT_DIR = str(run_dir)
 
     if args.opts:

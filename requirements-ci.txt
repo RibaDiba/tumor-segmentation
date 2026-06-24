@@ -15,6 +15,7 @@ albumentations==1.4.4
 # --- Scientific computing ---
 numpy==1.26.4
 scipy==1.13.0
+scikit-learn==1.4.2
 
 # --- HuggingFace ecosystem ---
 transformers==4.40.2

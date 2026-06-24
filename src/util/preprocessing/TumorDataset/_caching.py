@@ -21,17 +21,14 @@ class CachingMixin:
         List[np.ndarray],
         List[np.ndarray],
     ]:
-        project_root = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../../../..")
-        )
         if rgb:
-            rgb_root = os.path.join(project_root, "data/processed_data/rgb")
+            rgb_root = os.path.join(self.processed_root, "rgb")
             return self.read_to_array_post(rgb_root)
         if depth:
-            depth_root = os.path.join(project_root, "data/processed_data/depth")
+            depth_root = os.path.join(self.processed_root, "depth")
             return self.read_to_array_post(depth_root)
         if rgd:
-            rgd_root = os.path.join(project_root, "data/processed_data/rgd")
+            rgd_root = os.path.join(self.processed_root, "rgd")
             return self.read_to_array_post(rgd_root)
 
     # this is only for inline tests (only used for rgb)
@@ -60,16 +57,9 @@ class CachingMixin:
 
         splits: {split_name: (rgb_imgs, depth_arrays, masks, filenames)}.
         """
-        project_root = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../../../..")
-        )
         for split, (rgb_imgs, depth_arrays, masks, filenames) in splits.items():
-            img_dir = os.path.join(
-                project_root, f"data/processed_data/{variant}/{split}/images"
-            )
-            mask_dir = os.path.join(
-                project_root, f"data/processed_data/{variant}/{split}/masks/Tumor"
-            )
+            img_dir = os.path.join(self.processed_root, variant, split, "images")
+            mask_dir = os.path.join(self.processed_root, variant, split, "masks/Tumor")
             os.makedirs(img_dir, exist_ok=True)
             os.makedirs(mask_dir, exist_ok=True)
 
@@ -87,72 +77,36 @@ class CachingMixin:
 
     # this will save our data into directories for each image type, with shared masks
     def cache_data(self) -> None:
-        project_root = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "../../../..")
-        )
-
         # Create RGB image and mask directories
-        train_img_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/train/images"
-        )
-        val_img_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/val/images"
-        )
-        test_img_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/test/images"
-        )
+        train_img_dir_rgb = os.path.join(self.processed_root, "rgb/train/images")
+        val_img_dir_rgb = os.path.join(self.processed_root, "rgb/val/images")
+        test_img_dir_rgb = os.path.join(self.processed_root, "rgb/test/images")
 
-        train_mask_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/train/masks/Tumor"
-        )
-        val_mask_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/val/masks/Tumor"
-        )
-        test_mask_dir_rgb = os.path.join(
-            project_root, "data/processed_data/rgb/test/masks/Tumor"
-        )
+        train_mask_dir_rgb = os.path.join(self.processed_root, "rgb/train/masks/Tumor")
+        val_mask_dir_rgb = os.path.join(self.processed_root, "rgb/val/masks/Tumor")
+        test_mask_dir_rgb = os.path.join(self.processed_root, "rgb/test/masks/Tumor")
 
         # Create Depth image and mask directories
-        train_img_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/train/images"
-        )
-        val_img_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/val/images"
-        )
-        test_img_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/test/images"
-        )
+        train_img_dir_depth = os.path.join(self.processed_root, "depth/train/images")
+        val_img_dir_depth = os.path.join(self.processed_root, "depth/val/images")
+        test_img_dir_depth = os.path.join(self.processed_root, "depth/test/images")
 
         train_mask_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/train/masks/Tumor"
+            self.processed_root, "depth/train/masks/Tumor"
         )
-        val_mask_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/val/masks/Tumor"
-        )
+        val_mask_dir_depth = os.path.join(self.processed_root, "depth/val/masks/Tumor")
         test_mask_dir_depth = os.path.join(
-            project_root, "data/processed_data/depth/test/masks/Tumor"
+            self.processed_root, "depth/test/masks/Tumor"
         )
 
         # Create RGD image and mask directories
-        train_img_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/train/images"
-        )
-        val_img_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/val/images"
-        )
-        test_img_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/test/images"
-        )
+        train_img_dir_rgd = os.path.join(self.processed_root, "rgd/train/images")
+        val_img_dir_rgd = os.path.join(self.processed_root, "rgd/val/images")
+        test_img_dir_rgd = os.path.join(self.processed_root, "rgd/test/images")
 
-        train_mask_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/train/masks/Tumor"
-        )
-        val_mask_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/val/masks/Tumor"
-        )
-        test_mask_dir_rgd = os.path.join(
-            project_root, "data/processed_data/rgd/test/masks/Tumor"
-        )
+        train_mask_dir_rgd = os.path.join(self.processed_root, "rgd/train/masks/Tumor")
+        val_mask_dir_rgd = os.path.join(self.processed_root, "rgd/val/masks/Tumor")
+        test_mask_dir_rgd = os.path.join(self.processed_root, "rgd/test/masks/Tumor")
 
         # Create all directories
         os.makedirs(train_img_dir_rgb, exist_ok=True)
@@ -257,19 +211,28 @@ class CachingMixin:
                 {
                     "train": (
                         self.train_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.train_images_rgbd_early],
+                        [
+                            self._contour_to_depth_channel(d)
+                            for d in self.train_images_rgbd_early
+                        ],
                         self.train_masks,
                         self.train_filenames,
                     ),
                     "val": (
                         self.val_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.val_images_rgbd_early],
+                        [
+                            self._contour_to_depth_channel(d)
+                            for d in self.val_images_rgbd_early
+                        ],
                         self.val_masks,
                         self.val_filenames,
                     ),
                     "test": (
                         self.test_images_rgbd_rgb,
-                        [self._contour_to_depth_channel(d) for d in self.test_images_rgbd_early],
+                        [
+                            self._contour_to_depth_channel(d)
+                            for d in self.test_images_rgbd_early
+                        ],
                         self.test_masks,
                         self.test_filenames,
                     ),

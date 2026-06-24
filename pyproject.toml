@@ -19,6 +19,7 @@ dependencies = [
     "albumentations==1.4.4",
     "numpy==1.26.4",
     "scipy==1.13.0",
+    "scikit-learn==1.4.2",
     "matplotlib==3.9.0",
     "tqdm==4.66.4",
     "pyyaml==6.0.1",

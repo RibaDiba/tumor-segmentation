@@ -21,7 +21,9 @@ from ._subset import SubsetMixin
 from ._utils import UtilsMixin
 
 
-class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, SubsetMixin, UtilsMixin):
+class Dataset(
+    PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, SubsetMixin, UtilsMixin
+):
 
     def __init__(self, data_path: str):
         self.data_path = data_path
@@ -31,75 +33,34 @@ class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, Subse
             os.path.join(os.path.dirname(__file__), "../../../..")
         )
 
-        self.rgb_train_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgb/train/masks/Tumor"
-        )
-        self.rgb_val_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgb/val/masks/Tumor"
-        )
-        self.rgb_test_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgb/test/masks/Tumor"
-        )
+        # Root under which every modality/split directory is written. Kept as an
+        # attribute (rather than hard-coded inline) so a subclass can redirect it
+        # per cross-validation fold; the default reproduces the historical path.
+        self.processed_root = os.path.join(project_root, "data/processed_data")
+        self._set_dirs()
 
-        self.rgb_train_dir = os.path.join(
-            project_root, "data/processed_data/rgb/train/images/"
-        )
-        self.rgb_val_dir = os.path.join(
-            project_root, "data/processed_data/rgb/val/images/"
-        )
-        self.rgb_test_dir = os.path.join(
-            project_root, "data/processed_data/rgb/test/images/"
-        )
+    def _set_dirs(self) -> None:
+        """(Re)compute every modality/split directory from self.processed_root.
 
-        self.depth_train_mask_dir = os.path.join(
-            project_root, "data/processed_data/depth/train/masks/Tumor"
-        )
-        self.depth_val_mask_dir = os.path.join(
-            project_root, "data/processed_data/depth/val/masks/Tumor"
-        )
-        self.depth_test_mask_dir = os.path.join(
-            project_root, "data/processed_data/depth/test/masks/Tumor"
-        )
+        Call after reassigning self.processed_root (e.g. when switching folds).
+        Attribute names are unchanged so cache/coco/register logic keeps working.
+        """
+        # modalities that carry a binary-mask directory
+        for _variant in ("rgb", "depth", "rgd"):
+            for _split in ("train", "val", "test"):
+                setattr(
+                    self,
+                    f"{_variant}_{_split}_mask_dir",
+                    os.path.join(self.processed_root, _variant, _split, "masks/Tumor"),
+                )
 
-        self.depth_train_dir = os.path.join(
-            project_root, "data/processed_data/depth/train/images/"
-        )
-        self.depth_val_dir = os.path.join(
-            project_root, "data/processed_data/depth/val/images/"
-        )
-        self.depth_test_dir = os.path.join(
-            project_root, "data/processed_data/depth/test/images/"
-        )
-
-        self.rgd_train_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgd/train/masks/Tumor"
-        )
-        self.rgd_val_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgd/val/masks/Tumor"
-        )
-        self.rgd_test_mask_dir = os.path.join(
-            project_root, "data/processed_data/rgd/test/masks/Tumor"
-        )
-
-        self.rgd_train_dir = os.path.join(
-            project_root, "data/processed_data/rgd/train/images/"
-        )
-        self.rgd_val_dir = os.path.join(
-            project_root, "data/processed_data/rgd/val/images/"
-        )
-        self.rgd_test_dir = os.path.join(
-            project_root, "data/processed_data/rgd/test/images/"
-        )
-
-        # rgbd_early image dirs (used by register_instances)
-        for _variant in ("rgbd_early",):
+        # image dirs for every modality (rgbd_early has no mask dir attr)
+        for _variant in ("rgb", "depth", "rgd", "rgbd_early"):
             for _split in ("train", "val", "test"):
                 setattr(
                     self,
                     f"{_variant}_{_split}_dir",
-                    os.path.join(
-                        project_root, f"data/processed_data/{_variant}/{_split}/images/"
-                    ),
+                    os.path.join(self.processed_root, _variant, _split, "images/"),
                 )
 
     # image processing functions

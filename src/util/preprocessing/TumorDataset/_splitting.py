@@ -22,6 +22,16 @@ class SplittingMixin:
         val_indices = indices[train_num : train_num + val_num]
         test_indices = indices[train_num + val_num :]
 
+        self._assign_splits(train_indices, val_indices, test_indices)
+
+    def _assign_splits(self, train_indices, val_indices, test_indices) -> None:
+        """Assign train/val/test attribute groups from the given index arrays.
+
+        Splits filenames, masks, and every modality in lockstep so the same
+        physical sample lands in the same split across rgb/depth/rgd/rgbd. Shared
+        by the sequential split and by k-fold cross-validation (which passes
+        fold-derived indices instead of contiguous slices).
+        """
         # split the filenames to each training set
         self.train_filenames = [self.filenames[i] for i in train_indices]
         self.val_filenames = [self.filenames[i] for i in val_indices]
@@ -48,13 +58,21 @@ class SplittingMixin:
         # rgbd (rgb clone + contour-render depth); only present when read_bins=True.
         # Split both in lockstep with the same indices.
         if hasattr(self, "images_rgbd_early"):
-            self.train_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in train_indices]
+            self.train_images_rgbd_rgb = [
+                self.images_rgbd_rgb[i] for i in train_indices
+            ]
             self.val_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in val_indices]
             self.test_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in test_indices]
 
-            self.train_images_rgbd_early = [self.images_rgbd_early[i] for i in train_indices]
-            self.val_images_rgbd_early = [self.images_rgbd_early[i] for i in val_indices]
-            self.test_images_rgbd_early = [self.images_rgbd_early[i] for i in test_indices]
+            self.train_images_rgbd_early = [
+                self.images_rgbd_early[i] for i in train_indices
+            ]
+            self.val_images_rgbd_early = [
+                self.images_rgbd_early[i] for i in val_indices
+            ]
+            self.test_images_rgbd_early = [
+                self.images_rgbd_early[i] for i in test_indices
+            ]
 
         print("")
         print(f"Number of training sets: {len(self.train_images_rgb)}")
