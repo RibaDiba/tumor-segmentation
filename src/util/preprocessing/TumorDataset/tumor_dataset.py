@@ -91,6 +91,17 @@ class Dataset(PreprocessingMixin, SplittingMixin, CachingMixin, CocoMixin, Subse
             project_root, "data/processed_data/rgd/test/images/"
         )
 
+        # rgbd_early image dirs (used by register_instances)
+        for _variant in ("rgbd_early",):
+            for _split in ("train", "val", "test"):
+                setattr(
+                    self,
+                    f"{_variant}_{_split}_dir",
+                    os.path.join(
+                        project_root, f"data/processed_data/{_variant}/{_split}/images/"
+                    ),
+                )
+
     # image processing functions
     read_images_to_array = read_images_to_array
     crop_raw_images = crop_raw_images

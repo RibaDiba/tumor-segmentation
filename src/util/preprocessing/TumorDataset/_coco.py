@@ -75,13 +75,33 @@ class CocoMixin:
         self.process_masks(mask_path=val_mask_dir, dest_json=val_json_dir)
         self.process_masks(mask_path=test_mask_dir, dest_json=test_json_dir)
 
+        # rgbd_early (only present if cached). file_name in the generated json is
+        # <stem>.jpg, matching the cached RGB image; the depth .npy sits alongside
+        # for the 4-channel mapper.
+        for variant in ("rgbd_early",):
+            for split in ("train", "val", "test"):
+                mask_dir = os.path.join(
+                    project_root, f"data/processed_data/{variant}/{split}/masks"
+                )
+                if not os.path.isdir(mask_dir):
+                    continue
+                json_dir = os.path.join(
+                    project_root,
+                    f"data/processed_data/{variant}/{split}/images/{split}.json",
+                )
+                self.process_masks(mask_path=mask_dir, dest_json=json_dir)
+
     """
     this function is js for convience to be used everywhere
     also because some versions dont have the correct paths
     """
 
     def register_instances(
-        self, rgb: bool = False, depth: bool = False, rgd: bool = False
+        self,
+        rgb: bool = False,
+        depth: bool = False,
+        rgd: bool = False,
+        rgbd_early: bool = False,
     ) -> None:
         if rgb:
             register_coco_instances(
@@ -139,4 +159,23 @@ class CocoMixin:
                 {},
                 os.path.join(self.rgd_test_dir, "test.json"),
                 self.rgd_test_dir,
+            )
+        elif rgbd_early:
+            register_coco_instances(
+                "my_dataset_train",
+                {},
+                os.path.join(self.rgbd_early_train_dir, "train.json"),
+                self.rgbd_early_train_dir,
+            )
+            register_coco_instances(
+                "my_dataset_val",
+                {},
+                os.path.join(self.rgbd_early_val_dir, "val.json"),
+                self.rgbd_early_val_dir,
+            )
+            register_coco_instances(
+                "my_dataset_test",
+                {},
+                os.path.join(self.rgbd_early_test_dir, "test.json"),
+                self.rgbd_early_test_dir,
             )

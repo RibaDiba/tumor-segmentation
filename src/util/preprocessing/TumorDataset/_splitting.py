@@ -45,6 +45,17 @@ class SplittingMixin:
         self.val_images_rgd = [self.images_rgd[i] for i in val_indices]
         self.test_images_rgd = [self.images_rgd[i] for i in test_indices]
 
+        # rgbd (rgb clone + contour-render depth); only present when read_bins=True.
+        # Split both in lockstep with the same indices.
+        if hasattr(self, "images_rgbd_early"):
+            self.train_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in train_indices]
+            self.val_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in val_indices]
+            self.test_images_rgbd_rgb = [self.images_rgbd_rgb[i] for i in test_indices]
+
+            self.train_images_rgbd_early = [self.images_rgbd_early[i] for i in train_indices]
+            self.val_images_rgbd_early = [self.images_rgbd_early[i] for i in val_indices]
+            self.test_images_rgbd_early = [self.images_rgbd_early[i] for i in test_indices]
+
         print("")
         print(f"Number of training sets: {len(self.train_images_rgb)}")
         print(f"Number of validation sets: {len(self.val_images_rgb)}")

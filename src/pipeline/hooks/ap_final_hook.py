@@ -16,12 +16,14 @@ from detectron2.utils.events import get_event_storage
 from .iou_evaluator import PerImageIoUEvaluator
 
 class AP_IOU_FinalResults(HookBase): 
-    def __init__(self, output_dir: str, cfg):
+    def __init__(self, output_dir: str, cfg, mapper=None):
         super().__init__()
         self.cfg = cfg
         self.output_dir = output_dir
+        # custom DatasetMapper for 4-channel runs; None -> stock mapper
+        self.mapper = mapper
 
-        # this is specific to this projects config file 
+        # this is specific to this projects config file
         self.model_name = cfg.MODELNAME
 
         os.makedirs(output_dir, exist_ok=True)
@@ -47,7 +49,9 @@ class AP_IOU_FinalResults(HookBase):
     def _get_IoU_numbers(self): 
         # gets the IoU numbers from the evaluator 
         evaluator = PerImageIoUEvaluator(self.cfg.DATASETS.TEST[0])
-        val_loader = build_detection_test_loader(self.cfg, self.cfg.DATASETS.TEST[0])
+        val_loader = build_detection_test_loader(
+            self.cfg, self.cfg.DATASETS.TEST[0], mapper=self.mapper
+        )
 
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
         return results
@@ -66,7 +70,9 @@ class AP_IOU_FinalResults(HookBase):
             distributed=(cfg.MODEL.DEVICE != "cpu"),
             output_dir=cfg.OUTPUT_DIR,
         )
-        val_loader = build_detection_test_loader(cfg, cfg.DATASETS.TEST[0])
+        val_loader = build_detection_test_loader(
+            cfg, cfg.DATASETS.TEST[0], mapper=self.mapper
+        )
         results = inference_on_dataset(self.trainer.model, val_loader, evaluator)
 
         # retrieve all segmentation metrics

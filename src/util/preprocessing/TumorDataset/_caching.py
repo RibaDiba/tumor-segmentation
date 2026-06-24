@@ -38,6 +38,53 @@ class CachingMixin:
     def return_data(self):
         return self.images_rgb, self.masks
 
+    @staticmethod
+    def _contour_to_depth_channel(contour_img):
+        """Contour render -> single-channel depth, matching RGD's blue-channel
+        convention (inverted + per-image min-max), as float32."""
+        gray = (
+            cv2.cvtColor(contour_img, cv2.COLOR_BGR2GRAY)
+            if getattr(contour_img, "ndim", 2) == 3
+            else contour_img
+        )
+        norm = cv2.normalize(gray.astype(np.float32), None, 0, 255, cv2.NORM_MINMAX)
+        return (255.0 - norm).astype(np.float32)
+
+    def _cache_rgbd_variant(self, variant, splits) -> None:
+        """Persist an RGBD variant as paired files per sample:
+           images/<stem>.jpg, images/<stem>_depth.npy, masks/Tumor/<stem>.png.
+
+        RGB is saved as .jpg so it matches the COCO file_name (process_coco_json
+        ORIGINAL_EXT='jpg') and the rgb baseline; the depth channel is a sibling
+        .npy that the future 4-channel mapper stacks on to form (H, W, 4).
+
+        splits: {split_name: (rgb_imgs, depth_arrays, masks, filenames)}.
+        """
+        project_root = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../../../..")
+        )
+        for split, (rgb_imgs, depth_arrays, masks, filenames) in splits.items():
+            img_dir = os.path.join(
+                project_root, f"data/processed_data/{variant}/{split}/images"
+            )
+            mask_dir = os.path.join(
+                project_root, f"data/processed_data/{variant}/{split}/masks/Tumor"
+            )
+            os.makedirs(img_dir, exist_ok=True)
+            os.makedirs(mask_dir, exist_ok=True)
+
+            for rgb, depth, name in zip(rgb_imgs, depth_arrays, filenames):
+                stem = os.path.splitext(name)[0]
+                cv2.imwrite(os.path.join(img_dir, f"{stem}.jpg"), rgb)
+                np.save(
+                    os.path.join(img_dir, f"{stem}_depth.npy"),
+                    np.asarray(depth, dtype=np.float32),
+                )
+
+            for mask, name in zip(masks, filenames):
+                stem = os.path.splitext(name)[0]
+                cv2.imwrite(os.path.join(mask_dir, f"{stem}.png"), mask)
+
     # this will save our data into directories for each image type, with shared masks
     def cache_data(self) -> None:
         project_root = os.path.abspath(
@@ -201,5 +248,32 @@ class CachingMixin:
         for mask, name in zip(self.test_masks, self.test_filenames):
             clean_name = os.path.splitext(name)[0] + ".png"
             cv2.imwrite(os.path.join(test_mask_dir_rgd, clean_name), mask)
+
+        # ---- RGBD early-fusion variant (paired RGB .jpg + depth .npy) ----
+        # rgbd_early: depth = inverted-normalized grayscale of the contour render
+        if hasattr(self, "train_images_rgbd_early") and self.train_images_rgbd_early:
+            self._cache_rgbd_variant(
+                "rgbd_early",
+                {
+                    "train": (
+                        self.train_images_rgbd_rgb,
+                        [self._contour_to_depth_channel(d) for d in self.train_images_rgbd_early],
+                        self.train_masks,
+                        self.train_filenames,
+                    ),
+                    "val": (
+                        self.val_images_rgbd_rgb,
+                        [self._contour_to_depth_channel(d) for d in self.val_images_rgbd_early],
+                        self.val_masks,
+                        self.val_filenames,
+                    ),
+                    "test": (
+                        self.test_images_rgbd_rgb,
+                        [self._contour_to_depth_channel(d) for d in self.test_images_rgbd_early],
+                        self.test_masks,
+                        self.test_filenames,
+                    ),
+                },
+            )
 
         print("Data cached successfully.")

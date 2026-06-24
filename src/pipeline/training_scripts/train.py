@@ -25,14 +25,23 @@ from detectron2.utils.logger import setup_logger
 
 from preprocessing.TumorDataset.tumor_dataset import Dataset
 from pipeline.trainer.trainer import Trainer
+from pipeline.trainer.rgbd_trainer import RGBDTrainer
 from paths import PROJECT_ROOT, MODELS_DIR
+
+# modalities routed through the 4-channel RGBDTrainer.
+# rgbd_late shares the early-fusion training path for now; once the dedicated
+# late-fusion trainer/mapper lands, move rgbd_late onto its own subclass and off
+# this shared tuple (see "variant behavior via subclass" convention).
+RGBD_MODALITIES = ("rgbd_early", "rgbd_late")
 
 CONFIGS_DIR = PROJECT_ROOT / "configs"
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description="Train a Detectron2 tumor segmentation model")
-    p.add_argument("--modality", choices=("rgb", "depth", "rgd"), required=True,
+    p.add_argument("--modality",
+                   choices=("rgb", "depth", "rgd", "rgbd_early", "rgbd_late"),
+                   required=True,
                    help="Image modality to train on")
     p.add_argument("--model-name", dest="model_name", required=True,
                    help="Run identifier")
@@ -115,7 +124,8 @@ def main(argv: list[str] | None = None) -> None:
     cfg = setup_cfg(args)
     snapshot_run(cfg)
 
-    trainer = Trainer(cfg)
+    TrainerCls = RGBDTrainer if args.modality in RGBD_MODALITIES else Trainer
+    trainer = TrainerCls(cfg)
     trainer.resume_or_load(resume=False)
     trainer.train()
 
