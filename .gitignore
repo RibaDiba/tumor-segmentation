@@ -75,6 +75,7 @@ src/util/failure_analysis
 src/util/failure_recreation_output
 src/util/line_graphs
 **/evaluation_output
+**/results
 
 # ---- Project: SLURM logs ----
 **/logs

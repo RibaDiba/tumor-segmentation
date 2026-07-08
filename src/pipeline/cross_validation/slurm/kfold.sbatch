@@ -1,24 +1,24 @@
 #!/bin/bash
 
-#SBATCH --job-name=CV-RUN-1
-#SBATCH --partition=pli
-#SBATCH --account=puchalla
+#SBATCH --job-name=CV-rgbd-2
+#SBATCH --account=puchalla  
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
-#SBATCH --time=12:00:00
+#SBATCH --time=04:00:00
 #SBATCH --gres=gpu:1
 
-#SBATCH --output=../logs/CV-RUN-1/%x.%j.out
-#SBATCH --error=../logs/CV-RUN-1/%x.%j.err
+#SBATCH --output=./logs/CV-rgbd-2/%x.%j.out
+#SBATCH --error=./logs/CV-rgbd-2/%x.%j.err
 
 # config:
-NAME="CV-RUN-1"
+NAME="CV-rgbd-2"
 MODELTYPE="CROSS-VALIDATION"
-MODALITY="rgb"
+MODALITY="rgbd_early"
 K=5
 ITER=5000
+SEED=42
 
 # create a logs dir (must match the --output/--error path above)
 mkdir -p ../logs/${NAME}
@@ -31,4 +31,5 @@ python3 ../train_kfold.py \
     --model-type "${MODELTYPE}" \
     --modality "${MODALITY}" \
     --k "${K}" \
+    --seed "${SEED}" \
     SOLVER.MAX_ITER "${ITER}"

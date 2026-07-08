@@ -38,7 +38,7 @@ from pycocotools import mask as mask_util
 # Path setup — mirrors train.py / _run_inference.py so imports resolve from any cwd
 # ---------------------------------------------------------------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.abspath(os.path.join(current_dir, "../.."))
+project_root = os.path.abspath(os.path.join(current_dir, "../../.."))
 src_dir = os.path.join(project_root, "src")
 util_dir = os.path.join(project_root, "src", "util")
 
